@@ -6,6 +6,9 @@
 	--background-color-darker: #323232;
 	--border-color: #808080;
 	--theme-color: #fc6d26;
+
+	--safe-green-color: #4dc47d;
+	--danger-red-color: #ff0000;
 }
 
 :root {
@@ -16,7 +19,10 @@
 	--background-color-darker: #f1f3f3;
 	--border-color: #dddddd;
 	--theme-color: #fc6d26;
+
+	--safe-green-color: #4dc47d;
+	--danger-red-color: #ff0000;
 }
 
-$header-height: 66px;
+$header-height: 70px;
 $homepage-h1-height: 86px;

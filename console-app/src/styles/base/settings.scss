@@ -42,10 +42,28 @@
 	color: var(--text-color-medium);
 
 	&:hover {
-		color: var(--background-color);
+		color: white;
 		background: var(--theme-color);
 		border: 1px solid var(--theme-color);
 	}
+}
+
+.Theme-Btn-First,
+.Theme-Btn-Grey {
+	padding: 6px 14px;
+	margin: 0px;
+	border-radius: 2px;
+	cursor: pointer;
+}
+.Theme-Btn-First {
+	border: 1px solid var(--safe-green-color);
+	background: var(--safe-green-color);
+	color: white;
+}
+.Theme-Btn-Grey {
+	border: 1px solid var(--text-color-light);
+	background: var(--text-color-light);
+	color: var(--background-color);
 }
 
 .Theme-Box-Shadow {

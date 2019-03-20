@@ -7,6 +7,7 @@ import HomePage from './pages/Home';
 import BlogsPage from './pages/Blogs';
 import ProjectsPage from './pages/Projects';
 import ImagesPage from './pages/Images';
+import EachProjectPage from './pages/EachProject';
 import NotFoundPage from './pages/NotFound';
 
 class App extends Component {
@@ -20,6 +21,7 @@ class App extends Component {
 						<Route path="/blogs" exact component={BlogsPage} />
 						<Route path="/projects" exact component={ProjectsPage} />
 						<Route path="/images" exact component={ImagesPage} />
+						<Route path="/project/:projectId" exact component={EachProjectPage} />
 						<Route component={NotFoundPage} />
 					</Switch>
 				</BrowserRouter>

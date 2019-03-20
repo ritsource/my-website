@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Data } from './ContentBox';
+import { Data } from '../data/data';
 
 type MyProps = {
 	object: Data;

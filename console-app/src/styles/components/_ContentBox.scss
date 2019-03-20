@@ -2,11 +2,29 @@
 	display: flex;
 	flex-direction: column;
 
+	.ContentBox-Types-Btn-Container-01 {
+		margin-left: 20px;
+
+		span {
+			text-transform: capitalize;
+			color: var(--text-color-light);
+			font-size: 14px;
+			margin: 0px 0px 0px 0px;
+			padding: 0px 10px 5px 10px;
+			cursor: pointer;
+		}
+
+		.ContentBox-Active-Span {
+			border-bottom: 1px solid var(--text-color);
+			color: var(--text-color);
+		}
+	}
+
 	.ContentBox-Item-Container-01 {
 		overflow-y: auto;
 		overflow-x: hidden;
 		flex-grow: 1;
-		margin-top: -5px;
+		margin-top: 15px;
 		width: calc(100% - 40px);
 		padding: 0px 20px;
 		margin-bottom: 14px;
