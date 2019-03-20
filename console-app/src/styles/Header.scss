@@ -1,0 +1,28 @@
+.Header-c-00 {
+	color: var(--text-color);
+	background: var(--background-color);
+	padding: 20px 40px;
+
+	h3 {
+		font-size: 22px;
+		font-weight: normal;
+	}
+
+	.Header-Navbtn-Container-Div-01 {
+		a {
+			color: var(--text-color-light);
+			margin-left: 20px;
+		}
+
+		button {
+			border: 0px solid var(--background-color);
+			background: var(--background-color);
+			cursor: pointer;
+			margin-left: 12px;
+		}
+
+		.Header-NavLink-Active {
+			color: var(--text-color);
+		}
+	}
+}

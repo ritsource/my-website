@@ -1,0 +1,24 @@
+.Flex-Row-Center,
+.Flex-Row-End,
+.Flex-Row-Start,
+.Flex-Row-Space-Between {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.Flex-Row-Center {
+	justify-content: center;
+}
+
+.Flex-Row-End {
+	justify-content: flex-end;
+}
+
+.Flex-Row-Start {
+	justify-content: flex-start;
+}
+
+.Flex-Row-Space-Between {
+	justify-content: space-between;
+}
