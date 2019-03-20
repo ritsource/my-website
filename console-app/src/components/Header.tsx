@@ -6,7 +6,9 @@ const Header = () => {
 	return (
 		<div className="Header-c-00 Flex-Row-Space-Between">
 			<Link to="/">
-				<h3>Management Console</h3>
+				<h3>
+					<span>🍊</span> admin.ritwiksaha.com
+				</h3>
 			</Link>
 
 			<div className="Header-Navbtn-Container-Div-01 Flex-Row-Center">

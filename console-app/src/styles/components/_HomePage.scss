@@ -1,0 +1,17 @@
+.HomePage-c-00 {
+	background: var(--background-color-darker);
+	min-height: calc(100vh - 66px);
+	padding-top: 66px;
+
+	.HomePage-Container-00 {
+		width: calc(100% - 200px);
+		margin: auto;
+		// min-width: 900px;
+
+		h1 {
+			font-size: 40px;
+			font-weight: normal;
+			padding: 10px 40px 30px 40px;
+		}
+	}
+}

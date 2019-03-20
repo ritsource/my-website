@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.scss';
 
-import Header from './Header';
-import IndexPage from './pages/Index';
+import Header from './components/Header';
+import HomePage from './pages/Home';
 import BlogsPage from './pages/Blogs';
 import ProjectsPage from './pages/Projects';
 import ImagesPage from './pages/Images';
@@ -16,7 +16,7 @@ class App extends Component {
 				<BrowserRouter>
 					<Header />
 					<Switch>
-						<Route path="/" exact component={IndexPage} />
+						<Route path="/" exact component={HomePage} />
 						<Route path="/blogs" exact component={BlogsPage} />
 						<Route path="/projects" exact component={ProjectsPage} />
 						<Route path="/images" exact component={ImagesPage} />

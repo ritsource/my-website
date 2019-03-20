@@ -6,19 +6,30 @@
 	flex-direction: row;
 	align-items: center;
 }
-
 .Flex-Row-Center {
 	justify-content: center;
 }
-
 .Flex-Row-End {
 	justify-content: flex-end;
 }
-
 .Flex-Row-Start {
 	justify-content: flex-start;
 }
-
 .Flex-Row-Space-Between {
 	justify-content: space-between;
+}
+
+.Flex-Column-Start {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.Flex-Column-Start {
+	align-items: flex-start;
+}
+
+.Theme-Box-Shadow {
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 }
