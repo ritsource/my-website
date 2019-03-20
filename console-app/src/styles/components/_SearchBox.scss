@@ -4,20 +4,25 @@
 
 	// padding: 20px;
 	// width: calc(50% - 40px);
-	width: 50%;
+	width: calc(50% - 10px);
+	max-height: calc(100vh - (66px + 86px + 40px));
+	overflow: hidden;
 
 	h4 {
 		font-size: 18px;
 		font-weight: normal;
 		border-bottom: 1px solid var(--border-color);
-		padding: 10px 20px;
+		padding: 20px 20px;
 		width: calc(100% - 40px);
 	}
 
-	p {
+	.SearchBox-Description-P-01 {
 		color: var(--text-color-medium);
 		padding: 12px 20px;
+		// padding: 20px 20px;
 		width: calc(100% - 40px);
+		font-size: 14px;
+		line-height: 20px;
 	}
 
 	input {

@@ -46,7 +46,31 @@ textarea {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
 		'Droid Sans', 'Helvetica Neue', sans-serif;
 
+	&::placeholder {
+		color: var(--text-color-light);
+	}
+
 	&:focus {
 		border: 1px solid var(--theme-color);
 	}
+}
+
+$background-grey-2: #dddddd;
+$background-grey-3: #c0c0c0;
+
+/* width */
+::-webkit-scrollbar {
+	width: 5px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+	background: $background-grey-2;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: $background-grey-3;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: $background-grey-3;
 }

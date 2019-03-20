@@ -4,9 +4,12 @@ const SearchBox = () => {
 	const [ query, setQuery ] = useState('');
 
 	return (
-		<div className="SearchBox-c-00 Theme-Box-Shadow Flex-Column-Start">
+		<div className="SearchBox-c-00 Theme-Box-Shadow">
 			<h4>Search Box</h4>
-			<p>You can search anything from here.. Projects, Photos, Blogs..</p>
+			<p className="SearchBox-Description-P-01">
+				Quick access to all the File-Objects, search on Database. anything from here, all the Projects, Photos,
+				Blogs.{' '}
+			</p>
 			<input placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
 		</div>
 	);
