@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { IoIosSunny, IoIosMoon } from 'react-icons/io';
 
+import toggleTheme from '../utils/changeTheme';
+
 const Header = () => {
+	const [ isLight, setIsLight ] = useState(true);
+
 	return (
 		<div className="Header-c-00 Flex-Row-Space-Between">
 			<Link to="/">
@@ -23,12 +27,12 @@ const Header = () => {
 				</NavLink>
 
 				{/* <div> */}
-				{true ? (
-					<button className="Flex-Row-Center">
+				{!isLight ? (
+					<button onClick={() => toggleTheme(isLight, setIsLight)} className="Flex-Row-Center">
 						<IoIosSunny style={{ color: 'var(--text-color)', fontSize: '24px' }} />
 					</button>
 				) : (
-					<button className="Flex-Row-Center">
+					<button onClick={() => toggleTheme(isLight, setIsLight)} className="Flex-Row-Center">
 						<IoIosMoon style={{ color: 'var(--text-color)', fontSize: '24px' }} />
 					</button>
 				)}
