@@ -12,6 +12,7 @@ const JSONBox = (props: MyProps) => {
 
 	const [ json, setJson ] = useState(JSON.stringify(object, null, 4));
 	const [ isValid, setIsValid ] = useState(false);
+	const [ isAsync, setIsAsync ] = useState(false);
 
 	useEffect(
 		() => {
@@ -34,7 +35,9 @@ const JSONBox = (props: MyProps) => {
 
 	return (
 		<div className="JOSNBox-c-00 SearchBox-c-00 Theme-Box-Shadow">
-			<h4>JSON Data</h4>
+			<h4 className="Flex-Row-Space-Between">
+				JSON Data {isAsync && <div className="Theme-Loading-Spin-Div" />}
+			</h4>
 			<div className="Flex-Row-Space-Between">
 				<p className="SearchBox-Description-P-01">Quickly modify using JSON data structure.</p>
 				{/* {isValid ? 'True' : 'False'} */}

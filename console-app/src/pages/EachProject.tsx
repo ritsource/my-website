@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import JSONBox from '../components/JSONBox';
+import ProjectBoxes from '../components/ProjectBox';
 import data, { Data } from '../data/data';
 
 type MyProps = {
@@ -29,6 +30,9 @@ const EachProjectPage = (props: MyProps) => {
 				<h1>Project / {props.match.params.projectId}</h1>
 				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
 					<JSONBox object={project} />
+					<div className="Page-Vertical-Box-Container">
+						<ProjectBoxes project={project} />
+					</div>
 				</div>
 			</div>
 		</div>

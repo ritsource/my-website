@@ -77,3 +77,33 @@
 		box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
 	}
 }
+
+.Theme-Loading-Spin-Div {
+	background: var(--background-color);
+	border: 3px solid var(--background-color);
+	border-top: 3px solid var(--text-color-medium);
+	border-right: 3px solid var(--text-color-medium);
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	-webkit-animation: Loading-Spin 500ms linear infinite; /* Safari */
+	animation: Loading-Spin 500ms linear infinite;
+}
+
+@-webkit-keyframes Loading-Spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes Loading-Spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
