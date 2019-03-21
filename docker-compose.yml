@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  # server:
+  #   image: golang:1.12.1
+  #   volumes:
+  #     - ./server:/go/src/server
+  #   working_dir: /go/src/server
+  #   command: go run main.go
+  #   ports:
+  #     - "8081:8080"
