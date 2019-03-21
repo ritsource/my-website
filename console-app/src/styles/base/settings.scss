@@ -48,14 +48,20 @@
 	}
 }
 
-.Theme-Btn-First,
+.Theme-Btn-Main,
+.Theme-Btn-Green,
 .Theme-Btn-Grey {
 	padding: 6px 14px;
 	margin: 0px;
 	border-radius: 2px;
 	cursor: pointer;
 }
-.Theme-Btn-First {
+.Theme-Btn-Main {
+	border: 1px solid var(--theme-color);
+	background: var(--theme-color);
+	color: white;
+}
+.Theme-Btn-Green {
 	border: 1px solid var(--safe-green-color);
 	background: var(--safe-green-color);
 	color: white;

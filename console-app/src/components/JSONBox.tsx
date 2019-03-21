@@ -14,6 +14,8 @@ const JSONBox = (props: MyProps) => {
 	const [ isValid, setIsValid ] = useState(false);
 	const [ isAsync, setIsAsync ] = useState(false);
 
+	const [ jsonBoxEd, setJsonBoxEd ] = useState(false);
+
 	useEffect(
 		() => {
 			setJson(JSON.stringify(object, null, 4));
@@ -53,17 +55,42 @@ const JSONBox = (props: MyProps) => {
 			</div>
 			<textarea
 				value={json}
+				// style={jsonBoxEd ? {} : { border: '1px solid var(--border-color)' }}
 				onChange={(e) => {
-					const valid = validateJson(e.target.value);
-					setIsValid(valid);
-					setJson(e.target.value);
+					if (jsonBoxEd) {
+						const valid = validateJson(e.target.value);
+						setIsValid(valid);
+						setJson(e.target.value);
+					}
 				}}
 			/>
-			<div className="JOSNBox-Btn-Container-01 Flex-Row-Start">
-				<button className="Theme-Btn-First">Save</button>
-				<button style={{ marginLeft: '12px' }} className="Theme-Btn-Grey">
-					Cancel
-				</button>
+
+			<div
+				style={{
+					width: 'calc(100% - 40px)',
+					padding: '10px 20px 20px 20px'
+				}}
+				className="Flex-Row-Start"
+			>
+				{jsonBoxEd ? (
+					<React.Fragment>
+						<button className="Theme-Btn-Green">Save</button>
+						<button
+							style={{ marginLeft: '12px' }}
+							className="Theme-Btn-Grey"
+							onClick={() => {
+								setJsonBoxEd(false);
+								setJson(JSON.stringify(object, null, 4));
+							}}
+						>
+							Cancel
+						</button>
+					</React.Fragment>
+				) : (
+					<button className="Theme-Btn-Main" onClick={() => setJsonBoxEd(true)}>
+						Edit
+					</button>
+				)}
 			</div>
 		</div>
 	);
