@@ -1,4 +1,4 @@
-package secrets
+package config
 
 import (
 	"encoding/json"
@@ -13,8 +13,8 @@ type Secrets struct {
 	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`
 }
 
-// Get Secrets for App
-func getSecrets(isDev bool, mySecrets *Secrets) {
+// GetSecrets ...
+func GetSecrets(isDev bool, mySecrets *Secrets) {
 	isDev = os.Getenv("isDev") == "true"
 
 	var filename string // JSON file location
