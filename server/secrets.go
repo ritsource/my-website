@@ -9,8 +9,8 @@ import (
 
 // Secrets ...
 type Secrets struct {
-	Port  int    `json:"port"`
-	Mystr string `json:"mystr"`
+	GoogleClientID     string `json:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`
 }
 
 // Get Secrets for App
