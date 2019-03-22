@@ -10,9 +10,12 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+// "github.com/julienschmidt/httprouter"
+// "go.mongodb.org/mongo-driver/mongo"
+
 var (
 	isDev             bool    // Is in development mode
-	mySecrets         Secrets // mySecrets
+	mySecrets         secrets.Secrets // mySecrets
 	googleOauthConfig *oauth2.Config
 )
 
@@ -39,8 +42,20 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+// Utils
+// func Message(status bool, message string) map[string]interface{} {
+// 	return map[string]interface{}{"status": status, "message": message}
+// }
+
+// func Respond(w http.ResponseWriter, data map[string]interface{}) {
+// 	w.Header().Add("Content-Type", "application/json")
+// 	json.NewEncoder(w).Encode(data)
+// }
+
+// Response Haldelers
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	// tokenHeader := r.Header.Get("Authorization")
+	fmt.Fprintf(w, "Hi there, Home here!")
 }
 
 var oauthStateString = "pseudo-random"

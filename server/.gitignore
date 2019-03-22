@@ -1,4 +1,4 @@
-config/*
+# config/*
 config/config.development.json
 config/config.production.json
 
