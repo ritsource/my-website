@@ -1,69 +1,146 @@
 package auth
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
 	"github.com/ritwik310/my-website/server/config"
+	"github.com/ritwik310/my-website/server/mongo"
 )
 
 var (
-	isDev             bool           // Is in development mode
-	mySecrets         config.Secrets // mySecrets
-	googleOauthConfig *oauth2.Config
+	isDev               bool           // Is in development mode
+	secrets             config.Secrets // mySecrets
+	googleOauthConfig   *oauth2.Config
+	mongoURL            string
+	dbName              string
+	adminCollectionName string
 )
 
 func init() {
-	config.GetSecrets(isDev, &mySecrets)
+	config.GetSecrets(isDev, &secrets)
+
+	mongoURL = secrets.MongoURI
+	// dbName = secrets.DatabaseName
+	dbName = "test_db"
+	adminCollectionName = "admin"
 
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:8080/auth/google/callback",
-		ClientID:     mySecrets.GoogleClientID,
-		ClientSecret: mySecrets.GoogleClientSecret,
+		ClientID:     secrets.GoogleClientID,
+		ClientSecret: secrets.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 		Endpoint:     google.Endpoint,
 	}
 }
 
-var oauthStateString = "pseudo-random"
+var oauthStateString = "pseudo-random" // Oauth State
+
+// HandleCurrentUser ...
+func HandleCurrentUser(w http.ResponseWriter, r *http.Request) {
+	url := googleOauthConfig.AuthCodeURL(oauthStateString)
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
+}
 
 // HandleGoogleLogin ...
 func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
 }
 
 // HandleGoogleCallback ...
 func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
+	// Get user info
 	content, err := getUserInfo(r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
 		fmt.Println(err.Error())
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
-	fmt.Fprintf(w, "Content: %s\n", content)
+
+	// fmt.Printf("%v", string(content))
+	createOrGetUser(content)
+	// Encrypt
+	w.Write(content)
+
+	// http.Redirect(w, r, "/", http.StatusMovedPermanently) // Redirecting to Home
 }
 
+// Gets User (Admin) info from Google APIs
 func getUserInfo(state string, code string) ([]byte, error) {
+	// Checking Oauth-State
 	if state != oauthStateString {
-		return nil, fmt.Errorf("invalid oauth state")
+		return nil, fmt.Errorf("Invalid oauth state")
 	}
+
+	// Getting Token
 	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
 	if err != nil {
-		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
+		return nil, fmt.Errorf("Code exchange failed: %s", err.Error())
 	}
+
+	// Getting User info
 	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
+
 	defer response.Body.Close()
-	contents, err := ioutil.ReadAll(response.Body)
+
+	content, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
 	}
-	return contents, nil
+
+	return content, nil
+}
+
+// Create a User in the Database
+func createOrGetUser(content []byte) {
+	// Unmarshal Data
+	admin, err := unmarshalAdmin(content)
+	if err != nil {
+		log.Fatalf("Unmarshal Error %s", err)
+	}
+
+	fmt.Printf("%v", admin)
+
+	// Connect to Mongo
+	session, connErr := mongo.NewSession(mongoURL)
+	if connErr != nil {
+		log.Fatalf("Unable to connect to mongo: %s", connErr)
+	}
+
+	defer session.Close()
+
+	// Admin Service
+	adminService := mongo.NewAdminService(session.Copy(), dbName, adminCollectionName)
+
+	// // GetByEmail
+	data, queryErr := adminService.GetByEmail("integrationTest@example.com")
+	if queryErr != nil {
+		// return nil, queryErr
+		fmt.Println("queryErr", queryErr)
+		return
+	}
+
+	fmt.Printf("%+v\n", data)
+
+}
+
+type adminContent struct {
+	Email string `json:"email"`
+}
+
+// Unmarshal Byte Slice to Struct
+func unmarshalAdmin(content []byte) (adminContent, error) {
+	var admin adminContent
+	err := json.Unmarshal([]byte(content), &admin)
+	return admin, err
 }

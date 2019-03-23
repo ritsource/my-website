@@ -12,6 +12,7 @@ import (
 // "go.mongodb.org/mongo-driver/mongo"
 
 func main() {
+	http.HandleFunc("/auth/current_user", auth.HandleCurrentUser)
 	http.HandleFunc("/auth/google", auth.HandleGoogleLogin)
 	http.HandleFunc("/auth/google/callback", auth.HandleGoogleCallback)
 

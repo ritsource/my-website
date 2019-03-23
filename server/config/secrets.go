@@ -11,6 +11,9 @@ import (
 type Secrets struct {
 	GoogleClientID     string `json:"GOOGLE_CLIENT_ID"`
 	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`
+	SessionKey         string `json:"SESSION_KEY"`
+	MongoURI           string `json:"MONGO_URI"`
+	DatabaseName       string `json:"DATABASE_NAME"`
 }
 
 // GetSecrets ...

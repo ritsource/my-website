@@ -18,7 +18,7 @@ func Test_AdminService(t *testing.T) {
 }
 
 func insertAdmin(t *testing.T) {
-	//Arrange
+	// Arrange
 	session, err := mongo.NewSession(mongoUrl)
 	if err != nil {
 		log.Fatalf("Unable to connect to mongo: %s", err)
@@ -31,10 +31,10 @@ func insertAdmin(t *testing.T) {
 		Email: testEmail,
 	}
 
-	//Act
+	// Act
 	err = adminService.Create(&admin)
 
-	//Assert
+	// Assert
 	if err != nil {
 		t.Errorf("Unable to create admin: %s", err)
 	}
