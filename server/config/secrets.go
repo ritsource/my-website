@@ -14,6 +14,7 @@ type Secrets struct {
 	SessionKey         string `json:"SESSION_KEY"`
 	MongoURI           string `json:"MONGO_URI"`
 	DatabaseName       string `json:"DATABASE_NAME"`
+	AdminEmails       []string `json:"ADMIN_EMAILS"`
 }
 
 // GetSecrets ...

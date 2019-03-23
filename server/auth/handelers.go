@@ -1,17 +1,14 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
 	"github.com/ritwik310/my-website/server/config"
-	"github.com/ritwik310/my-website/server/mongo"
 )
 
 var (
@@ -65,7 +62,7 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// fmt.Printf("%v", string(content))
-	createOrGetUser(content)
+	CreateOrGetUser(content)
 	// Encrypt
 	w.Write(content)
 
@@ -99,48 +96,4 @@ func getUserInfo(state string, code string) ([]byte, error) {
 	}
 
 	return content, nil
-}
-
-// Create a User in the Database
-func createOrGetUser(content []byte) {
-	// Unmarshal Data
-	admin, err := unmarshalAdmin(content)
-	if err != nil {
-		log.Fatalf("Unmarshal Error %s", err)
-	}
-
-	fmt.Printf("%v", admin)
-
-	// Connect to Mongo
-	session, connErr := mongo.NewSession(mongoURL)
-	if connErr != nil {
-		log.Fatalf("Unable to connect to mongo: %s", connErr)
-	}
-
-	defer session.Close()
-
-	// Admin Service
-	adminService := mongo.NewAdminService(session.Copy(), dbName, adminCollectionName)
-
-	// // GetByEmail
-	data, queryErr := adminService.GetByEmail("integrationTest@example.com")
-	if queryErr != nil {
-		// return nil, queryErr
-		fmt.Println("queryErr", queryErr)
-		return
-	}
-
-	fmt.Printf("%+v\n", data)
-
-}
-
-type adminContent struct {
-	Email string `json:"email"`
-}
-
-// Unmarshal Byte Slice to Struct
-func unmarshalAdmin(content []byte) (adminContent, error) {
-	var admin adminContent
-	err := json.Unmarshal([]byte(content), &admin)
-	return admin, err
 }

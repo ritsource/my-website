@@ -6,19 +6,22 @@ import (
 )
 
 type adminModel struct {
-	ID    bson.ObjectId `bson:"_id,omitempty"`
-	Email string        `json:"email"`
+	ID       bson.ObjectId `bson:"_id,omitempty"`
+	Email    string        `json:"email"`
+	GoogleID string        `json:"googleid"`
 }
 
 func newAdminModel(a *Admin) *adminModel {
 	return &adminModel{
 		Email: a.Email,
+		GoogleID: a.GoogleID,
 	}
 }
 
 func (a *adminModel) toAdmin() *Admin {
 	return &Admin{
-		ID: a.ID.Hex(),
+		ID:    a.ID.Hex(),
 		Email: a.Email,
+		GoogleID: a.GoogleID,
 	}
 }

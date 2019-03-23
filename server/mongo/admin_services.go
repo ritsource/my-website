@@ -7,6 +7,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// "github.com/ritwik310/my-website/server/auth"
+
 // AdminService ...
 type AdminService struct {
 	collection *mgo.Collection
@@ -22,12 +24,13 @@ func NewAdminService(session *Session, dbName string, collectionName string) *Ad
 // Create ...
 func (as *AdminService) Create(a *Admin) error {
 	admin := newAdminModel(a)
+	fmt.Printf("aaa => %v", a)
 	return as.collection.Insert(&admin)
 }
 
-// GetByEmail ...
-func (as *AdminService) GetByEmail(email string) (*Admin, error) {
+// Get ...
+func (as *AdminService) Get(Email string, ID string) (*Admin, error) {
 	model := adminModel{}
-	err := as.collection.Find(bson.M{"email": email}).One(&model)
+	err := as.collection.Find(bson.M{"email": Email, "googleid": ID}).One(&model)
 	return model.toAdmin(), err
 }
