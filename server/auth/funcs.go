@@ -36,7 +36,6 @@ func CreateOrGetUser(content []byte) (mongo.Admin, error) {
 	userUnauth := true // User Unauthorized
 	for _, email := range secrets.AdminEmails {
 		if email == data.Email {
-			fmt.Printf("Email %s not Authorized..\n", data.Email)
 			userUnauth = false
 		}
 	}
@@ -44,6 +43,7 @@ func CreateOrGetUser(content []byte) (mongo.Admin, error) {
 	// To handle Unauthorized Players
 	if userUnauth {
 		var nilAdmin mongo.Admin
+		fmt.Printf("Email %s not Authorized..\n", data.Email)
 		return nilAdmin, errors.New("Unauthorized")
 	}
 

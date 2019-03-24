@@ -17,33 +17,34 @@ type Secrets struct {
 	AdminEmails       []string `json:"ADMIN_EMAILS"`
 }
 
-// GetSecrets ...
+// GetSecrets - gets the secrets from Config.Dev file
 func GetSecrets(isDev bool, mySecrets *Secrets) {
+	// Checking if in Development mode or not
 	isDev = os.Getenv("isDev") == "true"
-
-	var filename string // JSON file location
-
+	fmt.Println("isDev: ", isDev)
+	
+	// JSON file location
+	var filename string
 	if isDev {
 		filename = "config/config.development.json"
 	} else {
 		filename = "config/config.production.json"
 	}
 
+	// JSON file
 	jsonFile, readErr := os.Open(filename)
-
 	if readErr != nil {
-		fmt.Println("Error", readErr)
+		fmt.Println("Error:", readErr)
 	}
-
-	fmt.Println("Successfully Opened config json")
 
 	defer jsonFile.Close()
 
+	// Reading JSON file
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
+	// Saving data in struct
 	marshErr := json.Unmarshal([]byte(byteValue), &mySecrets)
-
 	if marshErr != nil {
-		fmt.Println("Error", marshErr)
+		fmt.Println("Error:", marshErr)
 	}
 }

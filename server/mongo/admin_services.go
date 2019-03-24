@@ -17,14 +17,12 @@ type AdminService struct {
 // NewAdminService ...
 func NewAdminService(session *Session, dbName string, collectionName string) *AdminService {
 	collection := session.GetCollection(dbName, collectionName)
-	fmt.Println("collection ==", collection)
 	return &AdminService{collection: collection}
 }
 
 // Create ...
 func (as *AdminService) Create(a *Admin) error {
 	admin := newAdminModel(a)
-	fmt.Printf("aaa => %v", a)
 	return as.collection.Insert(&admin)
 }
 

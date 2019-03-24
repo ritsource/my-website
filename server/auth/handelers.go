@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"encoding/json"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ritwik310/my-website/server/config"
 )
@@ -24,8 +27,7 @@ func init() {
 	config.GetSecrets(isDev, &secrets)
 
 	mongoURL = secrets.MongoURI
-	// dbName = secrets.DatabaseName
-	dbName = "test_db"
+	dbName = secrets.DatabaseName
 	adminCollectionName = "admin"
 
 	googleOauthConfig = &oauth2.Config{
@@ -60,13 +62,38 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+	
+	// Get admin if existes or Create new
+	admin, err := CreateOrGetUser(content)
+	if err != nil {
+		fmt.Printf("Error: query couldn't be done %v", err)
+		return
+	}
 
-	// fmt.Printf("%v", string(content))
-	CreateOrGetUser(content)
-	// Encrypt
-	w.Write(content)
+	// Turn Admin into []byte
+	byteData, marshalErr := json.Marshal(admin)
+	if marshalErr != nil {
+		fmt.Printf("Error: couldn't marshal admin data %v", marshalErr)
+		return
+	}
+	
+	// Generating Hash from byteData
+	hashedData, err := bcrypt.GenerateFromPassword(byteData, 14)
 
-	// http.Redirect(w, r, "/", http.StatusMovedPermanently) // Redirecting to Home
+	// Setting Hashed Data in Cookie
+	cookie := http.Cookie{
+		Name: "session",
+		Value: string(hashedData),
+		Expires: time.Now().Add(30 * 24 * time.Hour),
+	}
+	
+	// Setting the Cookie
+	http.SetCookie(w, &cookie)
+	
+	// Sending sesponse
+	w.Write(byteData)
+
+	fmt.Println("Admin login successful..")
 }
 
 // Gets User (Admin) info from Google APIs
