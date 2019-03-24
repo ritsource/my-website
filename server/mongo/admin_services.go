@@ -1,8 +1,6 @@
 package mongo
 
 import (
-	"fmt"
-
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -30,5 +28,12 @@ func (as *AdminService) Create(a *Admin) error {
 func (as *AdminService) Get(Email string, ID string) (*Admin, error) {
 	model := adminModel{}
 	err := as.collection.Find(bson.M{"email": Email, "googleid": ID}).One(&model)
+	return model.toAdmin(), err
+}
+
+// GetByEmail ...
+func (as *AdminService) GetByEmail(Email string) (*Admin, error) {
+	model := adminModel{}
+	err := as.collection.Find(bson.M{"email": Email }).One(&model)
 	return model.toAdmin(), err
 }

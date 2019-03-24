@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"errors"
 	"encoding/json"
+	"time"
+	"net/http"
 
+	"golang.org/x/crypto/bcrypt"
+	
 	"github.com/ritwik310/my-website/server/mongo"
 )
 
@@ -14,11 +18,10 @@ type googleUserData struct {
 	ID    string `json:"id"`
 }
 
-// CreateOrGetUser ...
+// CreateOrGetAdmin ...
 // Queries admin if it exists else Creates a new Admin in the Database 
-func CreateOrGetUser(content []byte) (mongo.Admin, error) {
+func CreateOrGetAdmin(content []byte) (mongo.Admin, error) {
 	session, connErr := mongo.NewSession(mongoURL)
-	// Error Handeling
 	if connErr != nil {
 		fmt.Printf("Error: unable to connect to mongo: %s\n", connErr)
 	}
@@ -34,7 +37,7 @@ func CreateOrGetUser(content []byte) (mongo.Admin, error) {
 
 	// Checking if Email Allowed or Not
 	userUnauth := true // User Unauthorized
-	for _, email := range secrets.AdminEmails {
+	for _, email := range Secrets.AdminEmails {
 		if email == data.Email {
 			userUnauth = false
 		}
@@ -79,4 +82,29 @@ func unmarshalAdmin(content []byte) (googleUserData, error) {
 	var admin googleUserData
 	err := json.Unmarshal([]byte(content), &admin)
 	return admin, err
+}
+
+// SessionHashData ...
+type SessionHashData struct {
+	Email string
+	ID string
+}
+
+// GenSessionHash ...
+func GenSessionHash(d SessionHashData) (http.Cookie, error) {
+	var cookie http.Cookie // Cookie Struct
+	
+	// Generating Hash from byteData
+	hashedData, hErr := bcrypt.GenerateFromPassword([]byte(d.ID), 14)
+	if hErr != nil {
+		return cookie, hErr
+	}
+	
+	cookie.Name = "admin-id"
+	cookie.Value = string(hashedData)
+	cookie.Expires = time.Now().Add(30 * 24 * time.Hour)
+	cookie.Path = "/"
+	cookie.Domain = Secrets.DomainName
+
+	return cookie, nil
 }

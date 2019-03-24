@@ -6,13 +6,25 @@ import (
 	"net/http"
 
 	"github.com/ritwik310/my-website/server/auth"
+	"github.com/ritwik310/my-website/server/mongo"
 )
 
 // "github.com/julienschmidt/httprouter"
 // "go.mongodb.org/mongo-driver/mongo"
 
 func main() {
-	http.HandleFunc("/auth/current_user", auth.HandleCurrentUser)
+	var err error
+
+	// Connecting to Database (MongoDB)
+	var mongoSession *mongo.Session // mongoSession ...
+	mongoSession, err = mongo.NewSession(auth.Secrets.MongoURI)
+	if err != nil {
+		fmt.Printf("Error: unable to connect to mongo: %s\n", err)
+	}
+
+	defer mongoSession.Close()
+
+	http.HandleFunc("/auth/current_user", auth.GetHandleCurrentUser(mongoSession))
 	http.HandleFunc("/auth/google", auth.HandleGoogleLogin)
 	http.HandleFunc("/auth/google/callback", auth.HandleGoogleCallback)
 

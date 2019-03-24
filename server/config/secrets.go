@@ -15,6 +15,7 @@ type Secrets struct {
 	MongoURI           string `json:"MONGO_URI"`
 	DatabaseName       string `json:"DATABASE_NAME"`
 	AdminEmails       []string `json:"ADMIN_EMAILS"`
+	DomainName 				 string `json:"DOMAIN_NAME"`
 }
 
 // GetSecrets - gets the secrets from Config.Dev file
