@@ -14,16 +14,13 @@ type Secrets struct {
 	SessionKey         string `json:"SESSION_KEY"`
 	MongoURI           string `json:"MONGO_URI"`
 	DatabaseName       string `json:"DATABASE_NAME"`
-	AdminEmails       []string `json:"ADMIN_EMAILS"`
+	AdminEmails        []string `json:"ADMIN_EMAILS"`
 	DomainName 				 string `json:"DOMAIN_NAME"`
+	ConsoleCLientURL 	 string `json:"CONSOLE_CLIENT_URL"`
 }
 
 // GetSecrets - gets the secrets from Config.Dev file
-func GetSecrets(isDev bool, mySecrets *Secrets) {
-	// Checking if in Development mode or not
-	isDev = os.Getenv("isDev") == "true"
-	fmt.Println("isDev: ", isDev)
-	
+func GetSecrets(isDev bool, mySecrets *Secrets) {	
 	// JSON file location
 	var filename string
 	if isDev {

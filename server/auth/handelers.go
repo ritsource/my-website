@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"os"
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
@@ -25,6 +26,11 @@ var (
 )
 
 func init() {
+	// Checking if in Development mode or not
+	isDev = os.Getenv("isDev") == "true"
+	fmt.Println("isDev:", isDev)
+
+	// Getting env configs
 	config.GetSecrets(isDev, &Secrets)
 
 	mongoURL = Secrets.MongoURI
@@ -159,7 +165,11 @@ func GetGoogleCallbackHandeler(ms *mongo.Session) func(http.ResponseWriter, *htt
 		http.SetCookie(w, &eCookie) // Sets Email Cookie
 
 		// Sending sesponse
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		if isDev {
+			http.Redirect(w, r, Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
+		} else {
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		}
 
 		fmt.Println("Admin login successful..")
 	}

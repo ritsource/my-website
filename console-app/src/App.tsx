@@ -1,33 +1,63 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import axios from 'axios';
 import './App.scss';
 
 import Header from './components/Header';
 import HomePage from './pages/Home';
+import LoginPage from './pages/Login';
 import BlogsPage from './pages/Blogs';
 import ProjectsPage from './pages/Projects';
 import ImagesPage from './pages/Images';
 import EachProjectPage from './pages/EachProject';
 import NotFoundPage from './pages/NotFound';
 
-class App extends Component {
-	render() {
-		return (
-			<div className="App">
-				<BrowserRouter>
-					<Header />
-					<Switch>
-						<Route path="/" exact component={HomePage} />
-						<Route path="/blogs" exact component={BlogsPage} />
-						<Route path="/projects" exact component={ProjectsPage} />
-						<Route path="/images" exact component={ImagesPage} />
-						<Route path="/project/:projectId" exact component={EachProjectPage} />
-						<Route component={NotFoundPage} />
-					</Switch>
-				</BrowserRouter>
-			</div>
-		);
-	}
-}
+const App = () => {
+	const [ auth, setAuth ] = useState(null);
+
+	const checkAuth = async () => {
+		try {
+			const response = await axios.get(process.env.REACT_APP_API_URL + '/auth/current_user', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					Accept: 'application/json'
+				}
+			});
+			console.log(response);
+		} catch (error) {
+			console.log('Error:', error);
+		}
+	};
+
+	useEffect(() => {
+		// setAuth()
+		checkAuth();
+	}, []);
+
+	return (
+		<div className="App">
+			<BrowserRouter>
+				<Header />
+				<Switch>
+					{auth ? (
+						<React.Fragment>
+							<Route path="/" exact component={HomePage} />
+							<Route path="/blogs" exact component={BlogsPage} />
+							<Route path="/projects" exact component={ProjectsPage} />
+							<Route path="/images" exact component={ImagesPage} />
+							<Route path="/project/:projectId" exact component={EachProjectPage} />
+							<Route component={NotFoundPage} />
+						</React.Fragment>
+					) : (
+						<React.Fragment>
+							<Route component={LoginPage} />
+							{/* <Route component={NotFoundPage} /> */}
+						</React.Fragment>
+					)}
+				</Switch>
+			</BrowserRouter>
+		</div>
+	);
+};
 
 export default App;
