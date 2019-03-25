@@ -8,7 +8,7 @@ import (
 )
 
 // Secrets ...
-type Secrets struct {
+type Config struct {
 	GoogleClientID     string `json:"GOOGLE_CLIENT_ID"`
 	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`
 	SessionKey         string `json:"SESSION_KEY"`
@@ -19,8 +19,23 @@ type Secrets struct {
 	ConsoleCLientURL 	 string `json:"CONSOLE_CLIENT_URL"`
 }
 
+var isDev bool
+// Secrets - ...
+var Secrets Config
+
+func init() {
+	// Checking if in Development mode or not
+	isDev = os.Getenv("isDev") == "true"
+	fmt.Println("Development Mode:", isDev)
+
+	// Getting env configs
+	GetSecrets(isDev, &Secrets)
+}
+
 // GetSecrets - gets the secrets from Config.Dev file
-func GetSecrets(isDev bool, mySecrets *Secrets) {	
+func GetSecrets(isDev bool, s *Config) error {	
+	var err error
+
 	// JSON file location
 	var filename string
 	if isDev {
@@ -30,19 +45,34 @@ func GetSecrets(isDev bool, mySecrets *Secrets) {
 	}
 
 	// JSON file
-	jsonFile, readErr := os.Open(filename)
-	if readErr != nil {
-		fmt.Println("Error:", readErr)
+	var jsonFile *os.File
+	err = nil
+
+	jsonFile, err = os.Open(filename)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
 	}
 
 	defer jsonFile.Close()
 
 	// Reading JSON file
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var byteValue []byte
+	err = nil
+
+	byteValue, err = ioutil.ReadAll(jsonFile)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
 
 	// Saving data in struct
-	marshErr := json.Unmarshal([]byte(byteValue), &mySecrets)
-	if marshErr != nil {
-		fmt.Println("Error:", marshErr)
+	err = nil
+	err = json.Unmarshal([]byte(byteValue), &s)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
 	}
+
+	return nil
 }

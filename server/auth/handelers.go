@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,15 +11,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/ritwik310/my-website/server/config"
-	"github.com/ritwik310/my-website/server/mongo"
+	"github.com/ritwik310/my-website/server/models"
+
+	
 )
 
 var (
 	isDev bool // Is in development mode
-	// Secrets ...
-	Secrets             config.Secrets // mySecrets
 	googleOauthConfig   *oauth2.Config
 	mongoURL            string
 	dbName              string
@@ -26,29 +29,107 @@ var (
 )
 
 func init() {
-	// Checking if in Development mode or not
-	isDev = os.Getenv("isDev") == "true"
-	fmt.Println("isDev:", isDev)
-
-	// Getting env configs
-	config.GetSecrets(isDev, &Secrets)
-
-	mongoURL = Secrets.MongoURI
-	dbName = Secrets.DatabaseName
+	mongoURL = config.Secrets.MongoURI
+	dbName = config.Secrets.DatabaseName
 	adminCollectionName = "admin"
 
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:8080/auth/google/callback",
-		ClientID:     Secrets.GoogleClientID,
-		ClientSecret: Secrets.GoogleClientSecret,
+		ClientID:     config.Secrets.GoogleClientID,
+		ClientSecret: config.Secrets.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 		Endpoint:     google.Endpoint,
 	}
 }
 
-// GetCurrentUserHandeler ...
-func GetCurrentUserHandeler(ms *mongo.Session) func(http.ResponseWriter, *http.Request) {
-	// Real Handeler as return
+// GetHandeler - ...
+func GetHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *http.Request) {
+	var handeler func(http.ResponseWriter, *http.Request)
+
+	switch path {
+	case "/auth/google":
+		handeler = googleLoginHandeler
+	case "/auth/google/callback":
+		handeler = getGoogleCallback(client)
+	case "/auth/current_user":
+		handeler = getCurrentUser(client)		
+	}
+
+	return handeler
+}
+
+// HandleGoogleLogin ...
+func googleLoginHandeler(w http.ResponseWriter, r *http.Request) {
+	url := googleOauthConfig.AuthCodeURL(oauthStateString)
+	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
+}
+
+// Returns "/auth/google/callback" handeler
+func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var err error
+
+		fmt.Printf("r.FormValue %v , %v \n", r.FormValue("state"), r.FormValue("code"))
+
+		// Get user info
+		var content []byte	
+		err = nil
+		content, err = GetUserInfo(r.FormValue("state"), r.FormValue("code"))
+		if err != nil {
+			// http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Error: couldn't marshal data"))
+			fmt.Println(err.Error())
+			return
+		}
+
+		// Get admin if existes or Create new
+		err = nil
+		admin, err := CreateOrGetAdmin(content, client)
+		if err != nil {
+			// w.Write([]byte("Error: query couldn't be done"))
+			fmt.Println("Error: query couldn't be done")
+		}
+
+		// fmt.Println("admin.Email", admin.Email )
+		// fmt.Println("admin.ID", admin.ID)
+
+		// Generating hashed Cookie
+		var hCookie http.Cookie
+		err = nil
+		hCookie, err = GenSessionHash(admin.GoogleID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Error: couldn't hash id"))
+		}
+
+		// Email Cookie - saves admin Email in the client cookie
+		eCookie := http.Cookie{
+			Name:    "admin-email",
+			Value:   admin.Email,
+			Expires: time.Now().Add(30 * 24 * time.Hour),
+			Path:    "/",
+			Domain:  config.Secrets.DomainName,
+		}
+
+		// Setting the Cookie
+		http.SetCookie(w, &hCookie) // Sets Hashed ID, in Cookie
+		http.SetCookie(w, &eCookie) // Sets Email Cookie
+
+		// Sending sesponse
+		isDev = os.Getenv("isDev") == "truef"
+		if isDev {
+			http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
+		} else {
+			http.Redirect(w, r, "/auth/current_user", http.StatusTemporaryRedirect)
+		}
+
+		fmt.Println("Admin login successful..")
+	}
+}
+
+// Returns "/auth/current_user" handeler
+func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Retrieving cookies from requests
 		var err error
@@ -68,22 +149,24 @@ func GetCurrentUserHandeler(ms *mongo.Session) func(http.ResponseWriter, *http.R
 		fmt.Println("eCookie.Value:", eCookie.Value)
 		fmt.Println("hCookie.Value:", hCookie.Value)
 
-		// as - Admin Service
-		as := mongo.NewAdminService(ms.Copy(), dbName, adminCollectionName)
+		// MongoDB collection
+		collection := client.Database("dev_db").Collection("admins")
 
 		// Query User from Database (by Email)
-		var admin *mongo.Admin
+		var admin models.Admin
 		err = nil
-		admin, err = as.GetByEmail(eCookie.Value)
+		err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)		
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			w.Write([]byte("Error: could't find admin"))
 			return
 		}
 
+		fmt.Printf("::::::::::::::::::::::: %+v", admin)
+
 		// Compare Hashed ID
 		err = nil
-		err = bcrypt.CompareHashAndPassword([]byte(hCookie.Value), []byte(admin.ID))
+		err = bcrypt.CompareHashAndPassword([]byte(hCookie.Value), []byte(admin.GoogleID))
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Error: cookie didn't match " + err.Error()))
@@ -102,75 +185,5 @@ func GetCurrentUserHandeler(ms *mongo.Session) func(http.ResponseWriter, *http.R
 		}
 
 		w.Write(bData)
-
-		// // http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		// w.Write([]byte("Hello World"))
-	}
-}
-
-// HandleGoogleLogin ...
-func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
-	url := googleOauthConfig.AuthCodeURL(oauthStateString)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
-}
-
-// GetGoogleCallbackHandeler ...
-func GetGoogleCallbackHandeler(ms *mongo.Session) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var err error
-
-		// Get user info
-		var content []byte	
-		err = nil
-		content, err = GetUserInfo(r.FormValue("state"), r.FormValue("code"))
-		if err != nil {
-			// http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error: couldn't marshal data"))
-			fmt.Println(err.Error())
-			return
-		}
-
-		// Get admin if existes or Create new
-		err = nil
-		admin, err := CreateOrGetAdmin(content, ms)
-		if err != nil {
-			// w.Write([]byte("Error: query couldn't be done"))
-			fmt.Println("Error: query couldn't be done")
-		}
-
-		// fmt.Println("admin.Email", admin.Email )
-		// fmt.Println("admin.ID", admin.ID)
-
-		// Generating hashed Cookie
-		var hCookie http.Cookie
-		err = nil
-		hCookie, err = GenSessionHash(admin.ID)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error: couldn't hash id"))
-		}
-
-		// Email Cookie - saves admin Email in the client cookie
-		eCookie := http.Cookie{
-			Name:    "admin-email",
-			Value:   admin.Email,
-			Expires: time.Now().Add(30 * 24 * time.Hour),
-			Path:    "/",
-			Domain:  Secrets.DomainName,
-		}
-
-		// Setting the Cookie
-		http.SetCookie(w, &hCookie) // Sets Hashed ID, in Cookie
-		http.SetCookie(w, &eCookie) // Sets Email Cookie
-
-		// Sending sesponse
-		if isDev {
-			http.Redirect(w, r, Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
-		} else {
-			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		}
-
-		fmt.Println("Admin login successful..")
 	}
 }

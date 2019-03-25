@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,14 +11,18 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
-
-	"github.com/ritwik310/my-website/server/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
+	
+	"github.com/ritwik310/my-website/server/models"
+	"github.com/ritwik310/my-website/server/config"
+	
 )
 
 // Type for Data return from Google Oauth flow
 type googleUserData struct {
 	Email string `json:"email"`
-	ID    string `json:"id"`
+	GoogleID    string `json:"id"`
 }
 
 var oauthStateString = "pseudo-random" // Oauth State
@@ -52,9 +57,9 @@ func GetUserInfo(state string, code string) ([]byte, error) {
 }
 
 // CreateOrGetAdmin - queries Admin if it exists else Creates a new Admin in the Database
-func CreateOrGetAdmin(content []byte, ms *mongo.Session) (mongo.Admin, error) {
+func CreateOrGetAdmin(content []byte, client *mongo.Client) (models.Admin, error) {
 	var err error
-	var admin *mongo.Admin
+	var admin models.Admin
 
 	// Unmarshal Data returned by Google (content []byte)
 	var data googleUserData
@@ -62,12 +67,12 @@ func CreateOrGetAdmin(content []byte, ms *mongo.Session) (mongo.Admin, error) {
 	data, err = unmarshalAdmin(content)
 	if err != nil {
 		fmt.Printf("Error: unable to unmarshal %s\n", err)
-		return *admin, err
+		return admin, err
 	}
 
 	// Checking if Email Allowed or Not
 	userUnauth := true // User Unauthorized
-	for _, email := range Secrets.AdminEmails {
+	for _, email := range config.Secrets.AdminEmails {
 		if email == data.Email {
 			userUnauth = false
 		}
@@ -75,38 +80,58 @@ func CreateOrGetAdmin(content []byte, ms *mongo.Session) (mongo.Admin, error) {
 	// To handle Unauthorized Players
 	if userUnauth {
 		fmt.Printf("Email %s not Authorized..\n", data.Email)
-		return *admin, errors.New("Unauthorized")
+		return admin, errors.New("Unauthorized")
 	}
 
-	// as - Admin Service
-	as := mongo.NewAdminService(ms.Copy(), dbName, adminCollectionName)
+	// MongoDB collection
+	collection := client.Database("dev_db").Collection("admins")
 
 	// Check if user Exists in the Database
 	err = nil
-	admin, err = as.Get(data.Email, data.ID)
+	err = collection.FindOne(context.TODO(), bson.D{
+		bson.E{Key: "email", Value: data.Email},
+		bson.E{Key: "googleid", Value: string(data.GoogleID)},
+	}).Decode(&admin)
+	
 	if err != nil {
-		fmt.Printf("Admin not found on Database %s\n", err)
+		fmt.Printf("Admin not found on Database %s %+v\n", err, admin)
 	} else {
-		return *admin, err
+		return admin, err
 	}
 
 	// Creating a new Admin if none Exist
-	newAdmin := mongo.Admin{
+	newAdmin := models.Admin{
 		Email:    data.Email,
-		GoogleID: data.ID,
+		GoogleID: data.GoogleID,
 	}
 
 	// Creating Mongo Document
 	err = nil
-	err = as.Create(&newAdmin)
+	var result *mongo.InsertOneResult
+
+	result, err = collection.InsertOne(context.TODO(), newAdmin)
 	if err != nil {
 		fmt.Printf("Error: unable to insert new admin %s\n", err)
-		return newAdmin, err
+		return admin, err
 	}
 
-	fmt.Printf("Here: newAdmin %+v\n", newAdmin)
+	// Query Created Admin
+	err = collection.FindOne(context.TODO(), bson.D{
+		// bson.E{Key: "_id", Value: result.InsertedID},
+		bson.E{Key: "email", Value: data.Email},
+		bson.E{Key: "googleid", Value: string(data.GoogleID)},
+	}).Decode(&admin)
 
-	return newAdmin, nil
+	fmt.Printf("DD: data.admin: => %+v", admin)
+
+	fmt.Println("Here: newAdmin", result.InsertedID)
+
+	if err != nil {
+		fmt.Println("Error: Saved but couldn't query user")
+		return admin, err
+	}
+
+	return admin, nil
 }
 
 // Unmarshal Byte Slice to Struct
@@ -131,7 +156,7 @@ func GenSessionHash(id string) (http.Cookie, error) {
 	cookie.Value = string(hashedData)
 	cookie.Expires = time.Now().Add(30 * 24 * time.Hour)
 	cookie.Path = "/"
-	cookie.Domain = Secrets.DomainName
+	cookie.Domain = config.Secrets.DomainName
 
 	return cookie, nil
 }

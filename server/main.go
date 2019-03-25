@@ -2,42 +2,47 @@ package main
 
 import (
 	"fmt"
-	// "log"
+	// "os"
+	"log"
 	"net/http"
 
 	"github.com/rs/cors"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/ritwik310/my-website/server/auth"
-	"github.com/ritwik310/my-website/server/mongo"
+	"github.com/ritwik310/my-website/server/db"
+	"github.com/ritwik310/my-website/server/config"
 )
 
 // "github.com/julienschmidt/httprouter"
-// "go.mongodb.org/mongo-driver/mongo"
+
+var isDev bool
+var client *mongo.Client
+
+func init() {
+	// Connecting to MongoDB
+	var err error
+	client, err = db.Connect(config.Secrets.MongoURI)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
-	var err error
-
-	// Connecting to Database (MongoDB)
-	var mongoSession *mongo.Session // mongoSession ...
-	mongoSession, err = mongo.NewSession(auth.Secrets.MongoURI)
-	if err != nil {
-		fmt.Printf("Error: unable to connect to mongo: %s\n", err)
-	}
-
-	defer mongoSession.Close()
+	// var err error
 
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/auth/current_user", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte("{\"hello\": \"world\"}"))
-	})
+	// mux.HandleFunc("/auth/current_user", func(w http.ResponseWriter, r *http.Request) {
+	// 		w.Header().Set("Content-Type", "application/json")
+	// 		w.Write([]byte("{\"hello\": \"world\"}"))
+	// })
 	
 
-	// mux.HandleFunc("/auth/current_user", auth.GetCurrentUserHandeler(mongoSession))
-	mux.HandleFunc("/auth/google", auth.HandleGoogleLogin)
-	mux.HandleFunc("/auth/google/callback", auth.GetGoogleCallbackHandeler(mongoSession))
+	mux.HandleFunc("/auth/current_user", auth.GetHandeler("/auth/current_user", client))
+	mux.HandleFunc("/auth/google", auth.GetHandeler("/auth/google", client))
+	mux.HandleFunc("/auth/google/callback", auth.GetHandeler("/auth/google/callback", client))
 
 	// log.Fatal(http.ListenAndServe(":8080", nil))
 	handler := cors.Default().Handler(mux)
