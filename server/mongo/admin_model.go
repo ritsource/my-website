@@ -13,15 +13,15 @@ type adminModel struct {
 
 func newAdminModel(a *Admin) *adminModel {
 	return &adminModel{
-		Email: a.Email,
+		Email:    a.Email,
 		GoogleID: a.GoogleID,
 	}
 }
 
 func (a *adminModel) toAdmin() *Admin {
 	return &Admin{
-		ID:    a.ID.Hex(),
-		Email: a.Email,
+		ID:       a.ID.Hex(),
+		Email:    a.Email,
 		GoogleID: a.GoogleID,
 	}
 }

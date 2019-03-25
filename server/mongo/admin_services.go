@@ -3,6 +3,7 @@ package mongo
 import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"fmt"
 )
 
 // "github.com/ritwik310/my-website/server/auth"
@@ -34,6 +35,7 @@ func (as *AdminService) Get(Email string, ID string) (*Admin, error) {
 // GetByEmail ...
 func (as *AdminService) GetByEmail(Email string) (*Admin, error) {
 	model := adminModel{}
-	err := as.collection.Find(bson.M{"email": Email }).One(&model)
+	err := as.collection.Find(bson.M{"email": Email}).One(&model)
+	fmt.Printf("%+v/n", model.toAdmin())
 	return model.toAdmin(), err
 }

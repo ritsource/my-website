@@ -24,9 +24,9 @@ func main() {
 
 	defer mongoSession.Close()
 
-	http.HandleFunc("/auth/current_user", auth.GetHandleCurrentUser(mongoSession))
+	http.HandleFunc("/auth/current_user", auth.GetCurrentUserHandeler(mongoSession))
 	http.HandleFunc("/auth/google", auth.HandleGoogleLogin)
-	http.HandleFunc("/auth/google/callback", auth.HandleGoogleCallback)
+	http.HandleFunc("/auth/google/callback", auth.GetGoogleCallbackHandeler(mongoSession))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
