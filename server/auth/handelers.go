@@ -42,8 +42,8 @@ func init() {
 	}
 }
 
-// GetHandeler - ...
-func GetHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *http.Request) {
+// PickHandeler - ...
+func PickHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *http.Request) {
 	var handeler func(http.ResponseWriter, *http.Request)
 
 	switch path {
@@ -131,6 +131,10 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 // Returns "/auth/current_user" handeler
 func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// w.Header().Set("Content-Type", "application/json")
+		// w.Write([]byte("{\"hello\": \"world\"}"))
+		// return
+
 		// Retrieving cookies from requests
 		var err error
 		var eCookie *http.Cookie // "admin-email" Cookie
@@ -138,16 +142,16 @@ func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Reques
 
 		eCookie, err = r.Cookie("admin-email")
 		hCookie, err = r.Cookie("admin-id")
-
-		err = nil
+		
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Error: admin unauthorized"))
+			// w.WriteHeader(http.StatusUnauthorized)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte("{\"message\": \"Error: admin unauthorized\"}"))
 			return
 		}
 
-		fmt.Println("eCookie.Value:", eCookie.Value)
-		fmt.Println("hCookie.Value:", hCookie.Value)
+		fmt.Println("eCookie.Value:", eCookie)
+		fmt.Println("hCookie.Value:", hCookie)
 
 		// MongoDB collection
 		collection := client.Database("dev_db").Collection("admins")
@@ -158,6 +162,7 @@ func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Reques
 		err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)		
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
+			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("Error: could't find admin"))
 			return
 		}
@@ -180,10 +185,14 @@ func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Reques
 		bData, err = json.Marshal(admin)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("Error: couldn't marshal data"))
 			fmt.Println(err)
 		}
 
+		w.Header().Set("Content-Type", "application/json")
+		// w.Write([]byte("{\"hello\": \"world\"}"))
 		w.Write(bData)
+		fmt.Println(bData)
 	}
 }

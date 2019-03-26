@@ -24,6 +24,7 @@ func init() {
 	var err error
 	client, err = db.Connect(config.Secrets.MongoURI)
 	if err != nil {
+		fmt.Println("Error: MongoDB Connection")
 		log.Fatal(err)
 	}
 }
@@ -31,21 +32,24 @@ func init() {
 func main() {
 	// var err error
 
-
 	mux := http.NewServeMux()
 
-	// mux.HandleFunc("/auth/current_user", func(w http.ResponseWriter, r *http.Request) {
-	// 		w.Header().Set("Content-Type", "application/json")
-	// 		w.Write([]byte("{\"hello\": \"world\"}"))
-	// })
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte("{\"hello\": \"world\"}"))
+	})
 	
 
-	mux.HandleFunc("/auth/current_user", auth.GetHandeler("/auth/current_user", client))
-	mux.HandleFunc("/auth/google", auth.GetHandeler("/auth/google", client))
-	mux.HandleFunc("/auth/google/callback", auth.GetHandeler("/auth/google/callback", client))
+	mux.HandleFunc("/auth/current_user", auth.PickHandeler("/auth/current_user", client))
+	mux.HandleFunc("/auth/google", auth.PickHandeler("/auth/google", client))
+	mux.HandleFunc("/auth/google/callback", auth.PickHandeler("/auth/google/callback", client))
 
 	// log.Fatal(http.ListenAndServe(":8080", nil))
-	handler := cors.Default().Handler(mux)
+	handler := cors.New(cors.Options{
+    AllowedOrigins: []string{"http://localhost:3000"},
+    AllowCredentials: true,
+	}).Handler(mux)
+	
 	http.ListenAndServe(":8080", handler)
 }
 

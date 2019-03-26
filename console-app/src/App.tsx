@@ -17,11 +17,15 @@ const App = () => {
 
 	const checkAuth = async () => {
 		try {
+			// axios.defaults.withCredentials = true;
+
 			const response = await axios.get(process.env.REACT_APP_API_URL + '/auth/current_user', {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					Accept: 'application/json'
-				}
+					// cookie: document.cookie,
+				},
+				withCredentials: true
 			});
 			console.log(response);
 		} catch (error) {
@@ -61,3 +65,16 @@ const App = () => {
 };
 
 export default App;
+
+declare global {
+	interface Window {
+		getCookie: any;
+	}
+}
+
+window.getCookie =
+	window.getCookie ||
+	((key: string) => {
+		var val = document.cookie.match('(^|[^;]+)\\s*' + key + '\\s*=\\s*([^;]+)');
+		return val ? val.pop() : '';
+	});
