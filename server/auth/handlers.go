@@ -66,8 +66,6 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		var err error
 
-		fmt.Printf("r.FormValue %v , %v \n", r.FormValue("state"), r.FormValue("code"))
-
 		// Get user info
 		var content []byte	
 		err = nil
@@ -121,7 +119,7 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 			http.Redirect(w, r, "/auth/current_user", http.StatusTemporaryRedirect)
 		}
 
-		fmt.Println("Admin login successful..")
+		fmt.Println("Admin login successful!")
 	}
 }
 

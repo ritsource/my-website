@@ -26,7 +26,7 @@ var Secrets Config
 func init() {
 	// Checking if in Development mode or not
 	isDev = os.Getenv("isDev") == "true"
-	fmt.Println("Development Mode:", isDev)
+	fmt.Println("Development Mode =", isDev)
 
 	// Getting env configs
 	GetSecrets(isDev, &Secrets)
