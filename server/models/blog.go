@@ -7,6 +7,6 @@ type Blog struct {
 	HTML string `json:"html"`
 	Markdown string `json:"markdown"`
 	ImageURL string `json:"image_url"`
-	IsPublic string `json:"is_public"`
-	IsDeleted string `json:"is_deleted"`
+	IsPublic bool `json:"is_public"`
+	IsDeleted bool `json:"is_deleted"`
 }

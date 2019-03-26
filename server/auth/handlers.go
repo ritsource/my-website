@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/julienschmidt/httprouter"
 
 	"github.com/ritwik310/my-website/server/config"
 
@@ -39,8 +40,8 @@ func init() {
 }
 
 // PickHandeler - ...
-func PickHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *http.Request) {
-	var handeler func(http.ResponseWriter, *http.Request)
+func PickHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+	var handeler func(http.ResponseWriter, *http.Request, httprouter.Params)
 
 	switch path {
 	case "/auth/google":
@@ -55,14 +56,14 @@ func PickHandeler(path string, client *mongo.Client) func(http.ResponseWriter, *
 }
 
 // HandleGoogleLogin ...
-func googleLoginHandeler(w http.ResponseWriter, r *http.Request) {
+func googleLoginHandeler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
 }
 
 // Returns "/auth/google/callback" handeler
-func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		var err error
 
 		fmt.Printf("r.FormValue %v , %v \n", r.FormValue("state"), r.FormValue("code"))
@@ -125,8 +126,8 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 }
 
 // Returns "/auth/current_user" handeler
-func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		//  Checking out current user
 		admin, err := CheckAuth(r, client)
 		if err != nil {
