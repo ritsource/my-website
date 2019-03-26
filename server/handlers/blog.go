@@ -80,7 +80,7 @@ func (b Blog) CreateOne(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 }
 
 // ReadAll - read all blogs, both Public and Private
-func (b Blog) ReadAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (b Blog) ReadAll(w http.ResponseWriter, r *http.Request) {
 	// _, err := auth.CheckAuth(r, db.Client)
 	// if err != nil {
 	// 	w.WriteHeader(http.StatusUnauthorized)

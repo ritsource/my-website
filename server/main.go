@@ -10,6 +10,7 @@ import (
 	"github.com/ritwik310/my-website/server/auth"
 	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/handlers"
+	"github.com/ritwik310/my-website/server/middleware"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	}
 
 	// router.READ("/admin/blog/:id", )
-	router.GET("/admin/blog/all", blog.ReadAll)
+	router.GET("/admin/blog/all", middleware.AuthRequired(blog.ReadAll))
 	router.POST("/admin/add_blog", blog.CreateOne)
 	// router.PUT("/admin/edit_blog/:id", )
 	// router.DELETE("/admin/delete_blog/:id", )
