@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// Secrets ...
+// Config ...
 type Config struct {
 	GoogleClientID     string `json:"GOOGLE_CLIENT_ID"`
 	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`

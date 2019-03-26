@@ -56,6 +56,42 @@ func GetUserInfo(state string, code string) ([]byte, error) {
 	return content, nil
 }
 
+// CheckAuth - ...
+func CheckAuth(r *http.Request, client *mongo.Client) (models.Admin, error) {
+	var err error
+	var admin models.Admin
+
+	var eCookie *http.Cookie // "admin-email" Cookie
+	var hCookie *http.Cookie // "admin-id" Cookie
+
+	eCookie, err = r.Cookie("admin-email")
+	hCookie, err = r.Cookie("admin-id")
+	
+	//  Cookie error handleing
+	if err != nil {
+		return admin, err
+	}
+
+	// Mongo Collection
+	collection := client.Database("dev_db").Collection("admins")
+
+	// Query User from Database (by Email)
+	err = nil
+	err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)		
+	if err != nil {
+		return admin, err
+	}
+
+	// Compare Hashed ID
+	err = nil
+	err = bcrypt.CompareHashAndPassword([]byte(hCookie.Value), []byte(admin.GoogleID))
+	if err != nil {
+		return admin, err
+	}
+
+	return admin, err
+}
+
 // CreateOrGetAdmin - queries Admin if it exists else Creates a new Admin in the Database
 func CreateOrGetAdmin(content []byte, client *mongo.Client) (models.Admin, error) {
 	var err error

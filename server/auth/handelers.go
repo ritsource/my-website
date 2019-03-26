@@ -1,21 +1,17 @@
 package auth
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 	"os"
 
-	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/ritwik310/my-website/server/config"
-	"github.com/ritwik310/my-website/server/models"
 
 	
 )
@@ -117,7 +113,7 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 		http.SetCookie(w, &eCookie) // Sets Email Cookie
 
 		// Sending sesponse
-		isDev = os.Getenv("isDev") == "truef"
+		isDev = os.Getenv("isDev") == "true"
 		if isDev {
 			http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
 		} else {
@@ -131,50 +127,11 @@ func getGoogleCallback(client *mongo.Client) func(http.ResponseWriter, *http.Req
 // Returns "/auth/current_user" handeler
 func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// w.Header().Set("Content-Type", "application/json")
-		// w.Write([]byte("{\"hello\": \"world\"}"))
-		// return
-
-		// Retrieving cookies from requests
-		var err error
-		var eCookie *http.Cookie // "admin-email" Cookie
-		var hCookie *http.Cookie // "admin-id" Cookie
-
-		eCookie, err = r.Cookie("admin-email")
-		hCookie, err = r.Cookie("admin-id")
-		
-		if err != nil {
-			// w.WriteHeader(http.StatusUnauthorized)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte("{\"message\": \"Error: admin unauthorized\"}"))
-			return
-		}
-
-		fmt.Println("eCookie.Value:", eCookie)
-		fmt.Println("hCookie.Value:", hCookie)
-
-		// MongoDB collection
-		collection := client.Database("dev_db").Collection("admins")
-
-		// Query User from Database (by Email)
-		var admin models.Admin
-		err = nil
-		err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)		
-		if err != nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte("Error: could't find admin"))
-			return
-		}
-
-		fmt.Printf("::::::::::::::::::::::: %+v", admin)
-
-		// Compare Hashed ID
-		err = nil
-		err = bcrypt.CompareHashAndPassword([]byte(hCookie.Value), []byte(admin.GoogleID))
+		//  Checking out current user
+		admin, err := CheckAuth(r, client)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Error: cookie didn't match " + err.Error()))
+			w.Write([]byte("Error:" + err.Error()))
 			fmt.Println(err)
 			return
 		}
@@ -191,8 +148,6 @@ func getCurrentUser(client *mongo.Client) func(http.ResponseWriter, *http.Reques
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		// w.Write([]byte("{\"hello\": \"world\"}"))
 		w.Write(bData)
-		fmt.Println(bData)
 	}
 }

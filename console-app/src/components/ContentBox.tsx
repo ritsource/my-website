@@ -27,8 +27,9 @@ const ContentBox = () => {
 			<p className="SearchBox-Description-P-01">All the latest Projects, Photos, Blogs.</p>
 			<p className="ContentBox-Types-Btn-Container-01">
 				{contentTypes.map((type, index) => (
-					<React.Fragment>
+					<React.Fragment key={index}>
 						<span
+							key={index}
 							onClick={() => setActiveType(index)}
 							className={`${index === activeType && 'ContentBox-Active-Span'}`}
 						>
@@ -39,7 +40,7 @@ const ContentBox = () => {
 			</p>
 			<div className="ContentBox-Item-Container-01">
 				{objects.map((object: Data, i: number) => (
-					<React.Fragment>
+					<React.Fragment key={i}>
 						<ContentBoxItem key={i} object={object} />
 					</React.Fragment>
 				))}

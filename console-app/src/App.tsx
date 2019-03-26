@@ -10,10 +10,11 @@ import BlogsPage from './pages/Blogs';
 import ProjectsPage from './pages/Projects';
 import ImagesPage from './pages/Images';
 import EachProjectPage from './pages/EachProject';
+import LoadingPage from './pages/Loading';
 import NotFoundPage from './pages/NotFound';
 
 const App = () => {
-	const [ auth, setAuth ] = useState(null);
+	const [ auth, setAuth ]: any = useState(null);
 
 	const checkAuth = async () => {
 		try {
@@ -27,8 +28,11 @@ const App = () => {
 				},
 				withCredentials: true
 			});
+
+			setAuth(response.data);
 			console.log(response);
 		} catch (error) {
+			setAuth(false);
 			console.log('Error:', error);
 		}
 	};
@@ -52,6 +56,8 @@ const App = () => {
 							<Route path="/project/:projectId" exact component={EachProjectPage} />
 							<Route component={NotFoundPage} />
 						</React.Fragment>
+					) : auth === null ? (
+						<Route component={LoadingPage} />
 					) : (
 						<React.Fragment>
 							<Route component={LoginPage} />
