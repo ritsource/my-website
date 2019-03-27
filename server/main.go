@@ -10,7 +10,7 @@ import (
 
 	"github.com/ritwik310/my-website/server/auth"
 	"github.com/ritwik310/my-website/server/config"
-	midd "github.com/ritwik310/my-website/server/middleware"
+	"github.com/ritwik310/my-website/server/middleware"
 	"github.com/ritwik310/my-website/server/routes"
 )
 
@@ -19,15 +19,16 @@ func main() {
 
 	r.HandleFunc("/", indexHandler).Methods("GET")
 
-	r.HandleFunc("/auth/current_user", midd.AuthRequired(auth.CurrentUserHandler)).Methods("GET")
 	r.HandleFunc("/auth/google", auth.GoogleLoginHandeler).Methods("GET")
 	r.HandleFunc("/auth/google/callback", auth.GoogleCallbackHandler).Methods("GET")
+	r.HandleFunc("/auth/current_user", middleware.CheckAuth(auth.CurrentUserHandler)).Methods("GET")
 
-	r.HandleFunc("/admin/blogs", midd.AuthRequired(routes.ReadAllBlogs)).Methods("GET")
-	r.HandleFunc("/admin/blog/{id}", indexHandler).Methods("GET")
-	r.HandleFunc("/admin/add_blog", midd.AuthRequired(routes.CreateBlog)).Methods("POST")
-	r.HandleFunc("/admin/edit_blog", indexHandler).Methods("PUT")
-	r.HandleFunc("/admin/delete_blog", indexHandler).Methods("DELETE")
+	r.HandleFunc("/admin/blog/all", middleware.CheckAuth(routes.ReadAllBlogs)).Methods("GET")
+	r.HandleFunc("/admin/blog/{id}", middleware.CheckAuth(routes.ReadSingleBlog)).Methods("GET")
+	r.HandleFunc("/admin/blog/new", middleware.CheckAuth(routes.CreateBlog)).Methods("POST")
+	// r.HandleFunc("/admin/blog/edit/{id}", middleware.CheckAuth(routes.EditBlog)).Methods("PUT")
+	r.HandleFunc("/admin/blog/edit/{id}", routes.EditBlog).Methods("PUT")
+	r.HandleFunc("/admin/blog/delete/{id}", middleware.CheckAuth(routes.ReadSingleBlog)).Methods("DELETE")
 
 	ch := cors.New(cors.Options{
 		AllowedOrigins:   config.Secrets.AllowedCorsURLs,

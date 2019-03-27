@@ -20,8 +20,8 @@ func writeUnauth(w http.ResponseWriter) {
 	w.Write([]byte("{\"message\": \"admin unauthorized\"}"))
 }
 
-// AuthRequired - Middleware that checks authentication
-func AuthRequired(handler http.HandlerFunc) http.HandlerFunc {
+// CheckAuth - Middleware that checks authentication
+func CheckAuth(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		var admin models.Admin
