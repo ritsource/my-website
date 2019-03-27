@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	gContext "github.com/gorilla/context"
+
+	"github.com/ritwik310/my-website/server/config"
 	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,8 +21,8 @@ func writeUnauth(w http.ResponseWriter) {
 }
 
 // AuthRequired - Middleware that checks authentication
-func AuthRequired(handler http.HandlerFunc) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func AuthRequired(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		var admin models.Admin
 
@@ -38,7 +40,7 @@ func AuthRequired(handler http.HandlerFunc) httprouter.Handle {
 		}
 
 		// Mongo Collection
-		collection := db.Client.Database("dev_db").Collection("admins")
+		collection := db.Client.Database(config.Secrets.DatabaseName).Collection("admins")
 
 		// Query User from Database (by Email)
 		err = nil
@@ -58,7 +60,10 @@ func AuthRequired(handler http.HandlerFunc) httprouter.Handle {
 			return
 		}
 
+		if r.URL.Path == "/auth/current_user" {
+			gContext.Set(r, "admin", admin)
+		}
+
 		handler.ServeHTTP(w, r)
-		// handler.ServeHTTP(w, r, p)
 	}
 }

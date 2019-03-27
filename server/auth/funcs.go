@@ -9,20 +9,19 @@ import (
 	"net/http"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/bson"
-	
-	"github.com/ritwik310/my-website/server/models"
+
 	"github.com/ritwik310/my-website/server/config"
-	
+	"github.com/ritwik310/my-website/server/models"
 )
 
 // Type for Data return from Google Oauth flow
 type googleUserData struct {
-	Email string `json:"email"`
-	GoogleID    string `json:"id"`
+	Email    string `json:"email"`
+	GoogleID string `json:"id"`
 }
 
 var oauthStateString = "pseudo-random" // Oauth State
@@ -66,18 +65,18 @@ func CheckAuth(r *http.Request, client *mongo.Client) (models.Admin, error) {
 
 	eCookie, err = r.Cookie("admin-email")
 	hCookie, err = r.Cookie("admin-id")
-	
+
 	//  Cookie error handleing
 	if err != nil {
 		return admin, err
 	}
 
 	// Mongo Collection
-	collection := client.Database("dev_db").Collection("admins")
+	collection := client.Database(config.Secrets.DatabaseName).Collection("admins")
 
 	// Query User from Database (by Email)
 	err = nil
-	err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)		
+	err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "email", Value: eCookie.Value}}).Decode(&admin)
 	if err != nil {
 		return admin, err
 	}
@@ -120,7 +119,7 @@ func CreateOrGetAdmin(content []byte, client *mongo.Client) (models.Admin, error
 	}
 
 	// MongoDB collection
-	collection := client.Database("dev_db").Collection("admins")
+	collection := client.Database(config.Secrets.DatabaseName).Collection("admins")
 
 	// Check if user Exists in the Database
 	err = nil
@@ -128,7 +127,7 @@ func CreateOrGetAdmin(content []byte, client *mongo.Client) (models.Admin, error
 		bson.E{Key: "email", Value: data.Email},
 		bson.E{Key: "googleid", Value: string(data.GoogleID)},
 	}).Decode(&admin)
-	
+
 	if err != nil {
 		fmt.Printf("Admin not found on Database %s %+v\n", err, admin)
 	} else {
@@ -180,7 +179,7 @@ func unmarshalAdmin(content []byte) (googleUserData, error) {
 // GenSessionHash ...
 func GenSessionHash(id string) (http.Cookie, error) {
 	var cookie http.Cookie // Cookie Struct
-	fmt.Println("var cookie http.Cookie "+ id)
+	fmt.Println("var cookie http.Cookie " + id)
 
 	// Generating Hash from byteData
 	hashedData, hErr := bcrypt.GenerateFromPassword([]byte(id), 14)

@@ -9,17 +9,19 @@ import (
 
 // Config ...
 type Config struct {
-	GoogleClientID     string `json:"GOOGLE_CLIENT_ID"`
-	GoogleClientSecret string `json:"GOOGLE_CLIENT_SECRET"`
-	SessionKey         string `json:"SESSION_KEY"`
-	MongoURI           string `json:"MONGO_URI"`
-	DatabaseName       string `json:"DATABASE_NAME"`
+	GoogleClientID     string   `json:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret string   `json:"GOOGLE_CLIENT_SECRET"`
+	SessionKey         string   `json:"SESSION_KEY"`
+	MongoURI           string   `json:"MONGO_URI"`
+	DatabaseName       string   `json:"DATABASE_NAME"`
 	AdminEmails        []string `json:"ADMIN_EMAILS"`
-	DomainName 				 string `json:"DOMAIN_NAME"`
-	ConsoleCLientURL 	 string `json:"CONSOLE_CLIENT_URL"`
+	DomainName         string   `json:"DOMAIN_NAME"`
+	ConsoleCLientURL   string   `json:"CONSOLE_CLIENT_URL"`
+	AllowedCorsURLs    []string `json:"ALLOWED_CORS_URLS"`
 }
 
 var isDev bool
+
 // Secrets - ...
 var Secrets Config
 
@@ -33,7 +35,7 @@ func init() {
 }
 
 // GetSecrets - gets the secrets from Config.Dev file
-func GetSecrets(isDev bool, s *Config) error {	
+func GetSecrets(isDev bool, s *Config) error {
 	var err error
 
 	// JSON file location

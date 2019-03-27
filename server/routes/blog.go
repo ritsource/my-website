@@ -1,4 +1,4 @@
-package handlers
+package routes
 
 import (
 	"context"
@@ -6,26 +6,20 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	gContext "github.com/gorilla/context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/ritwik310/my-website/server/auth"
+	"github.com/ritwik310/my-website/server/config"
 	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/models"
 )
 
-// Blog - ...
-type Blog struct {
-	Client *mongo.Client
-	Db     string
-	Col    string
-}
-
-// CreateOne ...
-func (b Blog) CreateOne(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// CreateBlog ...
+func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	_, err := auth.CheckAuth(r, db.Client)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -43,7 +37,7 @@ func (b Blog) CreateOne(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	// MongoDB Collection
-	collection := b.Client.Database(b.Db).Collection(b.Col)
+	collection := db.Client.Database(config.Secrets.DatabaseName).Collection("blogs")
 
 	// var newBlog models.Blog
 	var result *mongo.InsertOneResult
@@ -79,18 +73,12 @@ func (b Blog) CreateOne(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	w.Write(bData)
 }
 
-// ReadAll - read all blogs, both Public and Private
-func (b Blog) ReadAll(w http.ResponseWriter, r *http.Request) {
-	// _, err := auth.CheckAuth(r, db.Client)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	w.Write([]byte("Error:" + err.Error()))
-	// 	fmt.Println(err)
-	// 	return
-	// }
+// ReadAllBlogs - read all blogs, both Public and Private
+func ReadAllBlogs(w http.ResponseWriter, r *http.Request) {
+	_ = gContext.Get(r, "admin")
 
 	// MongoDB Collection
-	collection := b.Client.Database(b.Db).Collection(b.Col)
+	collection := db.Client.Database(config.Secrets.DatabaseName).Collection("blogs")
 
 	var allBlogs models.Blogs
 

@@ -2,46 +2,42 @@ package main
 
 import (
 	// "fmt"
+	"log"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
 	"github.com/ritwik310/my-website/server/auth"
-	"github.com/ritwik310/my-website/server/db"
-	"github.com/ritwik310/my-website/server/handlers"
-	"github.com/ritwik310/my-website/server/middleware"
+	"github.com/ritwik310/my-website/server/config"
+	midd "github.com/ritwik310/my-website/server/middleware"
+	"github.com/ritwik310/my-website/server/routes"
 )
 
 func main() {
-	router := httprouter.New()
+	r := mux.NewRouter()
 
-	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte("{\"hello\": \"world\"}"))
-	})
+	r.HandleFunc("/", indexHandler).Methods("GET")
 
-	router.GET("/auth/current_user", auth.PickHandeler("/auth/current_user", db.Client))
-	router.GET("/auth/google", auth.PickHandeler("/auth/google", db.Client))
-	router.GET("/auth/google/callback", auth.PickHandeler("/auth/google/callback", db.Client))
+	r.HandleFunc("/auth/current_user", midd.AuthRequired(auth.CurrentUserHandler)).Methods("GET")
+	r.HandleFunc("/auth/google", auth.GoogleLoginHandeler).Methods("GET")
+	r.HandleFunc("/auth/google/callback", auth.GoogleCallbackHandler).Methods("GET")
 
-	blog := handlers.Blog{
-		Client: db.Client,
-		Db:     "dev_db",
-		Col:    "blogs",
-	}
+	r.HandleFunc("/admin/blogs", midd.AuthRequired(routes.ReadAllBlogs)).Methods("GET")
+	r.HandleFunc("/admin/blog/{id}", indexHandler).Methods("GET")
+	r.HandleFunc("/admin/add_blog", midd.AuthRequired(routes.CreateBlog)).Methods("POST")
+	r.HandleFunc("/admin/edit_blog", indexHandler).Methods("PUT")
+	r.HandleFunc("/admin/delete_blog", indexHandler).Methods("DELETE")
 
-	// router.READ("/admin/blog/:id", )
-	router.GET("/admin/blog/all", middleware.AuthRequired(blog.ReadAll))
-	router.POST("/admin/add_blog", blog.CreateOne)
-	// router.PUT("/admin/edit_blog/:id", )
-	// router.DELETE("/admin/delete_blog/:id", )
-
-	// log.Fatal(http.ListenAndServe(":8080", nil))
-	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+	ch := cors.New(cors.Options{
+		AllowedOrigins:   config.Secrets.AllowedCorsURLs,
 		AllowCredentials: true,
-	}).Handler(router)
+	}).Handler(r)
 
-	http.ListenAndServe(":8080", handler)
+	log.Fatal(http.ListenAndServe(":8080", ch))
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"message\": \"hello world\", \"from\": \"Ritwik :)\"}"))
 }
