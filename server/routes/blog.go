@@ -27,7 +27,7 @@ import (
 // var collection *mongo.Collection
 
 // func init() {
-// 	collection := db.Client.DB(config.Secrets.DatabaseName).C("blogs")
+// 	collection := db.Client.DB(config.Secrets.DBName).C("blogs")
 // }
 
 // Writes Admin Un-Authenticated on Response

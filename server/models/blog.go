@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
 
@@ -21,11 +20,11 @@ type Blog struct {
 	IsDeleted bool `bson:"is_deleted" json:"is_deleted"`
 }
 
-// MongoDB Collection for Blogs
-var col *mgo.Collection
+// MongoDB blogCollection for Blogs
+var blogCol *mgo.Collection
 
 func init() {
-	col = db.Client.DB(config.Secrets.DatabaseName).C("blogs")
+	blogCol = db.Client.DB(config.Secrets.DBName).C("blogs")
 }
 
 // Blogs - Slice of Blogs
@@ -33,9 +32,7 @@ type Blogs []Blog
 
 // ReadAll - ..
 func (bs Blogs) Read(s bson.M) (Blogs, error) {
-	fmt.Printf("bs %+v\n", bs)
-
-	err := col.Find(s).All(&bs)
+	err := blogCol.Find(s).All(&bs)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +42,7 @@ func (bs Blogs) Read(s bson.M) (Blogs, error) {
 
 // Create - ..
 func (b Blog) Create() (Blog, error) {
-	err := col.Insert(&b)
+	err := blogCol.Insert(&b)
 	if err != nil {
 		return b, err
 	}
@@ -55,7 +52,7 @@ func (b Blog) Create() (Blog, error) {
 
 // ReadSingle - ..
 func (b Blog) ReadSingle(s bson.M) (Blog, error) {
-	err := col.Find(s).One(&b)
+	err := blogCol.Find(s).One(&b)
 	if err != nil {
 		return b, err
 	}
@@ -69,19 +66,19 @@ func (b Blog) Update(s bson.M, u bson.M) (Blog, error) {
 		Update: bson.M{"$set": u},
 		ReturnNew: true,
 	}
-	_, err := col.Find(s).Apply(change, &b)
+	_, err := blogCol.Find(s).Apply(change, &b)
 	
 	return b, err
 }
 
 // Delete - ..
 func (b Blog) Delete(id bson.ObjectId) (Blog, error) {
-	// err := col.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
+	// err := blogCol.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
 	change := mgo.Change{
 		Update: bson.M{"$set": bson.M{"is_deleted": true}},
 		ReturnNew: true,
 	}
-	_, err := col.Find(bson.M{"_id": id}).Apply(change, &b)
+	_, err := blogCol.Find(bson.M{"_id": id}).Apply(change, &b)
 	
 	return b, err
 }

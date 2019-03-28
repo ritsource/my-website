@@ -5,29 +5,33 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
-	gContext "github.com/gorilla/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"gopkg.in/mgo.v2/bson"
+	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 
 	"github.com/ritwik310/my-website/server/config"
-	"github.com/ritwik310/my-website/server/db"
+	"github.com/ritwik310/my-website/server/models"
 )
 
-var (
-	isDev               bool // Is in development mode
-	googleOauthConfig   *oauth2.Config
-	mongoURL            string
-	dbName              string
-	adminCollectionName string
-)
+// Session - ...
+var Session = sessions.NewCookieStore([]byte("config.Secrets.SessionKey"))
+
+// Writes Admin Un-Authenticated on Response
+func writeError(w http.ResponseWriter, status int, err error, msg string) {
+	w.WriteHeader(status)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"message\": \"" + msg + "\"}"))
+	fmt.Println("Error:", err.Error())
+}
+
+// GoogleOauthConfig - ...
+var GoogleOauthConfig *oauth2.Config
 
 func init() {
-	mongoURL = config.Secrets.MongoURI
-	dbName = config.Secrets.DatabaseName
-
-	googleOauthConfig = &oauth2.Config{
+	GoogleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:8080/auth/google/callback",
 		ClientID:     config.Secrets.GoogleClientID,
 		ClientSecret: config.Secrets.GoogleClientSecret,
@@ -38,7 +42,7 @@ func init() {
 
 // GoogleLoginHandeler - ...
 func GoogleLoginHandeler(w http.ResponseWriter, r *http.Request) {
-	url := googleOauthConfig.AuthCodeURL(oauthStateString)
+	url := GoogleOauthConfig.AuthCodeURL(oauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
 }
 
@@ -46,73 +50,71 @@ func GoogleLoginHandeler(w http.ResponseWriter, r *http.Request) {
 func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	// Get user info
+	// Get user info in []byte
 	var content []byte
-	err = nil
 	content, err = GetUserInfo(r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
-		// http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error: couldn't marshal data"))
-		fmt.Println(err.Error())
+		writeError(w, 500, err, "Couldn't read google's data")
 		return
 	}
 
-	// Get admin if existes or Create new
-	err = nil
-	admin, err := CreateOrGetAdmin(content, db.Client)
+	// Unmarshal Data
+	var data models.Admin
+	err = json.Unmarshal([]byte(content), &data)
 	if err != nil {
-		// w.Write([]byte("Error: query couldn't be done"))
-		fmt.Println("Error: query couldn't be done")
+		writeError(w, 500, err, "Couldn't read google's data")
+		return
 	}
 
-	// fmt.Println("admin.Email", admin.Email )
-	// fmt.Println("admin.ID", admin.ID)
+	var admin models.Admin
 
-	// Generating hashed Cookie
-	var hCookie http.Cookie
-	err = nil
-	hCookie, err = GenSessionHash(admin.GoogleID)
+	// Query Admin
+	admin, err = admin.Read(bson.M{"email": data.Email, "google_id": data.GoogleID})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error: couldn't hash id"))
+		// Inserting Document
+		admin, err = data.Create()
+		if err != nil {
+			writeError(w, 422, err, "Failed to insert new document")
+			return
+		}
 	}
 
-	// Email Cookie - saves admin Email in the client cookie
-	eCookie := http.Cookie{
-		Name:    "admin-email",
-		Value:   admin.Email,
-		Expires: time.Now().Add(30 * 24 * time.Hour),
-		Path:    "/",
-		Domain:  config.Secrets.DomainName,
-	}
-
-	// Setting the Cookie
-	http.SetCookie(w, &hCookie) // Sets Hashed ID, in Cookie
-	http.SetCookie(w, &eCookie) // Sets Email Cookie
+	// Saving Session
+	session, err := Session.Get(r, "session")
+	session.Values["admin_id"] = admin.Email
+	session.Save(r, w)
 
 	// Sending sesponse
-	isDev = os.Getenv("isDev") == "true"
+	isDev := os.Getenv("isDev") == "true"
+	fmt.Println("isDev", isDev)
 	if isDev {
 		http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
 	} else {
 		http.Redirect(w, r, "/auth/current_user", http.StatusTemporaryRedirect)
 	}
 
-	fmt.Println("Admin login successful!")
+	fmt.Println("Login successful!")
 }
 
 // CurrentUserHandler - checks currently logged in user
 func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
-	admin := gContext.Get(r, "admin")
+	// var aEmail string
+	aEmail := context.Get(r, "aEmail")
 
-	// Marshaling admin
+	var admin models.Admin
+	var err error
+
+	// Query Admin
+	admin, err = admin.Read(bson.M{"email": aEmail})
+	if err != nil {
+		writeError(w, 422, err, "Unable to fild admin in db")
+		return
+	}
+
 	bData, err := json.Marshal(admin)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte("Error: couldn't marshal data"))
-		fmt.Println(err)
+		writeError(w, 500, err, "Error: couldn't marshal data")
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

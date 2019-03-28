@@ -8,9 +8,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	// "github.com/ritwik310/my-website/server/auth"
+	"github.com/ritwik310/my-website/server/auth"
 	"github.com/ritwik310/my-website/server/config"
-	// "github.com/ritwik310/my-website/server/middleware"
+	"github.com/ritwik310/my-website/server/middleware"
 	"github.com/ritwik310/my-website/server/routes"
 )
 
@@ -19,9 +19,9 @@ func main() {
 
 	r.HandleFunc("/", indexHandler).Methods("GET")
 
-	// r.HandleFunc("/auth/google", auth.GoogleLoginHandeler).Methods("GET")
-	// r.HandleFunc("/auth/google/callback", auth.GoogleCallbackHandler).Methods("GET")
-	// r.HandleFunc("/auth/current_user", middleware.CheckAuth(auth.CurrentUserHandler)).Methods("GET")
+	r.HandleFunc("/auth/google", auth.GoogleLoginHandeler).Methods("GET")
+	r.HandleFunc("/auth/google/callback", auth.GoogleCallbackHandler).Methods("GET")
+	r.HandleFunc("/auth/current_user", middleware.CheckAuth(auth.CurrentUserHandler)).Methods("GET")
 
 	// r.HandleFunc("/admin/blog/all", middleware.CheckAuth(routes.ReadAllBlogs)).Methods("GET")
 	r.HandleFunc("/admin/blogs", routes.ReadBlogs).Methods("GET")
