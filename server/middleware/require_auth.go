@@ -40,7 +40,8 @@ func CheckAuth(handler http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// Mongo Collection
-		collection := db.Client.Database(config.Secrets.DatabaseName).Collection("admins")
+		collection := db.Client.DB(config.Secrets.DatabaseName).C("admins")
+		// Find(query).One(&result)
 
 		// Query User from Database (by Email)
 		err = nil
