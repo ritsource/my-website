@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/ritwik310/my-website/server/config"
+	"github.com/ritwik310/my-website/api/config"
 )
 
 // Client - MongoDB connected Client

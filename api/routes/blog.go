@@ -1,34 +1,13 @@
 package routes
 
 import (
-	// "context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	// "reflect"
-
 	"github.com/gorilla/mux"
-	// "go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/bson/primitive"
-	// "go.mongodb.org/mongo-driver/mongo"
-	// "go.mongodb.org/mongo-driver/mongo/options"
-
-
 	"gopkg.in/mgo.v2/bson"
-	// "gopkg.in/mgo.v2"
-
-	// "github.com/ritwik310/my-website/server/config"
-	// "github.com/ritwik310/my-website/server/db"
-	"github.com/ritwik310/my-website/server/models"
+	"github.com/ritwik310/my-website/api/models"
 )
-
-// // MongoDB Collection for Blogs
-// var collection *mongo.Collection
-
-// func init() {
-// 	collection := db.Client.DB(config.Secrets.DBName).C("blogs")
-// }
 
 // Writes Admin Un-Authenticated on Response
 func writeError(w http.ResponseWriter, err error, msg string) {

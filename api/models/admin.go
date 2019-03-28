@@ -4,8 +4,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
 
-	"github.com/ritwik310/my-website/server/db"
-	"github.com/ritwik310/my-website/server/config"
+	"github.com/ritwik310/my-website/api/db"
+	"github.com/ritwik310/my-website/api/config"
 )
 
 // Admin - admin (user) model type

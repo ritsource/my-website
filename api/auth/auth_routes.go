@@ -12,8 +12,8 @@ import (
 	"github.com/gorilla/context"
 	"github.com/gorilla/sessions"
 
-	"github.com/ritwik310/my-website/server/config"
-	"github.com/ritwik310/my-website/server/models"
+	"github.com/ritwik310/my-website/api/config"
+	"github.com/ritwik310/my-website/api/models"
 )
 
 // Session - ...
