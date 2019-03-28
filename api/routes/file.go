@@ -10,9 +10,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// CreateBlog ...
-func CreateBlog(w http.ResponseWriter, r *http.Request) {
-	var body models.Blog // to save Blog JSON body
+// CreateFile ...
+func CreateFile(w http.ResponseWriter, r *http.Request) {
+	var body models.File // to save File JSON body
 	var err error
 
 	// Decoding request body
@@ -24,14 +24,14 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Inserting Document
-	nBlog, err := body.Create()
+	nFile, err := body.Create()
 	if err != nil {
 		WriteError(w, 422, err, "Failed to insert new document")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(nBlog)
+	bData, err := json.Marshal(nFile)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -41,22 +41,22 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOneBlog - ...
-func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
+// ReadOneFile - ...
+func ReadOneFile(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var mBlog models.Blog
+	var mFile models.File
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	fIDStr := mux.Vars(r)["id"] // File ObjectId String
 
-	// Read blog
-	mBlog, err = mBlog.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)})
+	// Read File
+	mFile, err = mFile.ReadSingle(bson.M{"_id": bson.ObjectIdHex(fIDStr)})
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(mBlog)
+	bData, err := json.Marshal(mFile)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -66,20 +66,20 @@ func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadBlogs - read all blogs, both Public and Private
-func ReadBlogs(w http.ResponseWriter, r *http.Request) {
+// ReadFiles - read all files, both Public and Private
+func ReadFiles(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var mBlogs models.Blogs
+	var mFiles models.Files
 
-	// Read blog
-	mBlogs, err = mBlogs.Read(bson.M{})
+	// Read File
+	mFiles, err = mFiles.Read(bson.M{})
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(mBlogs)
+	bData, err := json.Marshal(mFiles)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -89,12 +89,12 @@ func ReadBlogs(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// EditBlog - ...
-func EditBlog(w http.ResponseWriter, r *http.Request) {
+// EditFile - ...
+func EditFile(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var nBlog models.Blog
+	var nFile models.File
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	fIDStr := mux.Vars(r)["id"] // File ObjectId String
 
 	// Decoding request body
 	var body map[string]interface{}
@@ -108,9 +108,9 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("body %+v\n", body)
 
-	// Update Blog Document
-	nBlog, err = nBlog.Update(
-		bson.M{"_id": bson.ObjectIdHex(bIDStr)},
+	// Update File Document
+	nFile, err = nFile.Update(
+		bson.M{"_id": bson.ObjectIdHex(fIDStr)},
 		body,
 	)
 	if err != nil {
@@ -119,7 +119,7 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(nBlog)
+	bData, err := json.Marshal(nFile)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -129,15 +129,15 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// DeleteBlog - ...
-func DeleteBlog(w http.ResponseWriter, r *http.Request) {
+// DeleteFile - ...
+func DeleteFile(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var dBlog models.Blog
+	var dFile models.File
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	fIDStr := mux.Vars(r)["id"] // File ObjectId String
 
-	// Read blog
-	_, err = dBlog.Delete(bson.ObjectIdHex(bIDStr))
+	// Read File
+	_, err = dFile.Delete(bson.ObjectIdHex(fIDStr))
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return

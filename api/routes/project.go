@@ -10,9 +10,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// CreateBlog ...
-func CreateBlog(w http.ResponseWriter, r *http.Request) {
-	var body models.Blog // to save Blog JSON body
+// CreateProject ...
+func CreateProject(w http.ResponseWriter, r *http.Request) {
+	var body models.Project // to save Project JSON body
 	var err error
 
 	// Decoding request body
@@ -24,14 +24,14 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Inserting Document
-	nBlog, err := body.Create()
+	nProject, err := body.Create()
 	if err != nil {
 		WriteError(w, 422, err, "Failed to insert new document")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(nBlog)
+	bData, err := json.Marshal(nProject)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -41,22 +41,22 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOneBlog - ...
-func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
+// ReadOneProject - ...
+func ReadOneProject(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var mBlog models.Blog
+	var mProject models.Project
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
-	// Read blog
-	mBlog, err = mBlog.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)})
+	// Read project
+	mProject, err = mProject.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)})
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(mBlog)
+	bData, err := json.Marshal(mProject)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -66,20 +66,20 @@ func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadBlogs - read all blogs, both Public and Private
-func ReadBlogs(w http.ResponseWriter, r *http.Request) {
+// ReadProjects - read all projects, both Public and Private
+func ReadProjects(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var mBlogs models.Blogs
+	var mProjects models.Projects
 
-	// Read blog
-	mBlogs, err = mBlogs.Read(bson.M{})
+	// Read Project
+	mProjects, err = mProjects.Read(bson.M{})
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(mBlogs)
+	bData, err := json.Marshal(mProjects)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -89,12 +89,12 @@ func ReadBlogs(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// EditBlog - ...
-func EditBlog(w http.ResponseWriter, r *http.Request) {
+// EditProject - ...
+func EditProject(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var nBlog models.Blog
+	var nProject models.Project
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
 	// Decoding request body
 	var body map[string]interface{}
@@ -108,9 +108,9 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("body %+v\n", body)
 
-	// Update Blog Document
-	nBlog, err = nBlog.Update(
-		bson.M{"_id": bson.ObjectIdHex(bIDStr)},
+	// Update Project Document
+	nProject, err = nProject.Update(
+		bson.M{"_id": bson.ObjectIdHex(pIDStr)},
 		body,
 	)
 	if err != nil {
@@ -119,7 +119,7 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Marshaling result
-	bData, err := json.Marshal(nBlog)
+	bData, err := json.Marshal(nProject)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
@@ -129,15 +129,15 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// DeleteBlog - ...
-func DeleteBlog(w http.ResponseWriter, r *http.Request) {
+// DeleteProject - ...
+func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var dBlog models.Blog
+	var dProject models.Project
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
-	// Read blog
-	_, err = dBlog.Delete(bson.ObjectIdHex(bIDStr))
+	// Read Project
+	_, err = dProject.Delete(bson.ObjectIdHex(pIDStr))
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return

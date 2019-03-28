@@ -7,15 +7,15 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Files - Files model type
+// File - Files model type
 type File struct {
 	ID          bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
 	Title       string        `bson:"title" json:"title"`
 	Description string        `bson:"description" json:"description"`
 	Type        string        `bson:"type" json:"type"`
 	FileURL     string        `bson:"file_url" json:"file_url"`
-	IsPublic    string        `bson:"is_public" json:"is_public"`
-	IsDeleted   string        `bson:"is_deleted" json:"is_deleted"`
+	IsPublic    bool          `bson:"is_public" json:"is_public"`
+	IsDeleted   bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
 // MongoDB fileCollection for Files

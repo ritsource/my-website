@@ -5,8 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gorilla/context"
-	"github.com/ritwik310/my-website/api/auth"
+	"github.com/gorilla/sessions"
+	"github.com/ritwik310/my-website/api/config"
 )
+
+// Session - ...
+var Session = sessions.NewCookieStore([]byte(config.Secrets.SessionKey))
 
 // Writes Admin Un-Authenticated on Response
 func writeUnauth(w http.ResponseWriter) {
@@ -18,7 +22,7 @@ func writeUnauth(w http.ResponseWriter) {
 func CheckAuth(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// checking Session
-		session, _ := auth.Session.Get(r, "session")
+		session, _ := Session.Get(r, "session")
 		aEmail, ok := session.Values["admin_id"]
 
 		if !ok {

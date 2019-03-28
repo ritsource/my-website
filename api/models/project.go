@@ -1,15 +1,10 @@
 package models
 
 import (
-	// "fmt"
-	// "encoding/json"
 	"github.com/ritwik310/my-website/api/config"
 	"github.com/ritwik310/my-website/api/db"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	// "gopkg.in/mgo.v2"
-	// "github.com/ritwik310/my-website/api/db"
-	// "github.com/ritwik310/my-website/api/config"
 )
 
 // Project - Project model type
@@ -21,8 +16,8 @@ type Project struct {
 	Markdown    string        `bson:"markdown" json:"markdown"`
 	Link        string        `bson:"link" json:"link"`
 	ImageURL    string        `bson:"image_url" json:"image_url"`
-	IsPublic    string        `bson:"is_public" json:"is_public"`
-	IsDeleted   string        `bson:"is_deleted" json:"is_deleted"`
+	IsPublic    bool          `bson:"is_public" json:"is_public"`
+	IsDeleted   bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
 // MongoDB projectCollection for Files
