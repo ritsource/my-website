@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"encoding/json"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
 
@@ -33,54 +32,56 @@ func init() {
 type Blogs []Blog
 
 // ReadAll - ..
-func (bs Blogs) ReadAll(s bson.M) (*Blogs, error) {
+func (bs Blogs) Read(s bson.M) (Blogs, error) {
+	fmt.Printf("bs %+v\n", bs)
+
 	err := col.Find(s).All(&bs)
 	if err != nil {
 		return nil, err
 	}
 
-	return &bs, nil
+	return bs, nil
 }
 
 // Create - ..
-func (b Blog) Create() (*Blog, error) {
+func (b Blog) Create() (Blog, error) {
 	err := col.Insert(&b)
 	if err != nil {
-		return nil, err
+		return b, err
 	}
 
-	return &b, nil
+	return b, nil
 }
 
 // ReadSingle - ..
-func (b Blog) ReadSingle(s bson.M) (*Blog, error) {
+func (b Blog) ReadSingle(s bson.M) (Blog, error) {
 	err := col.Find(s).One(&b)
 	if err != nil {
-		return nil, err
+		return b, err
 	}
 
-	return &b, nil
+	return b, nil
 }
 
 // Update - ..
-func (b Blog) Update(s bson.M, u bson.M) (*Blog, error) {
-	err := col.Update(s, bson.M{"$set": u})
-	if err != nil {
-		return nil, err
+func (b Blog) Update(s bson.M, u bson.M) (Blog, error) {
+	change := mgo.Change{
+		Update: bson.M{"$set": u},
+		ReturnNew: true,
 	}
-
-	return b.ReadSingle(s)
+	_, err := col.Find(s).Apply(change, &b)
+	
+	return b, err
 }
 
-// ToJSON - ...
-func (b Blog) ToJSON() ([]byte, error) {
-	var bData []byte
-	var err error
-	
-	bData, err = json.Marshal(b)
-	if err != nil {
-		fmt.Println("Error: toJSON error:", err)
+// Delete - ..
+func (b Blog) Delete(id bson.ObjectId) (Blog, error) {
+	// err := col.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
+	change := mgo.Change{
+		Update: bson.M{"$set": bson.M{"is_deleted": true}},
+		ReturnNew: true,
 	}
-
-	return bData, err
+	_, err := col.Find(bson.M{"_id": id}).Apply(change, &b)
+	
+	return b, err
 }

@@ -24,12 +24,14 @@ func main() {
 	// r.HandleFunc("/auth/current_user", middleware.CheckAuth(auth.CurrentUserHandler)).Methods("GET")
 
 	// r.HandleFunc("/admin/blog/all", middleware.CheckAuth(routes.ReadAllBlogs)).Methods("GET")
-	// r.HandleFunc("/admin/blog/{id}", middleware.CheckAuth(routes.ReadSingleBlog)).Methods("GET")
+	r.HandleFunc("/admin/blogs", routes.ReadBlogs).Methods("GET")
+	r.HandleFunc("/admin/blog/{id}", routes.ReadOneBlog).Methods("GET")
 	r.HandleFunc("/admin/blog/new", routes.CreateBlog).Methods("POST")
 	// r.HandleFunc("/admin/blog/new", middleware.CheckAuth(routes.CreateBlog)).Methods("POST")
 	// r.HandleFunc("/admin/blog/edit/{id}", middleware.CheckAuth(routes.EditBlog)).Methods("PUT")
-	// r.HandleFunc("/admin/blog/edit/{id}", routes.EditBlog).Methods("PUT")
+	r.HandleFunc("/admin/blog/edit/{id}", routes.EditBlog).Methods("PUT")
 	// r.HandleFunc("/admin/blog/delete/{id}", middleware.CheckAuth(routes.ReadSingleBlog)).Methods("DELETE")
+	r.HandleFunc("/admin/blog/delete/{id}", routes.DeleteBlog).Methods("DELETE")
 
 	ch := cors.New(cors.Options{
 		AllowedOrigins:   config.Secrets.AllowedCorsURLs,

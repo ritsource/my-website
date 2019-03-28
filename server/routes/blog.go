@@ -8,14 +8,14 @@ import (
 
 	// "reflect"
 
-	// "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 	// "go.mongodb.org/mongo-driver/bson"
 	// "go.mongodb.org/mongo-driver/bson/primitive"
 	// "go.mongodb.org/mongo-driver/mongo"
 	// "go.mongodb.org/mongo-driver/mongo/options"
 
 
-	// "gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/bson"
 	// "gopkg.in/mgo.v2"
 
 	// "github.com/ritwik310/my-website/server/config"
@@ -59,9 +59,9 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Marshaling result
-	bData, err := nBlog.ToJSON()
+	bData, err := json.Marshal(nBlog)
 	if err != nil {
-		writeError(w, err, "Insert successful, but unable to read")
+		writeError(w, err, "Unable to query data")
 		return
 	}
 
@@ -69,156 +69,108 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadSingleBlog - ...
-// func ReadSingleBlog(w http.ResponseWriter, r *http.Request) {
-// 	blogIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+// ReadOneBlog - ...
+func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mBlog models.Blog
 
-// 	var theBlog models.Blog
-// 	var err error
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
-// 	var blogID primitive.ObjectID // Blog ObjectId (type ObjectId)
-// 	blogID, err = primitive.ObjectIDFromHex(blogIDStr)
+	// Read blog
+	mBlog, err = mBlog.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)})
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	// Query Blog
-// 	err = collection.FindOne(context.TODO(), bson.D{bson.E{Key: "_id", Value: blogID}}).Decode(&theBlog)
-// 	if err != nil {
-// 		writeError(w, err, "Unable to query data")
-// 		return
-// 	}
+	// Marshaling result
+	bData, err := json.Marshal(mBlog)
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	// Marshaling result
-// 	bData, err := theBlog.ToJSON()
-// 	if err != nil {
-// 		writeError(w, err, "Unable to query data")
-// 		return
-// 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bData)
+}
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.Write(bData)
-// }
+// ReadBlogs - read all blogs, both Public and Private
+func ReadBlogs(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mBlogs models.Blogs
 
-// // ReadAllBlogs - read all blogs, both Public and Private
-// func ReadAllBlogs(w http.ResponseWriter, r *http.Request) {
-// 	var allBlogs models.Blogs
+	// Read blog
+	mBlogs, err = mBlogs.Read(bson.M{})
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	// Pass these options to the Find method
-// 	findOptions := options.Find()
+	// Marshaling result
+	bData, err := json.Marshal(mBlogs)
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	// Passing nil as the filter matches all documents in the collection
-// 	cur, err := collection.Find(context.TODO(), bson.D{}, findOptions)
-// 	if err != nil {
-// 		writeError(w, err, "Unable to query data")
-// 		return
-// 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bData)
+}
 
-// 	// Finding multiple documents returns a cursor
-// 	// Iterating through the cursor allows us to decode documents one at a time
-// 	for cur.Next(context.TODO()) {
-// 		// create a value into which the single document can be decoded
-// 		var elem models.Blog
-// 		err := cur.Decode(&elem)
-// 		if err != nil {
-// 			fmt.Println("Error:", err)
-// 			return
-// 		}
+// EditBlog - ...
+func EditBlog(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var nBlog models.Blog
 
-// 		allBlogs = append(allBlogs, *&elem)
-// 	}
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	
+	// Decoding request body
+	var body map[string]interface{}
 
-// 	if err := cur.Err(); err != nil {
-// 		if err != nil {
-// 			writeError(w, err, "Unable to query data")
-// 			return
-// 		}
-// 	}
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&body)
+	if err != nil {
+		writeError(w, err, "Unable to read request body")
+		return
+	}
 
-// 	// Close the cursor once finished
-// 	cur.Close(context.TODO())
+	fmt.Printf("body %+v\n", body)
 
-// 	// Marshaling result
-// 	bData, err := allBlogs.ToJSON()
-// 	if err != nil {
-// 		writeError(w, err, "Unable to query data")
-// 		return
-// 	}
+	// Update Blog Document
+	nBlog, err = nBlog.Update(
+		bson.M{"_id": bson.ObjectIdHex(bIDStr)},
+		body,
+	)	
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.Write(bData)
-// }
+	// Marshaling result
+	bData, err := json.Marshal(nBlog)
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// // EditBlog - ...
-// func EditBlog(w http.ResponseWriter, r *http.Request) {
-// 	var err error
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bData)
+}
 
-// 	// Takes ID string from URL Param and Turns it into MongoDB ObjectID
-// 	// idStr := mux.Vars(r)["id"]
-// 	bID, err := primitive.ObjectIDFromHex(mux.Vars(r)["id"]) // MongoDB ObjectID for the Blog
-// 	if err != nil {
-// 		writeError(w, err, "Unable to read request id")
-// 		return
-// 	}
+// DeleteBlog - ...
+func DeleteBlog(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var dBlog models.Blog
 
-// 	// Decoding request body from r.Body
-// 	var body models.Blog
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
-// 	decoder := json.NewDecoder(r.Body)
-// 	err = decoder.Decode(&body)
-// 	if err != nil {
-// 		writeError(w, err, "Unable to read request body")
-// 		return
-// 	}
+	// Read blog
+	_, err = dBlog.Delete(bson.ObjectIdHex(bIDStr))
+	if err != nil {
+		writeError(w, err, "Unable to query data")
+		return
+	}
 
-// 	// change := bson.D{
-// 	// 	bson.E{Key: "_id", Value: blogID},
-// 	// 	bson.E{Key: "_id", Value: blogID},
-// 	// 	bson.E{Key: "_id", Value: blogID},
-// 	// 	bson.E{Key: "_id", Value: blogID},
-// 	// }
-
-// 	// Query Blog
-// 	err = nil
-// 	result := collection.FindOneAndUpdate(
-// 		context.Background(),
-// 		bson.D{
-// 			bson.E{Key: "_id", Value: bID},
-// 		},
-// 		bson.D{
-// 			bson.E{Key: "$set",
-// 				Value: bson.E{
-// 					bson.E{Key: "title", Value: body.Title},
-// 					bson.E{Key: "description", Value: body.Description},
-// 					bson.E{Key: "html", Value: body.HTML},
-// 					bson.E{Key: "markdown", Value: body.Markdown},
-// 					bson.E{Key: "image_url", Value: body.ImageURL},
-// 				},
-// 			},
-// 		},
-// 	)
-
-// 	var doc models.Blog
-
-// 	err = result.Decode(&doc)
-// 	if err != nil {
-// 		writeError(w, err, "Unable to read request body")
-// 		return
-// 	}
-
-// 	// if err != nil {
-// 	// 	writeError(w, err, "Unable to query data")
-// 	// 	return
-// 	// }
-
-// 	// // Marshaling result
-// 	// bData, err := theBlog.ToJSON()
-// 	// if err != nil {
-// 	// 	writeError(w, err, "Unable to query data")
-// 	// 	return
-// 	// }
-
-// 	// w.Header().Set("Content-Type", "application/json")
-// 	// w.Write(SingleResult)
-
-// 	fmt.Printf("Doc %+v\n", doc)
-// 	w.Write([]byte("HELLO"))
-
-// }
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
+}
