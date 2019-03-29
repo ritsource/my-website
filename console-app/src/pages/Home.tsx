@@ -3,17 +3,25 @@ import React from 'react';
 import SearchBox from '../components/SearchBox';
 import ContentBox from '../components/ContentBox';
 
+import ProjectContext from '../contexts/ProjectContext';
+
 const HomePage = () => {
 	return (
-		<div className="Page-c-00">
-			<div className="Page-Container-00">
-				<h1>Api Management Console</h1>
-				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
-					<SearchBox />
-					<ContentBox />
-				</div>
-			</div>
-		</div>
+		<ProjectContext.Consumer>
+			{(pContext) => {
+				return (
+					<div className="Page-c-00">
+						<div className="Page-Container-00">
+							<h1>Api Management Console</h1>
+							<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
+								<SearchBox />
+								<ContentBox projects={pContext.projects} readProjects={pContext.readProjects} />
+							</div>
+						</div>
+					</div>
+				);
+			}}
+		</ProjectContext.Consumer>
 	);
 };
 
