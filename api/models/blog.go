@@ -10,14 +10,15 @@ import (
 
 // Blog - Blog model type
 type Blog struct {
-	ID bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Title string `bson:"title" json:"title"`
-	Description string `bson:"description" json:"description"`
-	HTML string `bson:"html" json:"html"`
-	Markdown string `bson:"markdown" json:"markdown"`
-	ImageURL string `bson:"image_url" json:"image_url"`
-	IsPublic bool `bson:"is_public" json:"is_public"`
-	IsDeleted bool `bson:"is_deleted" json:"is_deleted"`
+	ID 					bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Title 			string 				`bson:"title" json:"title"`
+	Description string 				`bson:"description" json:"description"`
+	HTML 				string 				`bson:"html" json:"html"`
+	Markdown 		string				`bson:"markdown" json:"markdown"`
+	DocType    	string        `bson:"doc_type" json:"doc_type"`
+	ImageURL 		string 				`bson:"image_url" json:"image_url"`
+	IsPublic 		bool 					`bson:"is_public" json:"is_public"`
+	IsDeleted 	bool 					`bson:"is_deleted" json:"is_deleted"`
 }
 
 // MongoDB blogCollection for Blogs

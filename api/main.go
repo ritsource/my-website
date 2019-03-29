@@ -43,7 +43,7 @@ func main() {
 	r.HandleFunc("/admin/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
 
 
-	// r.HandleFunc("/public/blog/doc/{id}", middleware.CheckAuth(routes.GetBlogDocument)).	Methods("GET")
+	r.HandleFunc("/public/blog/doc/{id}", middleware.CheckAuth(routes.GetBlogDocument)).	Methods("GET")
 	r.HandleFunc("/public/project/doc/{id}", middleware.CheckAuth(routes.GetProjectDocument)).Methods("GET")
 
 	// File Routes are Disables, cause there's no need of that, atleast not nowwww...

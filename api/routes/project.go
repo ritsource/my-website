@@ -2,6 +2,8 @@ package routes
 
 import (
 	"encoding/json"
+	"io"
+	// "io/ioutil"
 	"fmt"
 	"os"
 	"net/http"
@@ -10,6 +12,33 @@ import (
 	"github.com/ritwik310/my-website/api/models"
 	"gopkg.in/mgo.v2/bson"
 )
+
+// DownloadFile -
+// Downloads a document from web
+// "path" for local path (where to save), "src" for the url
+func DownloadFile(path string, src string) {
+	// Get response from teh url
+	resp, err := http.Get(src)
+	if err != nil {
+		fmt.Printf("Unable to read source file on web: %v", err)
+	}
+
+	defer resp.Body.Close()
+	
+	// Creating a new file on given path
+	out, err := os.Create(path)
+	if err != nil {
+		fmt.Printf("Unable to write file: %v", err)
+	}
+
+	defer out.Close()
+		
+	// Writing the body to the file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		fmt.Printf("Unable to write file: %v", err)
+	}
+}
 
 // CreateProject ...
 func CreateProject(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +71,12 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// GetProjectDocument - ...
+// GetProjectDocument - 
+// This Handler Queries Project from teh database first, then checks
+// if file exists or not in the "/satic" folder, (K8s PV in Prod),
+// If file exists then serves it else redirects the user to the source
+// saved in the mongo document, also if file doesn't exist the it downloads
+// the file in the static folder
 func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mProject models.Project
@@ -56,28 +90,35 @@ func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Generating Local file Name (Path)
-	var filePath string
-	
+	// Generating Local file Name
+	var fileName string
 	if mProject.DocType == "markdown" {
-		filePath = "./static/" + pIDStr + ".md" // File PathName
+		fileName = pIDStr + ".md"
 	} else {
-		filePath = "./static/" + pIDStr + ".html"
+		fileName = pIDStr + ".html"
 	}
-
+	
 	// Checking if requested file Exists or Not
-	if _, err := os.Stat(filePath); err == nil {
-		fmt.Println("Yes, File Does Exist!", filePath)
+	if _, err := os.Stat("./static/" + fileName); err == nil {
+		http.Redirect(w, r, "/static/" + fileName, http.StatusTemporaryRedirect)
 		return
 	} else {
-		fmt.Println("No, File Doesn't Exist!", filePath)
+		fmt.Println("File Doesn't Exist!", fileName)
 	}
 
+	// File Source
+	var srcFilePath string
 	if mProject.DocType == "markdown" {
-		http.Redirect(w, r, mProject.Markdown, http.StatusTemporaryRedirect)
+		srcFilePath = mProject.Markdown
 	} else {
-		http.Redirect(w, r, mProject.HTML, http.StatusTemporaryRedirect)
+		srcFilePath = mProject.HTML
 	}
+
+	// Redirecting to the source file
+	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect)
+	
+	// Downloading the file
+	DownloadFile("./static/" + fileName, srcFilePath)
 }
 
 // ReadOneProject - ...

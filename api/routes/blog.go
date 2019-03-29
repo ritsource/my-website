@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"os"
 	"fmt"
 	"net/http"
 
@@ -64,6 +65,56 @@ func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)
+}
+
+// GetBlogDocument - 
+// This Handler Queries Blog from teh database first, then checks
+// if file exists or not in the "/satic" folder, (K8s PV in Prod),
+// If file exists then serves it else redirects the user to the source
+// saved in the mongo document, also if file doesn't exist the it downloads
+// the file in the static folder
+func GetBlogDocument(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mBlog models.Blog
+
+	pIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+
+	// Read Blog
+	mBlog, err = mBlog.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)})
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Generating Local file Name
+	var fileName string
+	if mBlog.DocType == "markdown" {
+		fileName = pIDStr + ".md"
+	} else {
+		fileName = pIDStr + ".html"
+	}
+	
+	// Checking if requested file Exists or Not
+	if _, err := os.Stat("./static/" + fileName); err == nil {
+		http.Redirect(w, r, "/static/" + fileName, http.StatusTemporaryRedirect)
+		return
+	} else {
+		fmt.Println("File Doesn't Exist!", fileName)
+	}
+
+	// File Source
+	var srcFilePath string
+	if mBlog.DocType == "markdown" {
+		srcFilePath = mBlog.Markdown
+	} else {
+		srcFilePath = mBlog.HTML
+	}
+
+	// Redirecting to the source file
+	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect)
+	
+	// Downloading the file
+	DownloadFile("./static/" + fileName, srcFilePath)
 }
 
 // ReadBlogs - read all blogs, both Public and Private
