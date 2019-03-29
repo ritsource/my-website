@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -39,6 +40,44 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)
+}
+
+// GetProjectDocument - ...
+func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mProject models.Project
+
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+
+	// Read project
+	mProject, err = mProject.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)})
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Generating Local file Name (Path)
+	var filePath string
+	
+	if mProject.DocType == "markdown" {
+		filePath = "./static/" + pIDStr + ".md" // File PathName
+	} else {
+		filePath = "./static/" + pIDStr + ".html"
+	}
+
+	// Checking if requested file Exists or Not
+	if _, err := os.Stat(filePath); err == nil {
+		fmt.Println("Yes, File Does Exist!", filePath)
+		return
+	} else {
+		fmt.Println("No, File Doesn't Exist!", filePath)
+	}
+
+	if mProject.DocType == "markdown" {
+		http.Redirect(w, r, mProject.Markdown, http.StatusTemporaryRedirect)
+	} else {
+		http.Redirect(w, r, mProject.HTML, http.StatusTemporaryRedirect)
+	}
 }
 
 // ReadOneProject - ...

@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "fmt"
+	"flag"
 	"log"
 	"net/http"
 
@@ -15,7 +15,14 @@ import (
 )
 
 func main() {
+	var dir string
+	flag.StringVar(&dir, "dir", "./static", "usage")
+	flag.Parse()
+
 	r := mux.NewRouter()
+
+	// Static file server
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
 
 	r.HandleFunc("/", indexHandler).Methods("GET")
 
@@ -35,11 +42,17 @@ func main() {
 	r.HandleFunc("/admin/project/edit/{id}", middleware.CheckAuth(routes.EditProject)).Methods("PUT")
 	r.HandleFunc("/admin/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
 
-	r.HandleFunc("/admin/file/all", routes.ReadFiles).Methods("GET")
-	r.HandleFunc("/admin/file/{id}", routes.ReadOneFile).Methods("GET")
-	r.HandleFunc("/admin/file/new", routes.CreateFile).Methods("POST")
-	r.HandleFunc("/admin/file/edit/{id}", routes.EditFile).Methods("PUT")
-	r.HandleFunc("/admin/file/delete/{id}", routes.DeleteFile).Methods("DELETE")
+
+	// r.HandleFunc("/public/blog/doc/{id}", middleware.CheckAuth(routes.GetBlogDocument)).	Methods("GET")
+	r.HandleFunc("/public/project/doc/{id}", middleware.CheckAuth(routes.GetProjectDocument)).Methods("GET")
+
+	// File Routes are Disables, cause there's no need of that, atleast not nowwww...
+	// Down here!	
+	// r.HandleFunc("/admin/file/all", routes.ReadFiles).Methods("GET")
+	// r.HandleFunc("/admin/file/{id}", routes.ReadOneFile).Methods("GET")
+	// r.HandleFunc("/admin/file/new", routes.CreateFile).Methods("POST")
+	// r.HandleFunc("/admin/file/edit/{id}", routes.EditFile).Methods("PUT")
+	// r.HandleFunc("/admin/file/delete/{id}", routes.DeleteFile).Methods("DELETE")
 
 	ch := cors.New(cors.Options{
 		AllowedOrigins:   config.Secrets.AllowedCorsURLs,

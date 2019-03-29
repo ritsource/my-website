@@ -1,5 +1,7 @@
 package models
 
+// Files aren't needed for NOW.........
+
 import (
 	"github.com/ritwik310/my-website/api/config"
 	"github.com/ritwik310/my-website/api/db"
@@ -13,6 +15,7 @@ type File struct {
 	Title       string        `bson:"title" json:"title"`
 	Description string        `bson:"description" json:"description"`
 	Type        string        `bson:"type" json:"type"`
+	Extension 	string 				`bson:"extension" josn:"extension"`
 	FileURL     string        `bson:"file_url" json:"file_url"`
 	IsPublic    bool          `bson:"is_public" json:"is_public"`
 	IsDeleted   bool          `bson:"is_deleted" json:"is_deleted"`

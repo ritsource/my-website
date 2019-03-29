@@ -14,6 +14,7 @@ type Project struct {
 	Description string        `bson:"description" json:"description"`
 	HTML        string        `bson:"html" json:"html"`
 	Markdown    string        `bson:"markdown" json:"markdown"`
+	DocType    	string        `bson:"doc_type" json:"doc_type"`
 	Link        string        `bson:"link" json:"link"`
 	ImageURL    string        `bson:"image_url" json:"image_url"`
 	IsPublic    bool          `bson:"is_public" json:"is_public"`
