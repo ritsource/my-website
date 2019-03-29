@@ -11,7 +11,6 @@ import (
 
 // Client - MongoDB connected Client
 var Client *mgo.Session
-var isDev bool
 
 func init() {
 	// Connecting to MongoDB
@@ -24,4 +23,9 @@ func init() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+}
+
+// Close - closes, the db
+func Close() {
+	Client.Close()
 }

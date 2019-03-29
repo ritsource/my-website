@@ -13,7 +13,8 @@ type Config struct {
 	GoogleClientSecret string   `json:"GOOGLE_CLIENT_SECRET"`
 	SessionKey         string   `json:"SESSION_KEY"`
 	MongoURI           string   `json:"MONGO_URI"`
-	DBName       			 string   `json:"DATABASE_NAME"`
+	BackupMongoURI     string   `json:"BACKUP_MONGO_URI"`
+	DBName             string   `json:"DATABASE_NAME"`
 	AdminEmails        []string `json:"ADMIN_EMAILS"`
 	DomainName         string   `json:"DOMAIN_NAME"`
 	ConsoleCLientURL   string   `json:"CONSOLE_CLIENT_URL"`
