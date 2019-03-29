@@ -5,3 +5,5 @@ config/config.production.json
 static/*
 
 server
+
+*secret.sh

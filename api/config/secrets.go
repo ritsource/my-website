@@ -16,7 +16,6 @@ type Config struct {
 	BackupMongoURI     string   `json:"BACKUP_MONGO_URI"`
 	DBName             string   `json:"DATABASE_NAME"`
 	AdminEmails        []string `json:"ADMIN_EMAILS"`
-	DomainName         string   `json:"DOMAIN_NAME"`
 	ConsoleCLientURL   string   `json:"CONSOLE_CLIENT_URL"`
 	AllowedCorsURLs    []string `json:"ALLOWED_CORS_URLS"`
 }
@@ -79,3 +78,15 @@ func GetSecrets(isDev bool, s *Config) error {
 
 	return nil
 }
+
+// func getSecrets(s *Config) {
+// 	s.GoogleClientID = os.Getenv("GOOGLE_CLIENT_ID")
+// 	s.GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
+// 	s.SessionKey = os.Getenv("SESSION_KEY")
+// 	s.MongoURI = os.Getenv("MONGO_URI")
+// 	s.BackupMongoURI = os.Getenv("BACKUP_MONGO_URI")
+// 	s.DBName = os.Getenv("DATABASE_NAME")
+// 	s.AdminEmails = os.Getenv("ADMIN_EMAILS")
+// 	s.ConsoleCLientURL = os.Getenv("CONSOLE_CLIENT_URL")
+// 	s.AllowedCorsURLs = os.Getenv("isDev")
+// }
