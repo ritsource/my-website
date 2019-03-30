@@ -6,6 +6,7 @@ import Blog from '../types/blog';
 
 type MyProps = {
 	object: any; // Project | Blog;
+	saveFunction: (c: any, u: any) => void;
 };
 
 const SubBoxName = (props: MyProps) => {
@@ -18,6 +19,7 @@ const SubBoxName = (props: MyProps) => {
 	const [ markdown, setMarkdown ] = useState(object ? object.markdown : '');
 
 	const [ isAsync, setIsAsync ] = useState(false); // Is Async
+	const [ errorMsg, setErrorMsg ] = useState(false);
 	const [ boxEditable, setBoxEditable ] = useState(false); // Check if Title, Emoji, or Desc. has changed
 
 	const setPropsValToState = () => {
@@ -84,6 +86,18 @@ const SubBoxName = (props: MyProps) => {
 				</div>
 			</div>
 
+			{errorMsg && (
+				<p
+					style={{
+						color: 'var(--danger-red-color)',
+						padding: '0px 20px 10px 20px'
+					}}
+					className="SearchBox-Description-P-01"
+				>
+					Error: {errorMsg}
+				</p>
+			)}
+
 			<div
 				style={{
 					width: 'calc(100% - 40px)',
@@ -93,11 +107,31 @@ const SubBoxName = (props: MyProps) => {
 			>
 				{boxEditable ? (
 					<React.Fragment>
-						<button className="Theme-Btn-Green">Save</button>
+						<button
+							className="Theme-Btn-Green"
+							onClick={async () => {
+								setIsAsync(true);
+								try {
+									await props.saveFunction(object, {
+										html,
+										markdown,
+										doc_type: docType
+									});
+									setErrorMsg(false);
+									setBoxEditable(false);
+								} catch (e) {
+									setErrorMsg(e);
+								}
+								setIsAsync(false);
+							}}
+						>
+							Save
+						</button>
 						<button
 							style={{ marginLeft: '12px' }}
 							className="Theme-Btn-Grey"
 							onClick={() => {
+								setErrorMsg(false);
 								setBoxEditable(false);
 								setPropsValToState();
 							}}

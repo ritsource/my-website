@@ -10,24 +10,17 @@ type MyProps = {
 	project: Project;
 	pContext: any;
 	setProject: () => void;
+	saveFunction: (c: Project, u: Project) => void;
 };
 
 const ProjectBoxes = (props: MyProps) => {
-	const { project } = props;
-	const [ title, setTitle ] = useState(project ? project.title : '');
-	const [ description, setDescription ] = useState(project ? project.description : '');
-	const [ link, setLink ] = useState(project ? project.link : '');
-
-	const [ isAsync, setIsAsync ] = useState(false); // Is Async
-
-	const [ nameBoxEd, setNameBoxEd ] = useState(false); // Check if Title, Emoji, or Desc. has changed
-	// const [ nameBoxEd, setNameBoxEd ] = useState();	// Check if Title, Emoji, or Desc. has changed
+	const { project, saveFunction } = props;
 
 	return (
 		<div className="ProjectBoxes-c-00">
-			<SubBoxName object={project} />
-			<SubBoxDoc object={project} />
-			<SubBoxBool object={project} />
+			<SubBoxName object={project} saveFunction={saveFunction} />
+			<SubBoxDoc object={project} saveFunction={saveFunction} />
+			<SubBoxBool object={project} saveFunction={saveFunction} />
 		</div>
 	);
 };

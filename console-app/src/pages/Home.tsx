@@ -12,7 +12,6 @@ const HomePage = () => {
 				return (
 					<div className="Page-c-00">
 						<div className="Page-Container-00">
-							<h1>Api Management Console</h1>
 							<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
 								<SearchBox />
 								<ContentBox projects={pContext.projects} readProjects={pContext.readProjects} />

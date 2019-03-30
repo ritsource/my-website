@@ -14,7 +14,7 @@ const JSONBox = (props: MyProps) => {
 	const [ json, setJson ] = useState(JSON.stringify(object, null, 4)); // Json string
 	const [ isValid, setIsValid ] = useState(false); // Is the "json" valid
 	const [ isAsync, setIsAsync ] = useState(false); // Is Async
-
+	const [ errorMsg, setErrorMsg ] = useState(false);
 	const [ jsonBoxEd, setJsonBoxEd ] = useState(false); // Is Editable or Not
 
 	useEffect(
@@ -45,7 +45,7 @@ const JSONBox = (props: MyProps) => {
 	return (
 		<div className="JOSNBox-c-00 SearchBox-c-00 Theme-Box-Shadow">
 			<h4 className="Flex-Row-Space-Between">
-				JSON Data {isAsync && <div className="Theme-Loading-Spin-Div" />}
+				JSON Data {object.title && `- ${object.title}`} {isAsync && <div className="Theme-Loading-Spin-Div" />}
 			</h4>
 			<div className="Flex-Row-Space-Between">
 				<p className="SearchBox-Description-P-01">Quickly modify using JSON data structure.</p>
@@ -72,6 +72,18 @@ const JSONBox = (props: MyProps) => {
 				}}
 			/>
 
+			{errorMsg && (
+				<p
+					style={{
+						color: 'var(--danger-red-color)',
+						padding: '10px 20px 0px 20px'
+					}}
+					className="SearchBox-Description-P-01"
+				>
+					Error: {errorMsg}
+				</p>
+			)}
+
 			<div
 				style={{
 					width: 'calc(100% - 40px)',
@@ -83,14 +95,17 @@ const JSONBox = (props: MyProps) => {
 					<React.Fragment>
 						<button
 							className="Theme-Btn-Green"
-							onClick={() => {
+							onClick={async () => {
 								setIsAsync(true);
 								try {
 									const newObject = JSON.parse(json);
-									saveFunction(object, newObject);
+									await saveFunction(object, newObject);
+									setErrorMsg(false);
 								} catch (e) {
 									setJson(JSON.stringify(object, null, 4));
+									setErrorMsg(e);
 								}
+								setErrorMsg(false);
 								setJsonBoxEd(false);
 								setIsAsync(false);
 							}}
