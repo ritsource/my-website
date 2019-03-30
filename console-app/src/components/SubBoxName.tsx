@@ -58,15 +58,17 @@ const SubBoxName = (props: MyProps) => {
 				}}
 			/>
 
-			<input
-				placeholder="Project Link (Github or App Url)"
-				value={link}
-				onChange={(e) => {
-					if (boxEditable) {
-						setLink(e.target.value.trim());
-					}
-				}}
-			/>
+			{(!!link || link === '') && (
+				<input
+					placeholder="Project Link (Github or App Url)"
+					value={link}
+					onChange={(e) => {
+						if (boxEditable) {
+							setLink(e.target.value.trim());
+						}
+					}}
+				/>
+			)}
 
 			{errorMsg && (
 				<p

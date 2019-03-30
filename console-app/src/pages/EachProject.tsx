@@ -21,10 +21,6 @@ const EachProjectPage = (props: MyProps) => {
 		pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId)
 	);
 
-	// useEffect(() => {
-	// 	setProject(pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId));
-	// }, []);
-
 	useEffect(
 		() => {
 			setProject(pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId));

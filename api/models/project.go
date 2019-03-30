@@ -16,9 +16,9 @@ type Project struct {
 	Markdown    string        `bson:"markdown" json:"markdown"`
 	DocType     string        `bson:"doc_type" json:"doc_type"`
 	Link        string        `bson:"link" json:"link"`
-	ImageURL    string        `bson:"image_url" json:"image_url"`
-	IsPublic    bool          `bson:"is_public" json:"is_public"`
-	IsDeleted   bool          `bson:"is_deleted" json:"is_deleted"`
+	// ImageURL    string        `bson:"image_url" json:"image_url"`
+	IsPublic  bool `bson:"is_public" json:"is_public"`
+	IsDeleted bool `bson:"is_deleted" json:"is_deleted"`
 }
 
 // MongoDB projectCollection for Files
