@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-// import axios from 'axios';
 import './App.scss';
 import api from './api';
 
@@ -13,7 +12,7 @@ import EachProjectPage from './pages/EachProject';
 import LoadingPage from './pages/Loading';
 import NotFoundPage from './pages/NotFound';
 
-import { ProjectProvider } from './contexts/ProjectContext';
+import ProjectContext, { ProjectProvider } from './contexts/ProjectContext';
 
 const App = () => {
 	const [ auth, setAuth ]: any = useState(null);
@@ -41,6 +40,7 @@ const App = () => {
 							<React.Fragment>
 								<Route path="/" exact component={HomePage} />
 								<Route path="/blogs" exact component={BlogsPage} />
+								{/* <Route path="/project/:projectId" exact component={EachProjectPage} /> */}
 								<Route path="/projects" exact component={ProjectsPage} />
 								<Route path="/project/:projectId" exact component={EachProjectPage} />
 								<Route component={NotFoundPage} />

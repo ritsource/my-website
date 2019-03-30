@@ -4,17 +4,23 @@ import JSONBox from '../components/JSONBox';
 import ProjectBoxes from '../components/ProjectBox';
 import data, { Data } from '../data/data';
 
+import ProjectContext from '../contexts/ProjectContext';
+
 type MyProps = {
 	history: any;
 	match: any;
+	pContext: any;
 };
 
 const EachProjectPage = (props: MyProps) => {
-	const [ project, setProject ]: any = useState(null);
+	const { pContext } = props;
+
+	const [ project, setProject ]: any = useState(
+		pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId)
+	);
 
 	useEffect(() => {
-		setProject(data.find(({ _id }) => _id === props.match.params.projectId));
-		console.log(data.find(({ _id }) => _id === props.match.params.projectId));
+		setProject(pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId));
 	}, []);
 
 	useEffect(
@@ -31,7 +37,7 @@ const EachProjectPage = (props: MyProps) => {
 				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
 					<JSONBox object={project} />
 					<div className="Page-Vertical-Box-Container">
-						<ProjectBoxes project={project} />
+						<ProjectBoxes pContext={pContext} project={project} setProject={setProject} />
 					</div>
 				</div>
 			</div>
@@ -39,4 +45,8 @@ const EachProjectPage = (props: MyProps) => {
 	);
 };
 
-export default EachProjectPage;
+export default (props: any) => (
+	<ProjectContext.Consumer>
+		{(pContext) => <EachProjectPage pContext={pContext} {...props} />}
+	</ProjectContext.Consumer>
+);

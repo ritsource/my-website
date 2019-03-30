@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../api';
 import Project from '../types/project';
 
 const ProjectContext = React.createContext({
@@ -11,6 +12,17 @@ const ProjectContext = React.createContext({
 
 export const ProjectProvider = (props: any) => {
 	const [ projects, setProjects ] = useState([]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await api.get('/admin/project/all');
+				setProjects(response.data);
+			} catch (error) {
+				setProjects([]);
+			}
+		})();
+	}, []);
 
 	const readProjects = (allProjects: any) => {
 		setProjects(allProjects);

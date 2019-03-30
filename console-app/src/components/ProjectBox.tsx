@@ -4,6 +4,8 @@ import { Data } from '../data/data';
 
 type MyProps = {
 	project: Data;
+	pContext: any;
+	setProject: () => void;
 };
 
 const ProjectBoxes = (props: MyProps) => {

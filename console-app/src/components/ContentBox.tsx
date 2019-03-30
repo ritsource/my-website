@@ -5,6 +5,7 @@ import data, { Data } from '../data/data';
 import ContentBoxItem from './ContentBoxItem';
 
 import Project from '../types/project';
+import Blog from '../types/blog';
 
 type MyProps = {
 	projects: Array<Project>;
@@ -18,14 +19,19 @@ const ContentBox = (props: MyProps) => {
 	const [ activeType, setActiveType ] = useState(0);
 
 	const fetchData = async () => {
+		let reqPath = '';
+
 		if (contentTypes[activeType] === 'projects') {
-			try {
-				const response = await api.get('/admin/project/all');
-				setObjects(response.data);
-			} catch (error) {
-				setObjects(false);
-			}
+			reqPath = '/admin/project/all';
 		} else if (contentTypes[activeType] === 'blogs') {
+			reqPath = '/admin/blog/all';
+		}
+
+		try {
+			const response = await api.get(reqPath);
+			setObjects(response.data);
+		} catch (error) {
+			setObjects(false);
 		}
 	};
 
@@ -54,19 +60,23 @@ const ContentBox = (props: MyProps) => {
 					</React.Fragment>
 				))}
 			</p>
-			<div className="ContentBox-Item-Container-01">
-				{objects ? (
-					<React.Fragment>
-						{objects.map((object: Data, i: number) => (
-							<React.Fragment key={i}>
-								<ContentBoxItem key={i} object={object} />
-							</React.Fragment>
-						))}
-					</React.Fragment>
-				) : (
-					<h4>No Data Found</h4>
-				)}
-			</div>
+			{objects ? (
+				<div className="ContentBox-Item-Container-01">
+					{objects.map((object: any, i: number) => (
+						<React.Fragment key={i}>
+							<ContentBoxItem
+								key={i}
+								object={object}
+								objectLink={`/${activeType === 0 ? 'project' : 'blog'}/${object._id}`}
+							/>
+						</React.Fragment>
+					))}
+				</div>
+			) : (
+				<p style={{ marginTop: '5px' }} className="SearchBox-Description-P-01">
+					Network Error, Couldn't fetch Data!
+				</p>
+			)}
 		</div>
 	);
 };
