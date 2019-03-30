@@ -35,24 +35,22 @@ const App = () => {
 			<ProjectProvider>
 				<BrowserRouter>
 					<Header />
-					<Switch>
-						{auth ? (
-							<React.Fragment>
-								<Route path="/" exact component={HomePage} />
-								<Route path="/blogs" exact component={BlogsPage} />
-								{/* <Route path="/project/:projectId" exact component={EachProjectPage} /> */}
-								<Route path="/projects" exact component={ProjectsPage} />
-								<Route path="/project/:projectId" exact component={EachProjectPage} />
-								<Route component={NotFoundPage} />
-							</React.Fragment>
-						) : auth === null ? (
-							<Route component={LoadingPage} />
-						) : (
-							<React.Fragment>
-								<Route component={LoginPage} />
-							</React.Fragment>
-						)}
-					</Switch>
+					{auth ? (
+						<Switch>
+							<Route path="/" exact component={HomePage} />
+							<Route path="/blogs" exact component={BlogsPage} />
+							{/* <Route path="/project/:projectId" exact component={EachProjectPage} /> */}
+							<Route path="/projects" exact component={ProjectsPage} />
+							<Route path="/project/:projectId" exact component={EachProjectPage} />
+							<Route component={NotFoundPage} />
+						</Switch>
+					) : auth === null ? (
+						<Route component={LoadingPage} />
+					) : (
+						<React.Fragment>
+							<Route component={LoginPage} />
+						</React.Fragment>
+					)}
 				</BrowserRouter>
 			</ProjectProvider>
 		</div>

@@ -1,28 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 
-import { Data } from '../data/data';
+import Project from '../types/project';
 
 type MyProps = {
-	object: Data;
+	object: Project;
+	saveFunction: (c: Project, u: Project) => void;
 };
 
 const JSONBox = (props: MyProps) => {
-	const { object } = props;
+	const { object, saveFunction } = props;
 
-	const [ json, setJson ] = useState(JSON.stringify(object, null, 4));
-	const [ isValid, setIsValid ] = useState(false);
-	const [ isAsync, setIsAsync ] = useState(false);
+	const [ json, setJson ] = useState(JSON.stringify(object, null, 4)); // Json string
+	const [ isValid, setIsValid ] = useState(false); // Is the "json" valid
+	const [ isAsync, setIsAsync ] = useState(false); // Is Async
 
-	const [ jsonBoxEd, setJsonBoxEd ] = useState(false);
+	const [ jsonBoxEd, setJsonBoxEd ] = useState(false); // Is Editable or Not
 
 	useEffect(
 		() => {
 			setJson(JSON.stringify(object, null, 4));
+		},
+		[ object, setJsonBoxEd ]
+	);
+
+	useEffect(
+		() => {
 			const valid = validateJson(json);
 			setIsValid(valid);
 		},
-		[ object ]
+		[ json ]
 	);
 
 	const validateJson = (str: string) => {
@@ -74,7 +81,22 @@ const JSONBox = (props: MyProps) => {
 			>
 				{jsonBoxEd ? (
 					<React.Fragment>
-						<button className="Theme-Btn-Green">Save</button>
+						<button
+							className="Theme-Btn-Green"
+							onClick={() => {
+								setIsAsync(true);
+								try {
+									const newObject = JSON.parse(json);
+									saveFunction(object, newObject);
+								} catch (e) {
+									setJson(JSON.stringify(object, null, 4));
+								}
+								setJsonBoxEd(false);
+								setIsAsync(false);
+							}}
+						>
+							Save
+						</button>
 						<button
 							style={{ marginLeft: '12px' }}
 							className="Theme-Btn-Grey"
