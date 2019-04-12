@@ -27,7 +27,7 @@ func main() {
 
 	// Takes care of Static file serving
 	var dir string
-	flag.StringVar(&dir, "dir", "./static", "usage")
+	flag.StringVar(&dir, "dir", "./cache", "usage")
 	flag.Parse()
 
 	// Static file server
@@ -58,8 +58,11 @@ func main() {
 	// Public, Document Handlers
 	// This request get's redirected to the corresponding static file
 	// If exists in static directory, then there, else source on web (Probably Gitlab/Github)
-	r.HandleFunc("/public/blog/doc/{id}", middleware.CheckAuth(routes.GetBlogDocument)).Methods("GET")
-	r.HandleFunc("/public/project/doc/{id}", middleware.CheckAuth(routes.GetProjectDocument)).Methods("GET")
+	r.HandleFunc("/public/blog/doc/{id}", routes.GetBlogDocument).Methods("GET")
+	r.HandleFunc("/public/project/doc/{id}", routes.GetProjectDocument).Methods("GET")
+
+	r.HandleFunc("/public/blog/all", routes.ReadPublicBlogs).Methods("GET")
+	r.HandleFunc("/public/project/all", routes.ReadPublicProjects).Methods("GET")
 
 	// For handling CORS requests
 	ch := cors.New(cors.Options{

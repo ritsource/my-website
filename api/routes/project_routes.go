@@ -3,17 +3,102 @@ package routes
 import (
 	"encoding/json"
 	"io"
+
 	// "io/ioutil"
 	"fmt"
-	"os"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/ritwik310/my-website/api/models"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// DownloadFile -
+// Public Routes - Public routes are publically accessable (as the name suggests)
+// it doesn't require admin authentication
+
+// ReadPublicProjects -
+func ReadPublicProjects(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mProjects models.Projects
+
+	// Read Project
+	mProjects, err = mProjects.Read(bson.M{
+		"is_deleted": false,
+		"is_public":  true,
+	})
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Marshaling result
+	bData, err := json.Marshal(mProjects)
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(bData)
+}
+
+// GetProjectDocument - This Handler Queries Project from the database first, then checks
+// if file exists or not in the "/satic" folder, (K8s PV in Prod),
+// If file exists then serves it else redirects the user to the source
+// saved in the mongo document, also if file doesn't exist the it downloads
+// the file in the static folder
+func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var mProject models.Project // Project struct
+
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+
+	// Reading Project from the database
+	mProject, err = mProject.ReadSingle(bson.M{
+		"_id":        bson.ObjectIdHex(pIDStr),
+		"is_deleted": false,
+		"is_public":  true,
+	})
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Defining cahce filename
+	var fileName string
+	if mProject.DocType == "markdown" {
+		fileName = pIDStr + ".md"
+	} else {
+		fileName = pIDStr + ".html"
+	}
+
+	// Checking if requested file Exists or Not
+	if _, err := os.Stat("./cache/" + fileName); err == nil {
+		// if exist then redirect to the static route
+		http.Redirect(w, r, "/static/"+fileName, http.StatusTemporaryRedirect)
+		return
+	}
+
+	// If file doesn't exist in cache
+	fmt.Println("File Doesn't Exist!", fileName)
+
+	// File Source
+	var srcFilePath string
+	if mProject.DocType == "markdown" {
+		srcFilePath = mProject.Markdown
+	} else {
+		srcFilePath = mProject.HTML
+	}
+
+	// Redirecting to the main source file
+	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect)
+
+	// Downloading the file
+	DownloadFile("./cache/"+fileName, srcFilePath)
+}
+
+// DownloadFile - Used for saving files in the cache
 // Downloads a document from web
 // "path" for local path (where to save), "src" for the url
 func DownloadFile(path string, src string) {
@@ -24,7 +109,7 @@ func DownloadFile(path string, src string) {
 	}
 
 	defer resp.Body.Close()
-	
+
 	// Creating a new file on given path
 	out, err := os.Create(path)
 	if err != nil {
@@ -32,7 +117,7 @@ func DownloadFile(path string, src string) {
 	}
 
 	defer out.Close()
-		
+
 	// Writing the body to the file
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
@@ -40,7 +125,9 @@ func DownloadFile(path string, src string) {
 	}
 }
 
-// CreateProject ...
+// Admin Routes - Routes that are only accessable by Admin (Requires Admin Authentication)
+
+// CreateProject -
 func CreateProject(w http.ResponseWriter, r *http.Request) {
 	var body models.Project // to save Project JSON body
 	var err error
@@ -69,56 +156,6 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)
-}
-
-// GetProjectDocument - 
-// This Handler Queries Project from teh database first, then checks
-// if file exists or not in the "/satic" folder, (K8s PV in Prod),
-// If file exists then serves it else redirects the user to the source
-// saved in the mongo document, also if file doesn't exist the it downloads
-// the file in the static folder
-func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var mProject models.Project
-
-	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
-
-	// Read project
-	mProject, err = mProject.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Generating Local file Name
-	var fileName string
-	if mProject.DocType == "markdown" {
-		fileName = pIDStr + ".md"
-	} else {
-		fileName = pIDStr + ".html"
-	}
-	
-	// Checking if requested file Exists or Not
-	if _, err := os.Stat("./static/" + fileName); err == nil {
-		http.Redirect(w, r, "/static/" + fileName, http.StatusTemporaryRedirect)
-		return
-	} else {
-		fmt.Println("File Doesn't Exist!", fileName)
-	}
-
-	// File Source
-	var srcFilePath string
-	if mProject.DocType == "markdown" {
-		srcFilePath = mProject.Markdown
-	} else {
-		srcFilePath = mProject.HTML
-	}
-
-	// Redirecting to the source file
-	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect)
-	
-	// Downloading the file
-	DownloadFile("./static/" + fileName, srcFilePath)
 }
 
 // ReadOneProject - ...

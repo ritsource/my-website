@@ -2,7 +2,7 @@
 config/config.development.json
 config/config.production.json
 
-static/*
+cache/*
 
 server
 
