@@ -62,7 +62,9 @@ func main() {
 	r.HandleFunc("/public/project/doc/{id}", routes.GetProjectDocument).Methods("GET")
 
 	r.HandleFunc("/public/blog/all", routes.ReadPublicBlogs).Methods("GET")
+	r.HandleFunc("/public/blog/{id}", routes.ReadOnePublicBlog).Methods("GET")
 	r.HandleFunc("/public/project/all", routes.ReadPublicProjects).Methods("GET")
+	r.HandleFunc("/public/project/{id}", routes.ReadOnePublicProject).Methods("GET")
 
 	// For handling CORS requests
 	ch := cors.New(cors.Options{

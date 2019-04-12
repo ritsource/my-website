@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/static/lib/style.css">
+  <link rel="stylesheet" href="/static/lib/blogs.css">
+  <title>{{.Data.Title}} - Ritwik Saha</title>
+</head>
+<body>
+
+  {{template "header"}}
+
+  <div class="page-content-99 blogs-content-00">
+    {{template "blogs-item" .Data}}
+  </div>
+
+  <article>
+    {{.HTML}}
+  </article>
+
+  <script src="/static/lib/header.js"></script>
+</body>
+</html>

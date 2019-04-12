@@ -30,7 +30,8 @@ func main() {
 
 	// Dummy handler
 	r.HandleFunc("/", handlers.IndexHandler).Methods("GET")
-	r.HandleFunc("/blogs", handlers.BlogHandler).Methods("GET")
+	r.HandleFunc("/blogs", handlers.BlogsHandler).Methods("GET")
+	r.HandleFunc("/blog/{id}", handlers.EachBlogHandler).Methods("GET")
 
 	// Server
 	log.Fatal(http.ListenAndServe(":8081", r))
