@@ -15,7 +15,7 @@ func WriteError(w http.ResponseWriter, status int, err error, msg string) {
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("static/index.html", "static/header.html")
+	t, err := template.ParseFiles("static/pages/index.html", "static/partials/header.html")
 	if err != nil {
 		WriteError(w, 500, err, err.Error())
 	}

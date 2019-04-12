@@ -3,14 +3,14 @@
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc(100vh - 16px);
+	height: calc(100vh - 68px);
 }
 
 #index-center-div-00 {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	margin-top: -70px;
+	margin-top: -150px;
 	/* justify-content: center; */
 }
 
@@ -32,4 +32,16 @@
 }
 #index-center-bio-container-01 {
 	margin-bottom: 5px;
+}
+
+@media (max-width: 500px) {
+	#index-center-div-00 {
+		flex-direction: column;
+		text-align: center;
+		width: calc(100% - 60px);
+	}
+
+	#index-center-img-container-01 {
+		margin: 0px;
+	}
 }

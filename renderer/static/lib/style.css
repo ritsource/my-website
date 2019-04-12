@@ -37,12 +37,15 @@ a:hover {
 
 nav {
 	position: fixed;
-	width: 100%;
+	transition: top 0.3s;
+
+	width: 400px;
+	max-width: 400px;
+	background: white;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 25px 40px;
-	max-width: 400px;
 	right: 0px;
 	margin-left: auto;
 }
@@ -53,7 +56,29 @@ nav {
 
 @media (max-width: 500px) {
 	nav {
-		max-width: calc(100vw - 80px);
-		width: calc(100vw - 80px);
+		width: calc(100vw - 50px);
+		max-width: calc(100vw - 50px);
+		padding: 25px 25px;
 	}
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	/* background: #00a82d; */
+	background: #555;
 }
