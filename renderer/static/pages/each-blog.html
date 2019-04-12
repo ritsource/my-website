@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/static/lib/style.css">
   <link rel="stylesheet" href="/static/lib/github-markdown.css">
   <link rel="stylesheet" href="/static/lib/each-blog.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   <title>{{.Data.Title}} - Ritwik Saha</title>
 </head>
 <body>
@@ -17,19 +18,44 @@
     <header>
       <h1>{{.Data.Title}}</h1>
       <p class="Blogs-Item-Info-01">by <strong>Ritwik Saha</strong>, <strong>April 2, 2019</strong></p>
+      <div class="Share-Button-Container-00 Flex-Row-Start">
+        <div class="fb-share-button" data-href="https://ritwiksaha.com/blog/{{.Data.ID}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+        <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{.Data.Title}} https://ritwiksaha.com/blog/{{.Data.ID}}">
+          <i class="fab fa-twitter"></i>
+          Tweet
+        </a>
+      </div>
     </header>
 
 
     <article class="markdown-body">
       {{.HTML}}
     </article>
+
+    <footer class="Flex-Row-Space-Between">
+      <div class="Footer-Nav-Btn-Container-00">
+        <a id="Footer-Navigation-Btn-Prev"><button disabled>&lt; Prev</button></a>
+        <a id="Footer-Navigation-Btn-Next"><button disabled>Next &gt;</button></a>
+      </div>
+      <div class="Flex-Row-Space-Between">
+        <a class="twitter-share-button" target="_blank" href="https://twitter.com/ritwik310">
+          <i class="fab fa-twitter"></i>
+          Follow&nbsp;@ritwik310
+        </a>
+        <a class="github-button" target="_blank" href="https://github.com/ritwik310">
+          <i class="fab fa-github"></i>
+          Github
+        </a>
+      </div>
+    </footer>
   
-    
+    <div id="fb-root"></div>
   </div>
 
-  <footer></footer>
-
   <script src="/static/lib/header.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script> -->
+
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2&appId=1804650849663849&autoLogAppEvents=1"></script>
+
+  <script src="/static/lib/footer-nav.js"></script>
 </body>
 </html>

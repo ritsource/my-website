@@ -50,8 +50,29 @@ nav {
 	margin-left: auto;
 }
 
+button:focus,
+input:focus,
+textarea:focus {
+	outline: none;
+}
+
 .Page-Content-99 {
 	padding-top: 68px;
+}
+
+.Flex-Row-Space-Between,
+.Flex-Row-Start {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.Flex-Row-Space-Between {
+	justify-content: space-between;
+}
+
+.Flex-Row-Start {
+	justify-content: flex-start;
 }
 
 @media (max-width: 500px) {
