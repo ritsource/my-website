@@ -104,6 +104,7 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		WriteError(w, 500, err, err.Error())
+		return
 	}
 
 	// Executing Template
