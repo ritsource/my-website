@@ -28,10 +28,12 @@ func main() {
 	// Static file server
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
 
-	// Dummy handler
+	// Route Handlers
 	r.HandleFunc("/", handlers.IndexHandler).Methods("GET")
 	r.HandleFunc("/blogs", handlers.BlogsHandler).Methods("GET")
 	r.HandleFunc("/blog/{id}", handlers.EachBlogHandler).Methods("GET")
+	r.HandleFunc("/projects", handlers.ProjectsHandler).Methods("GET")
+	r.HandleFunc("/project/{id}", handlers.EachProjectHandler).Methods("GET")
 
 	// Server
 	log.Fatal(http.ListenAndServe(":8081", r))

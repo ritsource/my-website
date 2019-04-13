@@ -165,16 +165,17 @@ footer {
 }
 
 @media (max-width: 500px) {
-	.blogs-content-00 {
+	.Each-Blog-Content-00 {
 		align-items: center;
-		width: 100vw;
+		width: calc(100vw - 50px);
 	}
 
-	.Blogs-Item-C-00 {
-		margin-bottom: 10px;
+	footer {
+		padding: 20px 0px;
+		flex-direction: column !important;
 	}
 
-	p {
-		font-size: 16px;
+	.Footer-Nav-Btn-Container-00 {
+		margin: 0px 0px 20px 0px;
 	}
 }

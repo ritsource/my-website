@@ -14,13 +14,14 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-var api string
+// Api domain
+var API string
 
 func init() {
-	api = os.Getenv("API_URI")
+	API = os.Getenv("API_URI")
 }
 
-// Blog ...
+// Blog type - In data fetched from API
 type Blog struct {
 	ID          string `json:"_id,omitempty"`
 	Title       string `json:"title"`
@@ -32,7 +33,7 @@ type Blog struct {
 	IsDeleted   bool   `json:"is_deleted"`
 }
 
-// FetchData - Fetches Data
+// FetchData - Fetches Data from the API
 func FetchData(url string, c chan []byte) {
 	// Get Public Data from API
 	resp, err := http.Get(url)
@@ -53,7 +54,8 @@ func FetchData(url string, c chan []byte) {
 	c <- b
 }
 
-// EachBlogHandler ...
+// EachBlogHandler - Fetches single Blog data and Document for that Blog,
+// Renders document (Html or Markdown) inside HTML template
 func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
@@ -61,14 +63,15 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	c2 := make(chan []byte) // Channel for Document Fetching
 
 	// Get Public Data from API
-	go FetchData("http://"+api+"/public/blog/"+bIDStr, c1)
+	go FetchData("http://"+API+"/public/blog/"+bIDStr, c1)
 
 	// Get Public Data from API
-	go FetchData("http://"+api+"/public/blog/doc/"+bIDStr, c2)
+	go FetchData("http://"+API+"/public/blog/doc/"+bIDStr, c2)
 
 	b1 := <-c1 // Blog data 1 ([]byte)
 	b2 := <-c2 // Document data 2 ([]byte)
 
+	// Check Error
 	if b1 == nil || b2 == nil {
 		WriteError(w, 500, errors.New("Couldn't Fetch Data"), "Couldn't Fetch Data")
 		return
@@ -98,9 +101,8 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parsing templates
 	t, err := template.ParseFiles(
-		"static/pages/each-blog.html",
+		"static/pages/each-doc.html",
 		"static/partials/header.html",
-		"static/partials/blogs-item.html",
 	)
 	if err != nil {
 		WriteError(w, 500, err, err.Error())
@@ -109,11 +111,13 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Executing Template
 	err = t.Execute(w, struct {
-		Data Blog
-		HTML string
+		Data    Blog
+		HTML    string
+		Project bool
 	}{
-		Data: data,
-		HTML: fmt.Sprintf("%s\n", html),
+		Data:    data,
+		HTML:    fmt.Sprintf("%s\n", html),
+		Project: false,
 	})
 
 	if err != nil {
@@ -121,13 +125,13 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// BlogsHandler ...
+// BlogsHandler - Handler for All Blogs Page
 func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 	// channel
 	c := make(chan []byte)
 
 	// Get Public Data from API
-	go FetchData("http://"+api+"/public/blog/all", c)
+	go FetchData("http://"+API+"/public/blog/all", c)
 
 	// Unmarshaling Body Data
 	var data []Blog
