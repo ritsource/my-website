@@ -34,6 +34,7 @@ func main() {
 	r.HandleFunc("/blog/{id}", handlers.EachBlogHandler).Methods("GET")
 	r.HandleFunc("/projects", handlers.ProjectsHandler).Methods("GET")
 	r.HandleFunc("/project/{id}", handlers.EachProjectHandler).Methods("GET")
+	r.HandleFunc("/preview", handlers.PreviewHandler).Methods("GET")
 
 	// Server
 	log.Fatal(http.ListenAndServe(":8081", r))
