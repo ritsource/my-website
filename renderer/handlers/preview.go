@@ -19,7 +19,8 @@ import (
 func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query() // Query String Values
 
-	if len(query["type"]) < 1 {
+	// Check if required query keys exist or not
+	if len(query["type"]) < 1 || len(query["src"]) < 1 {
 		WriteError(w, 500, errors.New("Not Enough Query Values"), "Not Enough Query Values")
 		return
 	}
@@ -27,8 +28,6 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	// Document Source
 	src := query["src"][0]
 	docType := query["type"][0] // Document type (HTML or Markdown)
-
-	fmt.Printf("%+s\n%+s\n", src, docType)
 
 	c := make(chan []byte) // Channel for Data Fetching
 
@@ -70,6 +69,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Dummy Blog Data
 	data := Blog{
 		ID:          "PreviewID",
 		Title:       "Preview Title",

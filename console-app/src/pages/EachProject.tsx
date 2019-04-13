@@ -3,6 +3,7 @@ import api from '../api';
 
 import JSONBox from '../components/JSONBox';
 import ProjectBoxes from '../components/ProjectBoxes';
+import LoadingPage from './Loading';
 
 import ProjectContext from '../contexts/ProjectContext';
 
@@ -31,9 +32,6 @@ const EachProjectPage = (props: MyProps) => {
 	// Edits Project, current => current project object, updates => updated propserties
 	const editProject = async (current: Project, updates: Project) => {
 		const projectId = current._id;
-		console.log('projectId', projectId);
-		console.log('current', current);
-		console.log('updates', updates);
 
 		delete current._id;
 		delete updates._id;
@@ -54,15 +52,21 @@ const EachProjectPage = (props: MyProps) => {
 		<div className="Page-c-00">
 			<div className="Page-Container-00">
 				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
-					<JSONBox object={project} saveFunction={editProject} />
-					<div className="Page-Vertical-Box-Container">
-						<ProjectBoxes
-							pContext={pContext}
-							project={project}
-							setProject={setProject}
-							saveFunction={editProject}
-						/>
-					</div>
+					{project ? (
+						<React.Fragment>
+							<JSONBox object={project} saveFunction={editProject} />
+							<div className="Page-Vertical-Box-Container">
+								<ProjectBoxes
+									pContext={pContext}
+									project={project}
+									setProject={setProject}
+									saveFunction={editProject}
+								/>
+							</div>
+						</React.Fragment>
+					) : (
+						<LoadingPage />
+					)}
 				</div>
 			</div>
 		</div>

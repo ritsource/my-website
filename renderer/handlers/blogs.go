@@ -14,7 +14,7 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-// Api domain
+// API domain
 var API string
 
 func init() {

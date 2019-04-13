@@ -18,7 +18,7 @@ const BlogBoxes = (props: MyProps) => {
 
 	return (
 		<div className="ProjectBoxes-c-00">
-			<SubBoxName object={blog} saveFunction={saveFunction} />
+			<SubBoxName object={blog} saveFunction={saveFunction} isProject={false} />
 			<SubBoxDoc object={blog} saveFunction={saveFunction} />
 			<SubBoxBool object={blog} saveFunction={saveFunction} />
 		</div>

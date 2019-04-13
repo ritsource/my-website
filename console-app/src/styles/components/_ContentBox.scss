@@ -5,6 +5,19 @@
 	.ContentBox-Types-Btn-Container-01 {
 		margin-left: 20px;
 
+		.ContentBox-Add-Btn-02 {
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid white;
+			background: white;
+			color: var(--safe-green-color);
+			font-weight: bold;
+			font-size: 16px;
+			cursor: pointer;
+
+			margin-right: 20px;
+		}
+
 		span {
 			text-transform: capitalize;
 			color: var(--text-color-light);

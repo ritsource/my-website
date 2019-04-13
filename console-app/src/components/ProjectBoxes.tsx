@@ -18,7 +18,7 @@ const ProjectBoxes = (props: MyProps) => {
 
 	return (
 		<div className="ProjectBoxes-c-00">
-			<SubBoxName object={project} saveFunction={saveFunction} />
+			<SubBoxName object={project} saveFunction={saveFunction} isProject={true} />
 			<SubBoxDoc object={project} saveFunction={saveFunction} />
 			<SubBoxBool object={project} saveFunction={saveFunction} />
 		</div>

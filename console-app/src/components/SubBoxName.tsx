@@ -6,22 +6,28 @@ import Blog from '../types/blog';
 type MyProps = {
 	object: any; // Project | Blog;
 	saveFunction: (c: any, u: any) => void;
+	isProject: boolean; // True if for Project, False for Blogs
 };
 
 const SubBoxName = (props: MyProps) => {
-	const { object } = props;
+	const { object, isProject } = props;
 
 	const [ title, setTitle ] = useState(object ? object.title : '');
 	const [ description, setDescription ] = useState(object ? object.description : '');
 	const [ link, setLink ] = useState(object ? object.link : '');
+	const [ author, setAuthor ] = useState(object ? object.author : '');
+	const [ formatted_date, setFormattedDate ] = useState(object ? object.formatted_date : '');
+
 	const [ isAsync, setIsAsync ] = useState(false); // Is Async
 	const [ errorMsg, setErrorMsg ] = useState(false);
 	const [ boxEditable, setBoxEditable ] = useState(false); // Check if Title, Emoji, or Desc. has changed
 
 	const setPropsValToState = () => {
 		setTitle(object ? object.title : '');
-		setLink(object ? object.link : '');
 		setDescription(object ? object.description : '');
+		setLink(object ? object.link : '');
+		setAuthor(object ? object.author : '');
+		setFormattedDate(object ? object.formatted_date : '');
 	};
 
 	useEffect(
@@ -58,7 +64,7 @@ const SubBoxName = (props: MyProps) => {
 				}}
 			/>
 
-			{(!!link || link === '') && (
+			{isProject ? (
 				<input
 					placeholder="Project Link (Github or App Url)"
 					value={link}
@@ -68,6 +74,27 @@ const SubBoxName = (props: MyProps) => {
 						}
 					}}
 				/>
+			) : (
+				<React.Fragment>
+					<input
+						placeholder="Author (author name)"
+						value={author}
+						onChange={(e) => {
+							if (boxEditable) {
+								setAuthor(e.target.value.trim());
+							}
+						}}
+					/>
+					<input
+						placeholder="Formatted Release Date"
+						value={formatted_date}
+						onChange={(e) => {
+							if (boxEditable) {
+								setFormattedDate(e.target.value.trim());
+							}
+						}}
+					/>
+				</React.Fragment>
 			)}
 
 			{errorMsg && (
@@ -99,7 +126,9 @@ const SubBoxName = (props: MyProps) => {
 									await props.saveFunction(object, {
 										title,
 										description,
-										link
+										link,
+										author,
+										formatted_date
 									});
 									setErrorMsg(false);
 									setBoxEditable(false);

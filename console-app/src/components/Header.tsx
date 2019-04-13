@@ -22,9 +22,6 @@ const Header = () => {
 				<NavLink to="/projects" activeClassName="Header-NavLink-Active">
 					Projects
 				</NavLink>
-				<NavLink to="/images" activeClassName="Header-NavLink-Active">
-					Images
-				</NavLink>
 
 				{/* <div> */}
 				{!isLight ? (

@@ -11,7 +11,7 @@ const BlogContext = React.createContext({
 });
 
 export const BlogProvider = (props: any) => {
-	const [ blogs, setBlogs ] = useState([]);
+	const [ blogs, setBlogs ]: any = useState([]);
 
 	useEffect(() => {
 		(async () => {
@@ -24,20 +24,27 @@ export const BlogProvider = (props: any) => {
 		})();
 	}, []);
 
+	useEffect(
+		() => {
+			console.log('B', blogs);
+		},
+		[ blogs.length ]
+	);
+
 	const readBlogs = (allBlogs: any) => {
 		setBlogs(allBlogs);
 	};
 
-	const addBlog = (newBlog: any) => {
-		setBlogs(blogs.concat(newBlog));
+	const addBlog = async (newBlog: Blog) => {
+		setBlogs([ ...blogs, newBlog ]);
 	};
 
 	const updateBlog = (newBlog: any) => {
-		setBlogs(blogs.filter(({ _id }) => _id !== newBlog._id).concat(newBlog));
+		setBlogs(blogs.filter(({ _id }: any) => _id !== newBlog._id).concat(newBlog));
 	};
 
 	const deleteBlog = (blogId: string) => {
-		setBlogs([ ...blogs.filter(({ _id }) => _id !== blogId) ]);
+		setBlogs([ ...blogs.filter(({ _id }: any) => _id !== blogId) ]);
 	};
 
 	return (
