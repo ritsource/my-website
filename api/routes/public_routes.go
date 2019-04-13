@@ -17,8 +17,8 @@ import (
 
 // Blog Routes
 
-// ReadPublicBlogs -
-func ReadPublicBlogs(w http.ResponseWriter, r *http.Request) {
+// PubReadBlogs -
+func PubReadBlogs(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mBlogs models.Blogs
 
@@ -43,8 +43,8 @@ func ReadPublicBlogs(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOnePublicBlog - Read Public blog by ID
-func ReadOnePublicBlog(w http.ResponseWriter, r *http.Request) {
+// PubReadBlogByID - Read Public blog by ID
+func PubReadBlogByID(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mBlog models.Blog
 
@@ -72,12 +72,12 @@ func ReadOnePublicBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// GetBlogDocument - This Handler Queries Blog from the database first, then checks
+// PubGetBlogDocument - This Handler Queries Blog from the database first, then checks
 // if file exists in the cache or not, (in the "/satic" folder), (K8s PV in Prod),
 // If file exists then serves it else redirects the user to the source
 // saved in the mongo document, also if file doesn't exist the it downloads
 // the file in the static folder
-func GetBlogDocument(w http.ResponseWriter, r *http.Request) {
+func PubGetBlogDocument(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mBlog models.Blog // Blog struct (models.Blog)
 
@@ -129,8 +129,8 @@ func GetBlogDocument(w http.ResponseWriter, r *http.Request) {
 
 // Project Routes
 
-// ReadPublicProjects -
-func ReadPublicProjects(w http.ResponseWriter, r *http.Request) {
+// PubReadProjects -
+func PubReadProjects(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mProjects models.Projects
 
@@ -155,8 +155,8 @@ func ReadPublicProjects(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOnePublicProject - Read Public Project By ID
-func ReadOnePublicProject(w http.ResponseWriter, r *http.Request) {
+// PubReadProjectByID - Read Public Project By ID
+func PubReadProjectByID(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mProject models.Project
 
@@ -184,12 +184,12 @@ func ReadOnePublicProject(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// GetProjectDocument - This Handler Queries Project from the database first, then checks
+// PubGetProjectDocument - This Handler Queries Project from the database first, then checks
 // if file exists or not in the "/satic" folder, (K8s PV in Prod),
 // If file exists then serves it else redirects the user to the source
 // saved in the mongo document, also if file doesn't exist the it downloads
 // the file in the static folder
-func GetProjectDocument(w http.ResponseWriter, r *http.Request) {
+func PubGetProjectDocument(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mProject models.Project // Project struct
 

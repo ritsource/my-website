@@ -10,7 +10,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// CreateBlog ...
+// CreateBlog - Handler for creating a new Blog
+// Note: This doesn't do check for bldy data,
+// assuming that all fields must be present from the admin side
 func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	var body models.Blog // to save Blog JSON body
 	var err error
@@ -41,8 +43,8 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOneBlog - ...
-func ReadOneBlog(w http.ResponseWriter, r *http.Request) {
+// ReadBlogByID - Reads a Single Blog
+func ReadBlogByID(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mBlog models.Blog
 

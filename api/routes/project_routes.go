@@ -45,8 +45,8 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 	w.Write(bData)
 }
 
-// ReadOneProject - ...
-func ReadOneProject(w http.ResponseWriter, r *http.Request) {
+// ReadProjectByID - ...
+func ReadProjectByID(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var mProject models.Project
 
