@@ -6,17 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/static/lib/style.css">
   <link rel="stylesheet" href="/static/lib/blogs.css">
-  <title>Blogs - Ritwik Saha</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link rel="shortcut icon" href="/static/favicon.ico"/>
+  <title>Projects - Ritwik Saha</title>
 </head>
 <body>
 
   {{template "header"}}
 
   <div class="Page-Content-99 blogs-content-00">
-  {{range .}}
-    {{template "projects-item" .}}
-  {{end}}
+    {{range .}}
+      {{template "projects-item" .}}
+    {{end}}
   </div>
+
+  {{template "social-btns"}}
   
   <script src="/static/serviceWorker.js"></script>
   <script src="/static/lib/main.js"></script>

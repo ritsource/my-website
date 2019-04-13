@@ -119,6 +119,7 @@ func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
 		"static/pages/projects.html",
 		"static/partials/header.html",
 		"static/partials/projects-item.html",
+		"static/partials/social-btns.html",
 	)
 	if err != nil {
 		WriteError(w, 500, err, err.Error())

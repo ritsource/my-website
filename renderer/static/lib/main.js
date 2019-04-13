@@ -47,3 +47,26 @@ if ('serviceWorker' in navigator) {
 			.catch((err) => console.log(`Service Worker: Error: ${err}`));
 	});
 }
+
+// Button POP-UP Animation
+
+// For Document Navigation in Footer
+setTimeout(() => {
+	(function() {
+		const conatiner = document.querySelector('.Bottom-Social-Btn-Container-00');
+		console.log(conatiner.childNodes);
+
+		cArr = Array.prototype.slice.call(conatiner.childNodes);
+
+		for (let i = 0; i < cArr.length; i++) {
+			const element = cArr[i];
+			(function(e) {
+				setTimeout(() => {
+					if (e.style) {
+						e.style.display = 'flex';
+					}
+				}, i * 100);
+			})(element);
+		}
+	})();
+}, 600);

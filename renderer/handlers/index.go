@@ -14,8 +14,13 @@ func WriteError(w http.ResponseWriter, status int, err error, msg string) {
 	fmt.Println("Error:", err.Error())
 }
 
+// IndexHandler ...
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("static/pages/index.html", "static/partials/header.html")
+	t, err := template.ParseFiles(
+		"static/pages/index.html",
+		"static/partials/header.html",
+		"static/partials/social-btns.html",
+	)
 	if err != nil {
 		WriteError(w, 500, err, err.Error())
 	}

@@ -43,8 +43,8 @@ nav {
 	position: fixed;
 	transition: top 0.3s;
 
-	width: 400px;
-	max-width: 400px;
+	width: 200px;
+	max-width: 200px;
 	background: white;
 	display: flex;
 	justify-content: space-between;
@@ -62,10 +62,12 @@ textarea:focus {
 
 .Page-Content-99 {
 	padding-top: 68px;
+	min-height: calc(100vh - 68px);
 }
 
 .Flex-Row-Space-Between,
-.Flex-Row-Start {
+.Flex-Row-Start,
+.Flex-Row-End {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -79,11 +81,73 @@ textarea:focus {
 	justify-content: flex-start;
 }
 
+.Flex-Row-End {
+	justify-content: flex-end;
+}
+
+/* Cute little Buttons */
+/* Brand Specific Btns */
+.Cute-Btn {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+
+	color: white;
+	font-size: 11px;
+	font-weight: bold;
+	border-radius: 4px;
+	padding: 0px 6px;
+	height: 20px;
+	text-decoration: none !important;
+}
+.Cute-Btn i {
+	margin-right: 6px;
+}
+.Cute-Btn-M-Left {
+	margin-left: 10px;
+}
+.Cute-Btn-M-Right {
+	margin-right: 10px;
+}
+.Cute-Btn-Twitter {
+	background: #1da1f2;
+}
+.Cute-Btn-Github {
+	background: #333333;
+}
+.Cute-Btn-Medium {
+	background: #00ab6c;
+}
+
+.Bottom-Social-Btn-Container-00 {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	width: 400px;
+	padding: 25px 40px;
+}
+
+.Bottom-Social-Btn-Container-00 a {
+	display: none;
+}
+
 @media (max-width: 500px) {
 	nav {
 		width: calc(100vw - 50px);
 		max-width: calc(100vw - 50px);
 		padding: 25px 25px;
+		justify-content: flex-end;
+	}
+
+	.nav-link {
+		margin-left: 30px;
+	}
+
+	.Bottom-Social-Btn-Container-00 {
+		width: calc(100% - 50px);
+		padding: 25px 25px 25px 25px;
+		justify-content: center;
 	}
 }
 
