@@ -86,7 +86,7 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	// Sending sesponse
-	isDev := os.Getenv("isDev") == "true"
+	isDev := os.Getenv("DEV_MODE") == "true"
 	fmt.Println("isDev", isDev)
 	if isDev {
 		http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)

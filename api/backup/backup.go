@@ -47,6 +47,7 @@ func BackItup() {
 func cloneBlogs(ch chan string) {
 	var blogs models.Blogs
 
+	// TODO: Try .Iter()
 	blogs, err := blogs.Read(bson.M{})
 	if err != nil {
 		// return nil, err

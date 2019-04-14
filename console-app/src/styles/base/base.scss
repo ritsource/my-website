@@ -26,6 +26,16 @@ a {
 	}
 }
 
+.a-exception {
+	color: var(--theme-color);
+
+	&:hover,
+	&:focus {
+		color: var(--theme-color);
+		text-decoration: underline;
+	}
+}
+
 button,
 input,
 textarea {

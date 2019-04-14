@@ -19,17 +19,17 @@ const SubBoxDelete = (props: MyProps) => {
 			<h4 className="Flex-Row-Space-Between">
 				Delete Object Permanently {isAsync && <div className="Theme-Loading-Spin-Div" />}
 			</h4>
-			<p className="SearchBox-Description-P-01">Set Title, Emoji and Description for your Project</p>
+			<p className="SearchBox-Description-P-01">Permanently delete this Project/Blog from the Database</p>
 
-			<input
-				placeholder="ID of the Object"
-				value={id}
-				onChange={(e) => {
-					if (boxEditable) {
+			{boxEditable && (
+				<input
+					placeholder="ID of the Object"
+					value={id}
+					onChange={(e) => {
 						setId(e.target.value.trim());
-					}
-				}}
-			/>
+					}}
+				/>
+			)}
 
 			{errorMsg && (
 				<p
@@ -67,7 +67,7 @@ const SubBoxDelete = (props: MyProps) => {
 								setIsAsync(false);
 							}}
 						>
-							Delete
+							Delete Permanently
 						</button>
 						<button
 							style={{ marginLeft: '12px' }}
@@ -82,8 +82,8 @@ const SubBoxDelete = (props: MyProps) => {
 						</button>
 					</React.Fragment>
 				) : (
-					<button className="Theme-Btn-Main" onClick={() => setBoxEditable(true)}>
-						Edit
+					<button className="Theme-Btn-Red" onClick={() => setBoxEditable(true)}>
+						Delete
 					</button>
 				)}
 			</div>

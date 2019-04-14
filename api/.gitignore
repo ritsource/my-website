@@ -6,4 +6,5 @@ cache/*
 
 server
 
+*secrets.sh
 *secret.sh

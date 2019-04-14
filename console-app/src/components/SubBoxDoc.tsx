@@ -37,7 +37,22 @@ const SubBoxName = (props: MyProps) => {
 				Document {isAsync && <div className="Theme-Loading-Spin-Div" />}
 				{false && <div className="Theme-Loading-Spin-Div" />}
 			</h4>
-			<p className="SearchBox-Description-P-01">Edit Document (Project Documentation or Blog Content)</p>
+			<p className="SearchBox-Description-P-01">
+				Preview the Document{' '}
+				<a
+					className="a-exception"
+					href={
+						process.env.REACT_APP_WEBSITE_URL +
+						'/preview?' +
+						`src=${object.doc_type === 'markdown' ? object.markdown : object.html}` +
+						'&' +
+						`type=${object.doc_type}`
+					}
+					target="_blank"
+				>
+					here
+				</a>
+			</p>
 
 			<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Center">
 				<input
