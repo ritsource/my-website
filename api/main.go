@@ -55,6 +55,10 @@ func main() {
 	r.HandleFunc("/admin/project/edit/{id}", middleware.CheckAuth(routes.EditProject)).Methods("PUT")
 	r.HandleFunc("/admin/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
 
+	// Admin Delete Routes, (Permanent)
+	r.HandleFunc("/admin/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteProjectPerm)).Methods("DELETE")
+	r.HandleFunc("/admin/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogPerm)).Methods("DELETE")
+
 	// Public, Document Handlers
 	// This request get's redirected to the corresponding static file
 	// If exists in static directory, then there, else source on web (Probably Gitlab/Github)

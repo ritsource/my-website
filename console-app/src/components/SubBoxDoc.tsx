@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdDone } from 'react-icons/md';
 
-import Project from '../types/project';
-import Blog from '../types/blog';
-
 type MyProps = {
 	object: any; // Project | Blog;
 	saveFunction: (c: any, u: any) => void;

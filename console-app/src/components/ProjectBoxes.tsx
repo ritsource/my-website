@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import SubBoxName from './SubBoxName';
 import SubBoxDoc from './SubBoxDoc';
 import SubBoxBool from './SubBoxBool';
+import SubBoxDelete from './SubBoxDelete';
 
 import Project from '../types/project';
 
@@ -20,6 +21,7 @@ const ProjectBoxes = (props: MyProps) => {
 			<SubBoxName object={project} saveFunction={saveFunction} isProject={true} />
 			<SubBoxDoc object={project} saveFunction={saveFunction} />
 			<SubBoxBool object={project} saveFunction={saveFunction} />
+			<SubBoxDelete isProject={true} />
 		</div>
 	);
 };

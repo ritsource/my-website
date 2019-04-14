@@ -150,3 +150,21 @@ func DeleteBlog(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)
 }
+
+// DeleteBlogPerm - Deletes a blog DeleteBlogPerm
+func DeleteBlogPerm(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var dBlog models.Blog
+
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+
+	// Read blog
+	err = dBlog.DeletePermanent(bson.ObjectIdHex(bIDStr))
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
+}

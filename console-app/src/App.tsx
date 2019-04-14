@@ -15,9 +15,6 @@ import EachBlogPage from './pages/EachBlog';
 import LoadingPage from './pages/Loading';
 import NotFoundPage from './pages/NotFound';
 
-import { ProjectProvider } from './contexts/ProjectContext';
-import { BlogProvider } from './contexts/BlogContext';
-
 const App = (props: any) => {
 	const [ auth, setAuth ]: any = useState(null);
 
@@ -38,27 +35,23 @@ const App = (props: any) => {
 
 	return (
 		<div className="App">
-			<ProjectProvider>
-				<BlogProvider>
-					<BrowserRouter>
-						<Header />
-						{auth ? (
-							<Switch>
-								<Route path="/" exact component={HomePage} />
-								<Route path="/blogs/:blogId" exact component={EachBlogPage} />
-								<Route path="/projects/:projectId" exact component={EachProjectPage} />
-								<Route component={NotFoundPage} />
-							</Switch>
-						) : auth === null ? (
-							<Route component={LoadingPage} />
-						) : (
-							<React.Fragment>
-								<Route component={LoginPage} />
-							</React.Fragment>
-						)}
-					</BrowserRouter>
-				</BlogProvider>
-			</ProjectProvider>
+			<BrowserRouter>
+				<Header />
+				{auth ? (
+					<Switch>
+						<Route path="/" exact component={HomePage} />
+						<Route path="/blogs/:blogId" exact component={EachBlogPage} />
+						<Route path="/projects/:projectId" exact component={EachProjectPage} />
+						<Route component={NotFoundPage} />
+					</Switch>
+				) : auth === null ? (
+					<Route component={LoadingPage} />
+				) : (
+					<React.Fragment>
+						<Route component={LoginPage} />
+					</React.Fragment>
+				)}
+			</BrowserRouter>
 		</div>
 	);
 };

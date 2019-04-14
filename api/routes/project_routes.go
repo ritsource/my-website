@@ -152,3 +152,21 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)
 }
+
+// DeleteProjectPerm - Deletes a blog DeleteProjectPerm
+func DeleteProjectPerm(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var dProject models.Project
+
+	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+
+	// Delete Project
+	err = dProject.DeletePermanent(bson.ObjectIdHex(pIDStr))
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
+}

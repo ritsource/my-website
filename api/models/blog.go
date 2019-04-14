@@ -84,3 +84,9 @@ func (b Blog) Delete(id bson.ObjectId) (Blog, error) {
 
 	return b, err
 }
+
+// DeletePermanent - Deletes a document permanently
+func (b Blog) DeletePermanent(id bson.ObjectId) error {
+	err := blogCol.Remove(bson.M{"_id": id})
+	return err
+}

@@ -50,6 +50,7 @@
 
 .Theme-Btn-Main,
 .Theme-Btn-Green,
+.Theme-Btn-Red,
 .Theme-Btn-Grey {
 	padding: 6px 14px;
 	margin: 0px;
@@ -64,6 +65,11 @@
 .Theme-Btn-Green {
 	border: 1px solid var(--safe-green-color);
 	background: var(--safe-green-color);
+	color: white;
+}
+.Theme-Btn-Red {
+	border: 1px solid var(--danger-red-color);
+	background: var(--danger-red-color);
 	color: white;
 }
 .Theme-Btn-Grey {
