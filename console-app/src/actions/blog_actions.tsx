@@ -12,7 +12,7 @@ const blogData = {
 	is_deleted: false
 };
 
-export const createBlog = (extraData: any) => (dispatch, getState, api) => {
+export const createBlog = (extraData: any) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.post('/admin/blog/new', { ...blogData, ...extraData });
@@ -25,7 +25,7 @@ export const createBlog = (extraData: any) => (dispatch, getState, api) => {
 	});
 };
 
-export const readBlogs = () => (dispatch, getState, api) => {
+export const readBlogs = () => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.get('/admin/blog/all');
@@ -38,7 +38,9 @@ export const readBlogs = () => (dispatch, getState, api) => {
 	});
 };
 
-export const editBlog = (blogId: string, editData: any) => (dispatch, getState, api) => {
+export const editBlog = (blogId: string, editData: any) => (dispatch: any, getState: any, api: any) => {
+	delete editData._id; // Deleting _id from editdata (can't update ID)
+
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.put(`/admin/blog/edit/${blogId}`, editData);
@@ -51,7 +53,7 @@ export const editBlog = (blogId: string, editData: any) => (dispatch, getState, 
 	});
 };
 
-export const deleteBlog = (blogId: string) => (dispatch, getState, api) => {
+export const deleteBlog = (blogId: string) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.delete(`/admin/blog/delete/${blogId}`);

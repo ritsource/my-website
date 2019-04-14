@@ -28,21 +28,16 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Inserting Document
-	nProject, err := body.Create()
+	_, err = body.Create()
 	if err != nil {
 		WriteError(w, 422, err, "Failed to insert new document")
 		return
 	}
 
-	// Marshaling result
-	bData, err := json.Marshal(nProject)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	// Couldn't find a way to retreve ObjectID of the newly created project
+	// So as a hack just returning the whole collection
+	// redirecting to all projects
+	http.Redirect(w, r, "/admin/project/all", 302) // 302 - POST to GET
 }
 
 // ReadProjectByID - ...
@@ -141,7 +136,7 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
 	// Read Project
-	nProject, err = dProject.Delete(bson.ObjectIdHex(pIDStr))
+	nProject, err := dProject.Delete(bson.ObjectIdHex(pIDStr))
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return

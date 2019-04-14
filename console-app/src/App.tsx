@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './App.scss';
 import api from './api';
+
+import { readProjects } from './actions/project_actions';
+import { readBlogs } from './actions/blog_actions';
 
 import Header from './components/Header';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
-import BlogsPage from './pages/Blogs';
-import ProjectsPage from './pages/Projects';
 import EachProjectPage from './pages/EachProject';
 import EachBlogPage from './pages/EachBlog';
 import LoadingPage from './pages/Loading';
@@ -16,7 +18,7 @@ import NotFoundPage from './pages/NotFound';
 import { ProjectProvider } from './contexts/ProjectContext';
 import { BlogProvider } from './contexts/BlogContext';
 
-const App = () => {
+const App = (props: any) => {
 	const [ auth, setAuth ]: any = useState(null);
 
 	const checkAuth = async () => {
@@ -30,6 +32,8 @@ const App = () => {
 
 	useEffect(() => {
 		checkAuth();
+		props.readProjects();
+		props.readBlogs();
 	}, []);
 
 	return (
@@ -41,9 +45,7 @@ const App = () => {
 						{auth ? (
 							<Switch>
 								<Route path="/" exact component={HomePage} />
-								<Route path="/blogs" exact component={BlogsPage} />
 								<Route path="/blogs/:blogId" exact component={EachBlogPage} />
-								<Route path="/projects" exact component={ProjectsPage} />
 								<Route path="/projects/:projectId" exact component={EachProjectPage} />
 								<Route component={NotFoundPage} />
 							</Switch>
@@ -61,7 +63,12 @@ const App = () => {
 	);
 };
 
-export default App;
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+	readProjects: () => dispatch(readProjects()),
+	readBlogs: () => dispatch(readBlogs())
+});
+
+export default connect(null, mapDispatchToProps)(App);
 
 declare global {
 	interface Window {

@@ -18,7 +18,7 @@ const projectData = {
 	is_deleted: false
 };
 
-export const createProject = (extraData: any) => (dispatch, getState, api) => {
+export const createProject = (extraData: any) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.post('/admin/project/new', { ...projectData, ...extraData });
@@ -31,7 +31,7 @@ export const createProject = (extraData: any) => (dispatch, getState, api) => {
 	});
 };
 
-export const readProjects = () => (dispatch, getState, api) => {
+export const readProjects = () => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.get('/admin/project/all');
@@ -44,7 +44,9 @@ export const readProjects = () => (dispatch, getState, api) => {
 	});
 };
 
-export const editProject = (projectId: string, editData: any) => (dispatch, getState, api) => {
+export const editProject = (projectId: string, editData: any) => (dispatch: any, getState: any, api: any) => {
+	delete editData._id; // Deleting _id from editdata (can't update ID)
+
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.put(`/admin/project/edit/${projectId}`, editData);
@@ -57,7 +59,7 @@ export const editProject = (projectId: string, editData: any) => (dispatch, getS
 	});
 };
 
-export const deleteProject = (projectId: string) => (dispatch, getState, api) => {
+export const deleteProject = (projectId: string) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await api.delete(`/admin/project/delete/${projectId}`);

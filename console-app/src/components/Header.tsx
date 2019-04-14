@@ -16,12 +16,12 @@ const Header = () => {
 			</Link>
 
 			<div className="Header-Navbtn-Container-Div-01 Flex-Row-Center">
-				<NavLink to="/blogs" activeClassName="Header-NavLink-Active">
+				{/* <NavLink to="/blogs" activeClassName="Header-NavLink-Active">
 					Blogs
 				</NavLink>
 				<NavLink to="/projects" activeClassName="Header-NavLink-Active">
 					Projects
-				</NavLink>
+				</NavLink> */}
 
 				{/* <div> */}
 				{!isLight ? (

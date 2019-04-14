@@ -1,52 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import { connect } from 'react-redux';
 
+import { createProject, readProjects, editProject } from '../actions/project_actions';
 import JSONBox from '../components/JSONBox';
 import ProjectBoxes from '../components/ProjectBoxes';
 import LoadingPage from './Loading';
-
-import ProjectContext from '../contexts/ProjectContext';
 
 import Project from '../types/project';
 
 type MyProps = {
 	history: any;
 	match: any;
-	pContext: any;
+	projects: Array<Project>;
+	editProject: (x: string, y: any) => void;
 };
 
 const EachProjectPage = (props: MyProps) => {
-	const { pContext } = props;
+	const { projects } = props;
 
 	const [ project, setProject ]: any = useState(
-		pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId)
+		projects.find(({ _id }: any) => _id === props.match.params.projectId)
 	);
 
 	useEffect(
 		() => {
-			setProject(pContext.projects.find(({ _id }: any) => _id === props.match.params.projectId));
+			setProject(projects.find(({ _id }: any) => _id === props.match.params.projectId));
 		},
-		[ pContext.projects ]
+		[ projects ]
 	);
-
-	// Edits Project, current => current project object, updates => updated propserties
-	const editProject = async (current: Project, updates: Project) => {
-		const projectId = current._id;
-
-		delete current._id;
-		delete updates._id;
-
-		try {
-			const response = await api.put(`/admin/project/edit/${projectId}`, {
-				...current,
-				...updates
-			});
-			pContext.updateProject(response.data);
-		} catch (error) {
-			// return error;
-			throw error.message;
-		}
-	};
 
 	return (
 		<div className="Page-c-00">
@@ -54,13 +35,16 @@ const EachProjectPage = (props: MyProps) => {
 				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
 					{project ? (
 						<React.Fragment>
-							<JSONBox object={project} saveFunction={editProject} />
+							{/* In the function below c = current-project-data; u = current-blog-data */}
+							<JSONBox
+								object={project}
+								saveFunction={(c, u) => props.editProject(c._id, { ...c, ...u })}
+							/>
 							<div className="Page-Vertical-Box-Container">
 								<ProjectBoxes
-									pContext={pContext}
 									project={project}
 									setProject={setProject}
-									saveFunction={editProject}
+									saveFunction={(c, u) => props.editProject(c._id, { ...c, ...u })}
 								/>
 							</div>
 						</React.Fragment>
@@ -73,8 +57,13 @@ const EachProjectPage = (props: MyProps) => {
 	);
 };
 
-export default (props: any) => (
-	<ProjectContext.Consumer>
-		{(pContext) => <EachProjectPage pContext={pContext} {...props} />}
-	</ProjectContext.Consumer>
-);
+const mapStateToProps = ({ projects }: { projects: Array<Project> }) => ({
+	projects: projects || []
+});
+
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+	readProjects: () => dispatch(readProjects()),
+	editProject: (x: string, y: any) => dispatch(editProject(x, y))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EachProjectPage);

@@ -2,12 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdBlock, MdLockOutline, MdLockOpen } from 'react-icons/md';
 
-import { Data } from '../data/data';
-
-import Project from '../types/project';
-import Blog from '../types/project';
-import { object } from 'prop-types';
-
 type MyProps = {
 	// this could be Project & Blog, but for convicince let it be one
 	object: any;

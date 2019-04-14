@@ -1,64 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import { connect } from 'react-redux';
 
+import { readBlogs, createBlog, editBlog } from '../actions/blog_actions';
 import JSONBox from '../components/JSONBox';
 import BlogBoxes from '../components/BlogBoxes';
-
-import BlogContext from '../contexts/BlogContext';
+import LoadingPage from './Loading';
 
 import Blog from '../types/blog';
 
-type MyProps = {
-	history: any;
-	match: any;
-	bContext: any;
-};
+const EachBlogPage = (props: any) => {
+	const { blogs } = props;
 
-const EachBlogPage = (props: MyProps) => {
-	const { bContext } = props;
-
-	const [ blog, setBlog ]: any = useState(bContext.blogs.find(({ _id }: any) => _id === props.match.params.blogId));
+	const [ blog, setBlog ]: any = useState(blogs.find(({ _id }: any) => _id === props.match.params.blogId));
 
 	useEffect(
 		() => {
-			setBlog(bContext.blogs.find(({ _id }: any) => _id === props.match.params.blogId));
+			setBlog(blogs.find(({ _id }: any) => _id === props.match.params.blogId));
 		},
-		[ bContext.blogs ]
+		[ blogs ]
 	);
-
-	// Edits Blog, current => current blog object, updates => updated propserties
-	const editBlog = async (current: Blog, updates: Blog) => {
-		const blogId = current._id;
-
-		delete current._id;
-		delete updates._id;
-
-		try {
-			const response = await api.put(`/admin/blog/edit/${blogId}`, {
-				...current,
-				...updates
-			});
-			bContext.updateBlog(response.data);
-		} catch (error) {
-			// return error;
-			throw error.message;
-		}
-	};
 
 	return (
 		<div className="Page-c-00">
 			<div className="Page-Container-00">
 				<div style={{ alignItems: 'flex-start' }} className="Flex-Row-Space-Between">
-					<JSONBox object={blog} saveFunction={editBlog} />
-					<div className="Page-Vertical-Box-Container">
-						<BlogBoxes bContext={bContext} blog={blog} setBlog={setBlog} saveFunction={editBlog} />
-					</div>
+					{blog ? (
+						<React.Fragment>
+							{/* In the function below c = current-blog-data; u = new-blog-data */}
+							<JSONBox object={blog} saveFunction={(c, u) => props.editBlog(c._id, { ...c, ...u })} />
+							<div className="Page-Vertical-Box-Container">
+								<BlogBoxes
+									blog={blog}
+									setBlog={setBlog}
+									saveFunction={(c, u) => props.editBlog(c._id, { ...c, ...u })}
+								/>
+							</div>
+						</React.Fragment>
+					) : (
+						<LoadingPage />
+					)}
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export default (props: any) => (
-	<BlogContext.Consumer>{(bContext) => <EachBlogPage bContext={bContext} {...props} />}</BlogContext.Consumer>
-);
+const mapStateToProps = ({ blogs }: { blogs: Array<Blog> }) => ({
+	blogs: blogs || []
+});
+
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+	readBlogs: () => dispatch(readBlogs()),
+	editBlog: (x: string, y: any) => dispatch(editBlog(x, y))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EachBlogPage);

@@ -1,81 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
 import { MdLibraryAdd } from 'react-icons/md';
+import { connect } from 'react-redux';
 
+import { createProject, readProjects } from '../actions/project_actions';
+import { createBlog, readBlogs } from '../actions/blog_actions';
 import ContentBoxItem from './ContentBoxItem';
-import BlogContext from '../contexts/BlogContext';
-import ProjectContext from '../contexts/ProjectContext';
 
 import Project from '../types/project';
 import Blog from '../types/blog';
 
-type MyProps = {
-	projects: Array<Project>;
-	readProjects: (a: any) => void;
-	pContext: any;
-	bContext: any;
-};
-
-const ContentBox = (props: MyProps) => {
-	const { pContext, bContext } = props;
+const ContentBox = (props: any) => {
+	const { projects, blogs } = props;
 
 	const contentTypes = [ 'projects', 'blogs' ];
 
-	const [ objects, setObjects ]: any = useState([]);
 	const [ activeType, setActiveType ] = useState(0);
 
-	const fetchData = async () => {
-		let reqPath = '';
-
-		if (contentTypes[activeType] === 'projects') {
-			reqPath = '/admin/project/all';
-		} else if (contentTypes[activeType] === 'blogs') {
-			reqPath = '/admin/blog/all';
-		}
-
-		try {
-			const response = await api.get(reqPath);
-			pContext.readProjects(response.data);
-			setObjects(response.data);
-		} catch (error) {
-			setObjects(false);
-		}
-	};
-
-	// Creates new Project with Default Values
-	const CreateNew = async (cType: string) => {
-		// cType - Content Type, Proejct or Blog
-		try {
-			const response = await api.post(
-				`/admin/${cType}/new`,
-				cType === 'project'
-					? { ...projectData, title: `Project ${objects.length + 1}` }
-					: { ...blogData, title: `Project ${objects.length + 1}` }
-			);
-			// if (cType === 'project') {
-			// 	pContext.addProject(response.data);
-			// } else {
-			// 	bContext.addBlog(response.data);
-			// }
-			// setObjects([ response.data, ...objects ]);
-			await fetchData();
-			const element = document.querySelector('.ContentBox-Item-Container-01');
-			if (element) {
-				element.scrollTop = element.scrollHeight;
-			}
-		} catch (error) {
-			// return error;
-			throw error.message;
-		}
-	};
+	const isProject = contentTypes[activeType] === 'projects';
 
 	useEffect(
 		() => {
-			setObjects([]);
-			fetchData();
+			if (isProject) {
+				props.readProjects();
+			} else {
+				props.readBlogs();
+			}
 		},
 		[ activeType ]
 	);
+
+	const objects = isProject ? projects : blogs;
 
 	return (
 		<div className="SearchBox-c-00 ContentBox-c-00 Theme-Box-Shadow">
@@ -98,8 +52,16 @@ const ContentBox = (props: MyProps) => {
 
 				<button
 					className="ContentBox-Add-Btn-02 Flex-Row-Center"
-					onClick={() => {
-						CreateNew(activeType === 0 ? 'project' : 'blog');
+					onClick={async () => {
+						if (isProject) {
+							await props.createProject({ title: `Project ${projects.length + 1}` });
+						} else {
+							await props.createBlog({ title: `Blog ${blogs.length + 1}` });
+						}
+						const element = document.querySelector('.ContentBox-Item-Container-01');
+						if (element) {
+							element.scrollTop = element.scrollHeight;
+						}
 					}}
 				>
 					<MdLibraryAdd style={{ fontSize: '16px', marginRight: '5px' }} />
@@ -128,36 +90,16 @@ const ContentBox = (props: MyProps) => {
 	);
 };
 
-export default (props: any) => (
-	<ProjectContext.Consumer>
-		{(pContext) => (
-			<BlogContext.Consumer>
-				{(bContext) => <ContentBox bContext={bContext} pContext={pContext} {...props} />}
-			</BlogContext.Consumer>
-		)}
-	</ProjectContext.Consumer>
-);
+const mapStateToProps = ({ blogs, projects }: { blogs: Array<Blog>; projects: Array<Project> }) => ({
+	projects: projects || [],
+	blogs: blogs || []
+});
 
-// Default Content Data
-const projectData = {
-	title: 'Title',
-	description: 'Description',
-	link: '',
-	html: '',
-	markdown: '',
-	doc_type: 'markdown',
-	is_public: false,
-	is_deleted: false
-};
+const mapDispatchToProps = (dispatch: (x: any) => void) => ({
+	createProject: (x: any) => dispatch(createProject(x)),
+	readProjects: () => dispatch(readProjects()),
+	createBlog: (x: any) => dispatch(createBlog(x)),
+	readBlogs: () => dispatch(readBlogs())
+});
 
-const blogData = {
-	title: 'Title',
-	description: 'Description',
-	author: 'Ritwik Saha',
-	formatted_date: 'January 1, 2025',
-	html: '',
-	markdown: '',
-	doc_type: 'markdown',
-	is_public: false,
-	is_deleted: false
-};
+export default connect(mapStateToProps, mapDispatchToProps)(ContentBox);

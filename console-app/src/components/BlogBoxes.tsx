@@ -8,7 +8,6 @@ import Blog from '../types/blog';
 
 type MyProps = {
 	blog: Blog;
-	bContext: any;
 	setBlog: () => void;
 	saveFunction: (c: Blog, u: Blog) => void;
 };

@@ -26,21 +26,16 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Inserting Document
-	nBlog, err := body.Create()
+	_, err = body.Create()
 	if err != nil {
 		WriteError(w, 422, err, "Failed to insert new document")
 		return
 	}
 
-	// Marshaling result
-	bData, err := json.Marshal(nBlog)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	// Couldn't find a way to retreve ObjectID of the newly created blog
+	// So as a hack just returning the whole collection
+	// redirecting to all blogs
+	http.Redirect(w, r, "/admin/blog/all", 302) // 302 - POST to GET
 }
 
 // ReadBlogByID - Reads a Single Blog

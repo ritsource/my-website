@@ -8,7 +8,6 @@ import Project from '../types/project';
 
 type MyProps = {
 	project: Project;
-	pContext: any;
 	setProject: () => void;
 	saveFunction: (c: Project, u: Project) => void;
 };

@@ -28,7 +28,7 @@ export const BlogProvider = (props: any) => {
 		() => {
 			console.log('B', blogs);
 		},
-		[ blogs.length ]
+		[ blogs ]
 	);
 
 	const readBlogs = (allBlogs: any) => {
