@@ -141,12 +141,19 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
 	// Read Project
-	_, err = dProject.Delete(bson.ObjectIdHex(pIDStr))
+	nProject, err = dProject.Delete(bson.ObjectIdHex(pIDStr))
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Marshaling result
+	bData, err := json.Marshal(nProject)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
+	w.Write(bData)
 }

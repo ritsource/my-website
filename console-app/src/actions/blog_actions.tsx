@@ -1,0 +1,65 @@
+import { CREATE_BLOG, DELETE_BLOG_BY_ID, EDIT_BLOG_BY_ID, READ_BLOGS, READ_BLOG_BY_ID } from './action_types';
+
+const blogData = {
+	title: 'Title',
+	description: 'Description',
+	author: 'Ritwik Saha',
+	formatted_date: 'January 1, 2025',
+	html: '',
+	markdown: '',
+	doc_type: 'markdown',
+	is_public: false,
+	is_deleted: false
+};
+
+export const createBlog = (extraData: any) => (dispatch, getState, api) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const response = await api.post('/admin/blog/new', { ...blogData, ...extraData });
+			dispatch({ type: CREATE_BLOG, data: response.data });
+			resolve(response.data);
+		} catch (error) {
+			console.log(error);
+			reject(error);
+		}
+	});
+};
+
+export const readBlogs = () => (dispatch, getState, api) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const response = await api.get('/admin/blog/all');
+			dispatch({ type: READ_BLOGS, data: response.data });
+			resolve(response.data);
+		} catch (error) {
+			console.log(error);
+			reject(error);
+		}
+	});
+};
+
+export const editBlog = (blogId: string, editData: any) => (dispatch, getState, api) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const response = await api.put(`/admin/blog/edit/${blogId}`, editData);
+			dispatch({ type: EDIT_BLOG_BY_ID, data: response.data });
+			resolve(response.data);
+		} catch (error) {
+			console.log(error);
+			reject(error);
+		}
+	});
+};
+
+export const deleteBlog = (blogId: string) => (dispatch, getState, api) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const response = await api.delete(`/admin/blog/delete/${blogId}`);
+			dispatch({ type: DELETE_BLOG_BY_ID, data: response.data });
+			resolve(response.data);
+		} catch (error) {
+			console.log(error);
+			reject(error);
+		}
+	});
+};

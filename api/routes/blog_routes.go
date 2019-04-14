@@ -139,12 +139,19 @@ func DeleteBlog(w http.ResponseWriter, r *http.Request) {
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
 	// Read blog
-	_, err = dBlog.Delete(bson.ObjectIdHex(bIDStr))
+	nBlog, err := dBlog.Delete(bson.ObjectIdHex(bIDStr))
+	if err != nil {
+		WriteError(w, 422, err, "Unable to query data")
+		return
+	}
+
+	// Marshaling result
+	bData, err := json.Marshal(nBlog)
 	if err != nil {
 		WriteError(w, 422, err, "Unable to query data")
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
+	w.Write(bData)
 }
