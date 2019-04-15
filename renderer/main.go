@@ -4,17 +4,10 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/ritwik310/my-website/renderer/handlers"
 )
-
-var api string
-
-func init() {
-	api = os.Getenv("API_URI")
-}
 
 func main() {
 	// Router (Gorilla Mux)

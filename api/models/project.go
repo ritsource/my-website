@@ -16,9 +16,9 @@ type Project struct {
 	Markdown    string        `bson:"markdown" json:"markdown"`
 	DocType     string        `bson:"doc_type" json:"doc_type"`
 	Link        string        `bson:"link" json:"link"`
-	// ImageURL    string        `bson:"image_url" json:"image_url"`
-	IsPublic  bool `bson:"is_public" json:"is_public"`
-	IsDeleted bool `bson:"is_deleted" json:"is_deleted"`
+	CreatedAt   int32         `bson:"created_at" json:"created_at"`
+	IsPublic    bool          `bson:"is_public" json:"is_public"`
+	IsDeleted   bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
 // MongoDB projectCollection for Files
@@ -33,7 +33,7 @@ type Projects []Project
 
 // ReadAll - ..
 func (ps Projects) Read(s bson.M) (Projects, error) {
-	err := projectCol.Find(s).All(&ps)
+	err := projectCol.Find(s).Sort("-created_at").All(&ps)
 	if err != nil {
 		return nil, err
 	}

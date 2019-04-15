@@ -71,14 +71,16 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Dummy Blog Data
 	data := Blog{
-		ID:          "PreviewID",
-		Title:       "Preview Title",
-		Description: "Preview Description",
-		HTML:        src,
-		Markdown:    src,
-		DocType:     docType,
-		IsPublic:    true,
-		IsDeleted:   false,
+		ID:            "PreviewID",
+		Title:         "Preview Title",
+		Description:   "Preview Description",
+		Author:        "Ritwik Saha",
+		FormattedDate: "April 2, 2019",
+		HTML:          src,
+		Markdown:      src,
+		DocType:       docType,
+		IsPublic:      true,
+		IsDeleted:     false,
 	}
 
 	// Executing Template

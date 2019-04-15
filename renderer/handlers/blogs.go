@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -18,19 +17,21 @@ import (
 var API string
 
 func init() {
-	API = os.Getenv("API_URI")
+	API = os.Getenv("API_URL")
 }
 
 // Blog type - In data fetched from API
 type Blog struct {
-	ID          string `json:"_id,omitempty"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	HTML        string `json:"html"`
-	Markdown    string `json:"markdown"`
-	DocType     string `json:"doc_type"`
-	IsPublic    bool   `json:"is_public"`
-	IsDeleted   bool   `json:"is_deleted"`
+	ID            string `json:"_id,omitempty"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
+	Author        string `json:"author"`
+	FormattedDate string `json:"formatted_date"`
+	HTML          string `json:"html"`
+	Markdown      string `json:"markdown"`
+	DocType       string `json:"doc_type"`
+	IsPublic      bool   `json:"is_public"`
+	IsDeleted     bool   `json:"is_deleted"`
 }
 
 // FetchData - Fetches Data from the API
@@ -63,17 +64,17 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	c2 := make(chan []byte) // Channel for Document Fetching
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/blog/"+bIDStr, c1)
+	go FetchData(API+"/public/blog/"+bIDStr, c1)
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/blog/doc/"+bIDStr, c2)
+	go FetchData(API+"/public/blog/doc/"+bIDStr, c2)
 
 	b1 := <-c1 // Blog data 1 ([]byte)
 	b2 := <-c2 // Document data 2 ([]byte)
 
 	// Check Error
 	if b1 == nil || b2 == nil {
-		WriteError(w, 500, errors.New("Couldn't Fetch Data"), "Couldn't Fetch Data")
+		RenderError(w, 404, "Blog Not Found")
 		return
 	}
 
@@ -82,7 +83,7 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal(b1, &data)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -105,7 +106,7 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 		"static/partials/header.html",
 	)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -131,14 +132,14 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 	c := make(chan []byte)
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/blog/all", c)
+	go FetchData(API+"/public/blog/all", c)
 
 	// Unmarshaling Body Data
 	var data []Blog
 
 	err := json.Unmarshal(<-c, &data)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -150,7 +151,7 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 		"static/partials/social-btns.html",
 	)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 	}
 
 	// Executing Template

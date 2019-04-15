@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"time"
 
 	// "io/ioutil"
 	"fmt"
@@ -26,6 +27,9 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, 422, err, "Unable to read request body")
 		return
 	}
+
+	// Created AT
+	body.CreatedAt = int32(time.Now().Unix())
 
 	// Inserting Document
 	_, err = body.Create()

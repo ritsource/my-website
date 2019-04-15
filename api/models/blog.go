@@ -18,6 +18,7 @@ type Blog struct {
 	HTML          string        `bson:"html" json:"html"`
 	Markdown      string        `bson:"markdown" json:"markdown"`
 	DocType       string        `bson:"doc_type" json:"doc_type"`
+	CreatedAt     int32         `bson:"created_at" json:"created_at"`
 	IsPublic      bool          `bson:"is_public" json:"is_public"`
 	IsDeleted     bool          `bson:"is_deleted" json:"is_deleted"`
 }
@@ -34,7 +35,7 @@ type Blogs []Blog
 
 // ReadAll - ..
 func (bs Blogs) Read(s bson.M) (Blogs, error) {
-	err := blogCol.Find(s).All(&bs)
+	err := blogCol.Find(s).Sort("created_at").All(&bs)
 	if err != nil {
 		return nil, err
 	}

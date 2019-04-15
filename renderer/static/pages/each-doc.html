@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="/static/lib/each-doc.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   <link rel="shortcut icon" href="/static/favicon.ico"/>
+  <meta name="og:title" property="og:title" content="{{.Data.Title}}">
+  <meta name="og:type" property="og:type" content="article">
+  <meta name="og:description" property="og:description" content="{{.Data.Description}}">
+  <meta name="og:image" property="og:image" content="/static/mypic.jpeg">
+  <meta name="description" content="{{.Data.Description}}">
   <title>{{.Data.Title}} - Ritwik Saha</title>
 </head>
 <body>
@@ -26,7 +31,7 @@
       {{if .Project}}
         <p class="Blogs-Item-Info-01">by <strong>Ritwik Saha</strong></p>
       {{else}}
-        <p class="Blogs-Item-Info-01">by <strong>Ritwik Saha</strong>, <strong>April 2, 2019</strong></p>
+        <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>, <strong>{{.Data.FormattedDate}}</strong></p>
       {{end}}
       <div class="Share-Button-Container-00 Flex-Row-Start">
         <div class="fb-share-button" data-href="https://ritwiksaha.com/blog/{{.Data.ID}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>

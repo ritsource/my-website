@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"text/template"
@@ -34,17 +33,17 @@ func EachProjectHandler(w http.ResponseWriter, r *http.Request) {
 	c2 := make(chan []byte) // Channel for Document Fetching
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/project/"+pIDStr, c1)
+	go FetchData(API+"/public/project/"+pIDStr, c1)
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/project/doc/"+pIDStr, c2)
+	go FetchData(API+"/public/project/doc/"+pIDStr, c2)
 
 	b1 := <-c1 // Blog data 1 ([]byte)
 	b2 := <-c2 // Document data 2 ([]byte)
 
 	// Check Error
 	if b1 == nil || b2 == nil {
-		WriteError(w, 500, errors.New("Couldn't Fetch Data"), "Couldn't Fetch Data")
+		RenderError(w, 404, "Project Not Found")
 		return
 	}
 
@@ -53,7 +52,7 @@ func EachProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal(b1, &data)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -76,7 +75,7 @@ func EachProjectHandler(w http.ResponseWriter, r *http.Request) {
 		"static/partials/header.html",
 	)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -103,14 +102,14 @@ func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
 	c := make(chan []byte)
 
 	// Get Public Data from API
-	go FetchData("http://"+API+"/public/project/all", c)
+	go FetchData(API+"/public/project/all", c)
 
 	// Unmarshaling Body Data
 	var data []Project
 
 	err := json.Unmarshal(<-c, &data)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
@@ -122,7 +121,7 @@ func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
 		"static/partials/social-btns.html",
 	)
 	if err != nil {
-		WriteError(w, 500, err, err.Error())
+		RenderError(w, 500, "Internal Server Error")
 	}
 
 	// Executing Template

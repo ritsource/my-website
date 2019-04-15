@@ -2,8 +2,8 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/ritwik310/my-website/api/models"
@@ -24,6 +24,9 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, 422, err, "Unable to read request body")
 		return
 	}
+
+	// Created AT
+	body.CreatedAt = int32(time.Now().Unix())
 
 	// Inserting Document
 	_, err = body.Create()
@@ -102,8 +105,6 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, 422, err, "Unable to read request body")
 		return
 	}
-
-	fmt.Printf("body %+v\n", body)
 
 	// Update Blog Document
 	nBlog, err = nBlog.Update(

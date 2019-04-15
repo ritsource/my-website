@@ -10,7 +10,7 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	margin-top: -150px;
+	margin-top: -130px;
 	/* justify-content: center; */
 }
 
@@ -35,6 +35,14 @@
 	/* line-height: 20px; */
 }
 #index-center-bio-container-01 {
+	margin-bottom: 5px;
+}
+
+#error-center-msg-container-01 {
+	text-align: center;
+}
+
+#error-center-msg-container-01 h1 {
 	margin-bottom: 5px;
 }
 
