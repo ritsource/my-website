@@ -5,6 +5,7 @@ config/config.production.json
 cache/*
 
 server
+api
 
 *secrets.sh
 *secret.sh
