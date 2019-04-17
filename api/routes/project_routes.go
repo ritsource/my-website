@@ -2,174 +2,86 @@ package routes
 
 import (
 	"encoding/json"
-	"time"
-
-	// "io/ioutil"
-	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/ritwik310/my-website/api/models"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Admin Routes - Routes that are only accessable by Admin (Requires Admin Authentication)
-
 // CreateProject -
 func CreateProject(w http.ResponseWriter, r *http.Request) {
-	var body models.Project // to save Project JSON body
-	var err error
+	var pr models.Project // Project
 
-	// Decoding request body
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&body)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to read request body")
-		return
-	}
+	decoder := json.NewDecoder(r.Body) // Read JSON Body
+	err := decoder.Decode(&pr)
+	HandleErr(w, 500, err)
 
-	// Created AT
-	body.CreatedAt = int32(time.Now().Unix())
+	pr.CreatedAt = int32(time.Now().Unix()) // Set Creation Time
 
-	// Inserting Document
-	_, err = body.Create()
-	if err != nil {
-		WriteError(w, 422, err, "Failed to insert new document")
-		return
-	}
+	_, err = pr.Create() // Create Document in the Database
+	HandleErr(w, 422, err)
 
-	// Couldn't find a way to retreve ObjectID of the newly created project
-	// So as a hack just returning the whole collection
-	// redirecting to all projects
+	// Redirecting to All-Projects route handler
 	http.Redirect(w, r, "/admin/project/all", 302) // 302 - POST to GET
 }
 
-// ReadProjectByID - ...
-func ReadProjectByID(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var mProject models.Project
+// ReadProject -
+func ReadProject(w http.ResponseWriter, r *http.Request) {
+	var pr models.Project       // Project
+	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+	pr, err := pr.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)}) // Read Document
+	HandleErr(w, 442, err)
 
-	// Read project
-	mProject, err = mProject.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(mProject)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, pr) // Write the Data
 }
 
-// ReadProjects - read all projects, both Public and Private
+// ReadProjects -
 func ReadProjects(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var mProjects models.Projects
+	var prs models.Projects // Projects or []Project
 
-	// Read Project
-	mProjects, err = mProjects.Read(bson.M{})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
+	prs, err := prs.Read(bson.M{}) // Read all Projects bson.M{}
+	HandleErr(w, 442, err)
 
-	// Marshaling result
-	bData, err := json.Marshal(mProjects)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, prs) // Write Data
 }
 
-// EditProject - ...
+// EditProject -
 func EditProject(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var nProject models.Project
+	var pr models.Project           // Project
+	var body map[string]interface{} // because cannot use pr (type models.Project) as type bson.M in argument to pr.Update
+	pIDStr := mux.Vars(r)["id"]     // Project ObjectID (String)
 
-	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+	decoder := json.NewDecoder(r.Body) // Read Request JSON
+	err := decoder.Decode(&body)
+	HandleErr(w, 422, err)
 
-	// Decoding request body
-	var body map[string]interface{}
+	pr, err = pr.Update(bson.M{"_id": bson.ObjectIdHex(pIDStr)}, body) // Update Document in Database
+	HandleErr(w, 500, err)
 
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&body)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to read request body")
-		return
-	}
-
-	fmt.Printf("body %+v\n", body)
-
-	// Update Project Document
-	nProject, err = nProject.Update(
-		bson.M{"_id": bson.ObjectIdHex(pIDStr)},
-		body,
-	)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(nProject)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, pr) // Write Data
 }
 
-// DeleteProject - ...
+// DeleteProject - Deletes a Project (Not Permanently)
 func DeleteProject(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var dProject models.Project
+	var pr models.Project       // Project
+	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
+	pr, err := pr.Delete(bson.ObjectIdHex(pIDStr)) // Editing Document
+	HandleErr(w, 422, err)
 
-	// Read Project
-	nProject, err := dProject.Delete(bson.ObjectIdHex(pIDStr))
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(nProject)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, pr) // Writing Data
 }
 
-// DeleteProjectPerm - Deletes a blog DeleteProjectPerm
-func DeleteProjectPerm(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var dProject models.Project
+// DeleteProjectF - Deletes a project Permanently
+func DeleteProjectF(w http.ResponseWriter, r *http.Request) {
+	var pr models.Project       // Project
+	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
-
-	// Delete Project
-	err = dProject.DeletePermanent(bson.ObjectIdHex(pIDStr))
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
+	err := pr.DeletePermanent(bson.ObjectIdHex(pIDStr)) // Deleting Document
+	HandleErr(w, 422, err)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))

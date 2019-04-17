@@ -49,23 +49,15 @@ func GoogleLoginHandeler(w http.ResponseWriter, r *http.Request) {
 
 // GoogleCallbackHandler - ...
 func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
-	var err error
-
 	// Get user info in []byte
 	var content []byte
-	content, err = getUserInfo(r.FormValue("state"), r.FormValue("code"))
-	if err != nil {
-		WriteError(w, 500, err, "Couldn't read google's data")
-		return
-	}
+	content, err := getUserInfo(r.FormValue("state"), r.FormValue("code"))
+	HandleErr(w, 500, err)
 
 	// Unmarshal Data
 	var data models.Admin
 	err = json.Unmarshal([]byte(content), &data)
-	if err != nil {
-		WriteError(w, 500, err, "Couldn't read google's data")
-		return
-	}
+	HandleErr(w, 500, err)
 
 	var admin models.Admin
 
@@ -74,10 +66,7 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// Inserting Document
 		admin, err = data.Create()
-		if err != nil {
-			WriteError(w, 422, err, "Failed to insert new document")
-			return
-		}
+		HandleErr(w, 500, err)
 	}
 
 	// Saving Session
@@ -101,22 +90,14 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 	// var aEmail string
 	aEmail := context.Get(r, "aEmail")
-
 	var admin models.Admin
-	var err error
 
 	// Query Admin
-	admin, err = admin.Read(bson.M{"email": aEmail})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to fild admin in db")
-		return
-	}
+	admin, err := admin.Read(bson.M{"email": aEmail})
+	HandleErr(w, 422, err)
 
 	bData, err := json.Marshal(admin)
-	if err != nil {
-		WriteError(w, 500, err, "Error: couldn't marshal data")
-		return
-	}
+	HandleErr(w, 500, err)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(bData)

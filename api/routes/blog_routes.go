@@ -11,15 +11,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Content -
-type Content interface {
-	Create() (Content, error)
-	ReadSingle() (Content, error)
-	Update() (Content, error)
-	Delete() (Content, error)
-	DeletePermanent() error
-}
-
 // WriteErr -
 func WriteErr(w http.ResponseWriter, status int, err error) {
 	w.WriteHeader(status)                                     // Status Code
@@ -47,8 +38,8 @@ func WriteData(w http.ResponseWriter, data interface{}) {
 }
 
 // CreateBlog -
-func (bl Content) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	// var bl models.Blog // Blog
+func CreateBlog(w http.ResponseWriter, r *http.Request) {
+	var bl models.Blog // Blog
 
 	decoder := json.NewDecoder(r.Body) // Read JSON Body
 	err := decoder.Decode(&bl)
