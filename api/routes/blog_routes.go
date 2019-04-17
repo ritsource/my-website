@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -10,161 +11,113 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// CreateBlog - Handler for creating a new Blog
-// Note: This doesn't do check for bldy data,
-// assuming that all fields must be present from the admin side
-func CreateBlog(w http.ResponseWriter, r *http.Request) {
-	var body models.Blog // to save Blog JSON body
-	var err error
+// Content -
+type Content interface {
+	Create() (Content, error)
+	ReadSingle() (Content, error)
+	Update() (Content, error)
+	Delete() (Content, error)
+	DeletePermanent() error
+}
 
-	// Decoding request body
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&body)
+// WriteErr -
+func WriteErr(w http.ResponseWriter, status int, err error) {
+	w.WriteHeader(status)                                     // Status Code
+	w.Header().Set("Content-Type", "application/json")        // Response Type - JSON
+	w.Write([]byte("{\"message\": \"" + err.Error() + "\"}")) // Error Message
+
+	fmt.Println("Error:", err.Error())
+}
+
+// HandleErr -
+func HandleErr(w http.ResponseWriter, status int, err error) {
 	if err != nil {
-		WriteError(w, 422, err, "Unable to read request body")
+		WriteErr(w, status, err)
 		return
 	}
+}
 
-	// Created AT
-	body.CreatedAt = int32(time.Now().Unix())
+// WriteData -
+func WriteData(w http.ResponseWriter, data interface{}) {
+	b, err := json.Marshal(data)
+	HandleErr(w, 500, err)
 
-	// Inserting Document
-	_, err = body.Create()
-	if err != nil {
-		WriteError(w, 422, err, "Failed to insert new document")
-		return
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
 
-	// Couldn't find a way to retreve ObjectID of the newly created blog
-	// So as a hack just returning the whole collection
-	// redirecting to all blogs
+// CreateBlog -
+func (bl Content) CreateHandler(w http.ResponseWriter, r *http.Request) {
+	// var bl models.Blog // Blog
+
+	decoder := json.NewDecoder(r.Body) // Read JSON Body
+	err := decoder.Decode(&bl)
+	HandleErr(w, 500, err)
+
+	bl.CreatedAt = int32(time.Now().Unix()) // Set Creation Time
+
+	_, err = bl.Create() // Create Document in the Database
+	HandleErr(w, 422, err)
+
+	// Redirecting to All-Blogs route handler
 	http.Redirect(w, r, "/admin/blog/all", 302) // 302 - POST to GET
 }
 
-// ReadBlogByID - Reads a Single Blog
-func ReadBlogByID(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var mBlog models.Blog
+// ReadBlog -
+func ReadBlog(w http.ResponseWriter, r *http.Request) {
+	var bl models.Blog          // Blog
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	bl, err := bl.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)}) // Read Document
+	HandleErr(w, 442, err)
 
-	// Read blog
-	mBlog, err = mBlog.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(mBlog)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, bl) // Write the Data
 }
 
-// ReadBlogs - read all blogs, both Public and Private
+// ReadBlogs -
 func ReadBlogs(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var mBlogs models.Blogs
+	var bls models.Blogs // Blogs or []Blog
 
-	// Read blog
-	mBlogs, err = mBlogs.Read(bson.M{})
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
+	bls, err := bls.Read(bson.M{}) // Read all Blogs bson.M{}
+	HandleErr(w, 442, err)
 
-	// Marshaling result
-	bData, err := json.Marshal(mBlogs)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, bls) // Write Data
 }
 
-// EditBlog - ...
+// EditBlog -
 func EditBlog(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var nBlog models.Blog
+	var bl models.Blog              // Blog
+	var body map[string]interface{} // because cannot use bl (type models.Blog) as type bson.M in argument to bl.Update
+	bIDStr := mux.Vars(r)["id"]     // Blog ObjectID (String)
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	decoder := json.NewDecoder(r.Body) // Read Request JSON
+	err := decoder.Decode(&body)
+	HandleErr(w, 422, err)
 
-	// Decoding request body
-	var body map[string]interface{}
+	bl, err = bl.Update(bson.M{"_id": bson.ObjectIdHex(bIDStr)}, body) // Update Document in Database
+	HandleErr(w, 500, err)
 
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&body)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to read request body")
-		return
-	}
-
-	// Update Blog Document
-	nBlog, err = nBlog.Update(
-		bson.M{"_id": bson.ObjectIdHex(bIDStr)},
-		body,
-	)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(nBlog)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, bl) // Write Data
 }
 
-// DeleteBlog - ...
+// DeleteBlog - Deletes a Blog (Not Permanently)
 func DeleteBlog(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var dBlog models.Blog
+	var bl models.Blog          // Blog
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	bl, err := bl.Delete(bson.ObjectIdHex(bIDStr)) // Editing Document
+	HandleErr(w, 422, err)
 
-	// Read blog
-	nBlog, err := dBlog.Delete(bson.ObjectIdHex(bIDStr))
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	// Marshaling result
-	bData, err := json.Marshal(nBlog)
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bData)
+	WriteData(w, bl) // Writing Data
 }
 
-// DeleteBlogPerm - Deletes a blog DeleteBlogPerm
-func DeleteBlogPerm(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var dBlog models.Blog
+// DeleteBlogF - Deletes a blog Permanently
+func DeleteBlogF(w http.ResponseWriter, r *http.Request) {
+	var bl models.Blog          // Blog
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
-
-	// Read blog
-	err = dBlog.DeletePermanent(bson.ObjectIdHex(bIDStr))
-	if err != nil {
-		WriteError(w, 422, err, "Unable to query data")
-		return
-	}
+	err := bl.DeletePermanent(bson.ObjectIdHex(bIDStr)) // Deleting Document
+	HandleErr(w, 422, err)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{\"message\": \"Successfully deleted\"}"))
