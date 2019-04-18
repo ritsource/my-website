@@ -7,9 +7,6 @@ export DEV_MODE="true"
 # Mongo URI for development
 export MONGO_URI="mongodb://localhost:27017"
 
-# Backup Mongo URI for development
-export BACKUP_MONGO_URI="mongodb://localhost:27027"
-
 # MongoDB Database name
 export DATABASE_NAME="dev_db"
 

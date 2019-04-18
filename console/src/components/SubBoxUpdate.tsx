@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import api from '../api';
 
 type MyProps = {
-	isProject: boolean;
 	correctId: string;
 };
 
-const SubBoxDelete = (props: MyProps) => {
-	const { isProject, correctId } = props;
-
+const SubBoxUpdate = (props: MyProps) => {
+	const { correctId } = props;
 	const [ id, setId ] = useState('');
 
 	const [ isAsync, setIsAsync ] = useState(false); // Is Async
@@ -18,9 +16,9 @@ const SubBoxDelete = (props: MyProps) => {
 	return (
 		<div className="SubBoxName-c-00 SearchBox-c-00 Theme-Box-Shadow">
 			<h4 className="Flex-Row-Space-Between">
-				Delete Object Permanently {isAsync && <div className="Theme-Loading-Spin-Div" />}
+				Update Document {isAsync && <div className="Theme-Loading-Spin-Div" />}
 			</h4>
-			<p className="SearchBox-Description-P-01">Permanently delete this Project/Blog from the Database</p>
+			<p className="SearchBox-Description-P-01">Update Document or Clear Cached Files</p>
 
 			{boxEditable && (
 				<input
@@ -54,7 +52,7 @@ const SubBoxDelete = (props: MyProps) => {
 				{boxEditable ? (
 					<React.Fragment>
 						<button
-							className="Theme-Btn-Red"
+							className="Theme-Btn-Green"
 							onClick={async () => {
 								setErrorMsg(false);
 
@@ -65,19 +63,16 @@ const SubBoxDelete = (props: MyProps) => {
 
 								setIsAsync(true);
 								try {
-									await api.delete(
-										`/private/${isProject ? 'project' : 'blog'}/delete/permanent/${id}`
-									);
-									setErrorMsg(false);
+									await api.delete(`/private/cache/delete/${id}`);
 									setBoxEditable(false);
-									window.location.href = '/';
+									setId('');
 								} catch (e) {
 									setErrorMsg(e);
 								}
 								setIsAsync(false);
 							}}
 						>
-							Delete Permanently
+							Clear Cache
 						</button>
 						<button
 							style={{ marginLeft: '12px' }}
@@ -92,8 +87,8 @@ const SubBoxDelete = (props: MyProps) => {
 						</button>
 					</React.Fragment>
 				) : (
-					<button className="Theme-Btn-Red" onClick={() => setBoxEditable(true)}>
-						Delete
+					<button className="Theme-Btn-Main" onClick={() => setBoxEditable(true)}>
+						Clear Cache
 					</button>
 				)}
 			</div>
@@ -101,4 +96,4 @@ const SubBoxDelete = (props: MyProps) => {
 	);
 };
 
-export default SubBoxDelete;
+export default SubBoxUpdate;

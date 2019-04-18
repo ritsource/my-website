@@ -4,6 +4,7 @@ import SubBoxName from './SubBoxName';
 import SubBoxDoc from './SubBoxDoc';
 import SubBoxBool from './SubBoxBool';
 import SubBoxDelete from './SubBoxDelete';
+import SubBoxUpdate from './SubBoxUpdate';
 
 import Project from '../types/project';
 
@@ -20,8 +21,9 @@ const ProjectBoxes = (props: MyProps) => {
 		<div className="ProjectBoxes-c-00">
 			<SubBoxName object={project} saveFunction={saveFunction} isProject={true} />
 			<SubBoxDoc object={project} saveFunction={saveFunction} />
+			<SubBoxUpdate correctId={project._id} />
 			<SubBoxBool object={project} saveFunction={saveFunction} />
-			<SubBoxDelete isProject={true} />
+			<SubBoxDelete isProject={true} correctId={project._id} />
 		</div>
 	);
 };

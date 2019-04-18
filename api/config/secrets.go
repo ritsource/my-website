@@ -10,7 +10,6 @@ type Config struct {
 	GoogleClientSecret string   `json:"GOOGLE_CLIENT_SECRET"`
 	SessionKey         string   `json:"SESSION_KEY"`
 	MongoURI           string   `json:"MONGO_URI"`
-	BackupMongoURI     string   `json:"BACKUP_MONGO_URI"`
 	DBName             string   `json:"DATABASE_NAME"`
 	AdminEmails        []string `json:"ADMIN_EMAILS"`
 	ConsoleCLientURL   string   `json:"CONSOLE_CLIENT_URL"`
@@ -32,7 +31,6 @@ func ReadSecrets(s *Config) {
 	s.GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	s.SessionKey = os.Getenv("SESSION_KEY")
 	s.MongoURI = os.Getenv("MONGO_URI")
-	s.BackupMongoURI = os.Getenv("BACKUP_MONGO_URI")
 	s.DBName = os.Getenv("DATABASE_NAME")
 
 	AdminEmailA := os.Getenv("ADMIN_EMAIL_A")

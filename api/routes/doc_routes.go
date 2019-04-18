@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/gorilla/mux"
 	"github.com/ritwik310/my-website/api/models"
@@ -59,7 +60,7 @@ func PubGetBlogDoc(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Checking if requested file Exists or Not
-	if _, err := os.Stat("./cache/" + fileName); err == nil {
+	if _, err := os.Stat(path.Join(".", "cache", fileName)); err == nil {
 		// Redirect to static route if file exist
 		http.Redirect(w, r, "/api/static/"+fileName, http.StatusTemporaryRedirect)
 		return
@@ -75,7 +76,7 @@ func PubGetBlogDoc(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect) // Redirecting to the source file
 
-	err = DownloadFile("./cache/"+fileName, srcFilePath) // Downloading the file in cache
+	err = DownloadFile(path.Join(".", "cache", fileName), srcFilePath) // Downloading the file in cache
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
@@ -98,7 +99,7 @@ func PubGetProjectDoc(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Checking if requested file Exists or Not
-	if _, err := os.Stat("./cache/" + fileName); err == nil {
+	if _, err := os.Stat(path.Join(".", "cache", fileName)); err == nil {
 		// if exist then redirect to the static route
 		http.Redirect(w, r, "/api/static/"+fileName, http.StatusTemporaryRedirect)
 		return
@@ -114,8 +115,29 @@ func PubGetProjectDoc(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, srcFilePath, http.StatusTemporaryRedirect) // Redirecting to the source file
 
-	err = DownloadFile("./cache/"+fileName, srcFilePath) // Downloading the file in cache
+	err = DownloadFile(path.Join(".", "cache", fileName), srcFilePath) // Downloading the file in cache
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
+}
+
+// ClearDocCache - Clears cache files
+func ClearDocCache(w http.ResponseWriter, r *http.Request) {
+	iDStr := mux.Vars(r)["id"]
+
+	mdFile := iDStr + ".md"
+	htmlFile := iDStr + ".html"
+
+	// If exists then delete the markdown file
+	if _, err := os.Stat(path.Join(".", "cache", mdFile)); err == nil {
+		err = os.Remove(path.Join(".", "cache", mdFile))
+		HandleErr(w, 500, err)
+	}
+
+	// If exists, then delete the html file
+	if _, err := os.Stat(path.Join(".", "cache", htmlFile)); err == nil {
+		err = os.Remove(path.Join(".", "cache", mdFile))
+		HandleErr(w, 500, err)
+	}
+
 }

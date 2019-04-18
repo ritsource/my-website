@@ -50,6 +50,9 @@ func main() {
 	r.HandleFunc("/api/private/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
 	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogF)).Methods("DELETE")
 
+	// Routes for Clearing Document Cache Files
+	r.HandleFunc("/api/private/cache/delete/{id}", middleware.CheckAuth(routes.ClearDocCache)).Methods("DELETE")
+
 	// Public, Document Handlers
 	// This request get's redirected to the corresponding static file
 	// If exists in static directory, then there, else source on web (Probably Gitlab/Github)
