@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdBlock, MdLockOutline, MdLockOpen } from 'react-icons/md';
 
+import { siteBase } from '../api';
+
 type MyProps = {
 	// this could be Project & Blog, but for convicince let it be one
 	object: any;
@@ -31,7 +33,7 @@ const ContentBoxItem: React.SFC<MyProps> = (props) => {
 				<a
 					className="a-exception"
 					href={
-						process.env.REACT_APP_WEBSITE_URL +
+						siteBase +
 						'/preview?' +
 						`src=${object.doc_type === 'markdown' ? object.markdown : object.html}` +
 						'&' +

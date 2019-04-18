@@ -10,7 +10,5 @@ echo "Building App-Renderer (Go)..."
 go build
 cd ..
 
-export CONSOLE_CLIENT_URL="http://localhost:3000"
-
 # Run with Docker-Compose
 docker-compose up --build

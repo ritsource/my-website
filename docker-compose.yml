@@ -23,7 +23,7 @@ services:
       - DEV_MODE=false
       - MONGO_URI=mongodb://mongo:27017
       - DATABASE_NAME=dev_db
-      - CONSOLE_CLIENT_URL=${CONSOLE_CLIENT_URL}
+      - CONSOLE_CLIENT_URL=http://localhost:4001
       - APP_RENDERER_URL=http://localhost:4001
       - SESSION_KEY=${SESSION_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
@@ -37,3 +37,13 @@ services:
     environment:
       - DEV_MODE=false
       - API_URL=http://api:8080
+  console:
+    build:
+      dockerfile: dev.Dockerfile
+      context: ./console
+    volumes:
+      - /usr/src/node_modules
+      - ./console:/usr/src
+    environment:
+      - REACT_APP_API_URL=http://localhost:4001/api
+      - REACT_APP_WEBSITE_URL=http://localhost:4001

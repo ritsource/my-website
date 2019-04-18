@@ -76,7 +76,7 @@ const ContentBox = (props: any) => {
 							<ContentBoxItem
 								key={i}
 								object={object}
-								objectLink={`${activeType === 0 ? '/projects' : '/blogs'}/${object._id}`}
+								objectLink={`${activeType === 0 ? '/admin/projects' : '/admin/blogs'}/${object._id}`}
 							/>
 						</React.Fragment>
 					))}

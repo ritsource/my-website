@@ -9,9 +9,9 @@ const Header = () => {
 
 	return (
 		<div className="Header-c-00 Flex-Row-Space-Between">
-			<Link to="/">
+			<Link to="/admin">
 				<h3>
-					<span>🐳</span>
+					<span>🐢</span>
 				</h3>
 			</Link>
 

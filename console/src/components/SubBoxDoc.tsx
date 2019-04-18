@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MdDone } from 'react-icons/md';
 
+import { siteBase } from '../api';
+
 type MyProps = {
 	object: any; // Project | Blog;
 	saveFunction: (c: any, u: any) => void;
@@ -42,7 +44,7 @@ const SubBoxName = (props: MyProps) => {
 				<a
 					className="a-exception"
 					href={
-						process.env.REACT_APP_WEBSITE_URL +
+						siteBase +
 						'/preview?' +
 						`src=${object.doc_type === 'markdown' ? object.markdown : object.html}` +
 						'&' +

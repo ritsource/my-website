@@ -39,9 +39,10 @@ const App = (props: any) => {
 				<Header />
 				{auth ? (
 					<Switch>
-						<Route path="/" exact component={HomePage} />
-						<Route path="/blogs/:blogId" exact component={EachBlogPage} />
-						<Route path="/projects/:projectId" exact component={EachProjectPage} />
+						<Route path="/" exact component={NotFoundPage} />
+						<Route path="/admin/" exact component={HomePage} />
+						<Route path="/admin/blogs/:blogId" exact component={EachBlogPage} />
+						<Route path="/admin/projects/:projectId" exact component={EachProjectPage} />
 						<Route component={NotFoundPage} />
 					</Switch>
 				) : auth === null ? (
