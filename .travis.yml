@@ -1,0 +1,31 @@
+sudo: required
+services:
+  - docker
+
+env:
+  global:
+    - GIT_SHA=$(git rev-parse HEAD)
+
+before_install:
+  - gem install bundler
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+script:
+  - echo "Skipping Tests..."
+
+deploy:
+  - provider: script
+    script: deploy.dockerhub.sh
+    on:
+      branch: master
+  - provider: elasticbeanstalk
+    region: "ap-south-1"
+    app: My-Website
+    env: My-Website-env-0
+    bucket_name: elasticbeanstalk-ap-south-1-729767835831
+    bucket_path: My-Website
+    on:
+      branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+      secure: "$AWS_SECRET_KEY"

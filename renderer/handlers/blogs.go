@@ -17,7 +17,14 @@ import (
 var API string
 
 func init() {
-	API = os.Getenv("API_URL")
+	isDev := os.Getenv("DEV_MODE") == "true"
+
+	if isDev {
+		API = os.Getenv("API_URL")
+	} else {
+		// Docker networking will  take care of that (docker-compose, or aws)
+		API = "http://api:8080"
+	}
 }
 
 // Blog type - In data fetched from API
