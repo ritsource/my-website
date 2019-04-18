@@ -1,0 +1,39 @@
+version: '3'
+services:
+  mongo:
+    image: 'mongo:4.1.8-xenial'
+    volumes:
+      - /home/ritwik310/Desktop/data/mongo1:/data/db
+    ports:
+      - '27017:27017'
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '4001:80'
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    volumes:
+      - ./api/cache:/usr/src/cache
+    environment:
+      - DEV_MODE=false
+      - MONGO_URI=mongodb://mongo:27017
+      - DATABASE_NAME=dev_db
+      - CONSOLE_CLIENT_URL=${CONSOLE_CLIENT_URL}
+      - APP_RENDERER_URL=http://localhost:4001
+      - SESSION_KEY=${SESSION_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ADMIN_EMAIL_A=${ADMIN_EMAIL_A}
+      - ADMIN_EMAIL_B=${ADMIN_EMAIL_B}
+  renderer:
+    build:
+      dockerfile: Dockerfile
+      context: ./renderer
+    environment:
+      - DEV_MODE=false
+      - API_URL=http://api:8080

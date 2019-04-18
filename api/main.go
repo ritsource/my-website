@@ -4,7 +4,6 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -63,20 +62,15 @@ func main() {
 	r.HandleFunc("/api/public/project/all", routes.PubReadProjects).Methods("GET")
 	r.HandleFunc("/api/public/project/{id}", routes.PubReadProject).Methods("GET")
 
-	isDev := os.Getenv("DEV_MODE") == "true" // Is Development
+	// For handling CORS
+	ch := cors.New(cors.Options{
+		AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleCLientURL},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowCredentials: true,
+	}).Handler(r)
 
-	if isDev {
-		// Allow CORS stuff only in Development (In Prod, it's all under same domain (AWS))
-		ch := cors.New(cors.Options{
-			AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleCLientURL},
-			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-			AllowCredentials: true,
-		}).Handler(r) // For handling CORS
-
-		log.Fatal(http.ListenAndServe(":8080", ch)) // Listening in PORT 8080
-	} else {
-		log.Fatal(http.ListenAndServe(":8080", r)) // Listening...
-	}
+	// Listening in PORT 8080
+	log.Fatal(http.ListenAndServe(":8080", ch))
 
 	// Closes Database, on main.go File Exit
 	defer db.Close()

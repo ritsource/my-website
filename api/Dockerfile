@@ -1,4 +1,4 @@
-FROM scratch
+FROM golang
 
 WORKDIR /usr/src
 

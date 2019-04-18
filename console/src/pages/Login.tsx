@@ -16,7 +16,7 @@ const LoginPage = () => {
 						}}
 						className="Theme-Btn-Main Flex-Row-Center"
 					>
-						<FaGoogle style={{ marginRight: '10px' }} />Login as Admin
+						<FaGoogle style={{ marginRight: '10px' }} />Login as Ritwik
 					</button>
 				</a>
 			</div>
