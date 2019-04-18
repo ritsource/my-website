@@ -2,10 +2,6 @@ sudo: required
 services:
   - docker
 
-env:
-  global:
-    - GIT_SHA=$(git rev-parse HEAD)
-
 before_install:
   - gem install bundler
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -15,7 +11,7 @@ script:
 
 deploy:
   - provider: script
-    script: deploy.dockerhub.sh
+    script: bash ./deploy.dockerhub.sh
     on:
       branch: master
   - provider: elasticbeanstalk
