@@ -31,7 +31,7 @@ func init() {
 // Projects - Slice of Projects
 type Projects []Project
 
-// ReadAll - ..
+// Read - Reads all Documents
 func (ps Projects) Read(s bson.M) (Projects, error) {
 	err := projectCol.Find(s).Sort("-created_at").All(&ps)
 	if err != nil {
@@ -41,7 +41,7 @@ func (ps Projects) Read(s bson.M) (Projects, error) {
 	return ps, nil
 }
 
-// Create - ..
+// Create - Creates a new Document
 func (p Project) Create() (Project, error) {
 	err := projectCol.Insert(&p)
 	if err != nil {
@@ -51,8 +51,8 @@ func (p Project) Create() (Project, error) {
 	return p, nil
 }
 
-// ReadSingle - ..
-func (p Project) ReadSingle(s bson.M) (Project, error) {
+// Read - Reads single Document
+func (p Project) Read(s bson.M) (Project, error) {
 	err := projectCol.Find(s).One(&p)
 	if err != nil {
 		return p, err
@@ -61,7 +61,7 @@ func (p Project) ReadSingle(s bson.M) (Project, error) {
 	return p, nil
 }
 
-// Update - ..
+// Update - Updates a Document
 func (p Project) Update(s bson.M, u bson.M) (Project, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": u},
@@ -72,9 +72,8 @@ func (p Project) Update(s bson.M, u bson.M) (Project, error) {
 	return p, err
 }
 
-// Delete - ..
+// Delete - Deletes a document
 func (p Project) Delete(id bson.ObjectId) (Project, error) {
-	// err := projectCol.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"is_deleted": true}},
 		ReturnNew: true,

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/context"
 	"golang.org/x/oauth2"
@@ -25,7 +24,7 @@ var GoogleOauthConfig *oauth2.Config
 
 func init() {
 	GoogleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/auth/google/callback",
+		RedirectURL:  "http://localhost:8080/api/auth/google/callback",
 		ClientID:     config.Secrets.GoogleClientID,
 		ClientSecret: config.Secrets.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -41,13 +40,13 @@ func WriteError(w http.ResponseWriter, status int, err error, msg string) {
 	fmt.Println("Error:", err.Error())
 }
 
-// GoogleLoginHandeler - ...
+// GoogleLoginHandeler - Handles request for /auth/google
 func GoogleLoginHandeler(w http.ResponseWriter, r *http.Request) {
 	url := GoogleOauthConfig.AuthCodeURL(oauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect) // Redirecting to Google
 }
 
-// GoogleCallbackHandler - ...
+// GoogleCallbackHandler - Handles Google Callback, /auth/google/callback
 func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	// Get user info in []byte
 	var content []byte
@@ -75,13 +74,13 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	// Sending sesponse
-	isDev := os.Getenv("DEV_MODE") == "true"
-	fmt.Println("isDev", isDev)
-	if isDev {
-		http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
-	} else {
-		http.Redirect(w, r, "/auth/current_user", http.StatusTemporaryRedirect)
-	}
+	// isDev := os.Getenv("DEV_MODE") == "true"
+	// fmt.Println("isDev", isDev)
+	// if isDev {
+	http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
+	// } else {
+	// 	http.Redirect(w, r, "/api/auth/current_user", http.StatusTemporaryRedirect)
+	// }
 
 	fmt.Println("Login successful!")
 }

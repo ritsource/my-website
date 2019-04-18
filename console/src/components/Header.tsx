@@ -9,21 +9,13 @@ const Header = () => {
 
 	return (
 		<div className="Header-c-00 Flex-Row-Space-Between">
-			<Link to="/">
+			<Link to="/admin">
 				<h3>
-					<span>🍊</span> admin.ritwiksaha.com
+					<span>🐳</span>
 				</h3>
 			</Link>
 
 			<div className="Header-Navbtn-Container-Div-01 Flex-Row-Center">
-				{/* <NavLink to="/blogs" activeClassName="Header-NavLink-Active">
-					Blogs
-				</NavLink>
-				<NavLink to="/projects" activeClassName="Header-NavLink-Active">
-					Projects
-				</NavLink> */}
-
-				{/* <div> */}
 				{!isLight ? (
 					<button onClick={() => toggleTheme(isLight, setIsLight)} className="Flex-Row-Center">
 						<IoIosSunny style={{ color: 'var(--text-color)', fontSize: '24px' }} />
@@ -33,7 +25,6 @@ const Header = () => {
 						<IoIosMoon style={{ color: 'var(--text-color)', fontSize: '24px' }} />
 					</button>
 				)}
-				{/* </div> */}
 			</div>
 		</div>
 	);

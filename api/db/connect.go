@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"gopkg.in/mgo.v2"
-
 	"github.com/ritwik310/my-website/api/config"
+	"gopkg.in/mgo.v2"
 )
 
 // Client - MongoDB connected Client

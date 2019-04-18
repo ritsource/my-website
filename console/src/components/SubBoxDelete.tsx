@@ -57,7 +57,9 @@ const SubBoxDelete = (props: MyProps) => {
 							onClick={async () => {
 								setIsAsync(true);
 								try {
-									await api.delete(`/admin/${isProject ? 'project' : 'blog'}/delete/permanent/${id}`);
+									await api.delete(
+										`/private/${isProject ? 'project' : 'blog'}/delete/permanent/${id}`
+									);
 									setErrorMsg(false);
 									setBoxEditable(false);
 									window.location.href = '/';

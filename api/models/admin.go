@@ -1,18 +1,18 @@
 package models
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
-	"github.com/ritwik310/my-website/api/db"
 	"github.com/ritwik310/my-website/api/config"
+	"github.com/ritwik310/my-website/api/db"
 )
 
 // Admin - admin (user) model type
 type Admin struct {
-	ID bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Email    string `bson:"email" json:"email"`
-	GoogleID string `bson:"google_id" json:"id"`
+	ID       bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Email    string        `bson:"email" json:"email"`
+	GoogleID string        `bson:"google_id" json:"id"`
 }
 
 // MongoDB Collection for Blogs

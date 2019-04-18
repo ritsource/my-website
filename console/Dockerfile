@@ -9,6 +9,8 @@ COPY . .
 
 RUN yarn run build
 
+
+# Serve Using Nginx (Production)
 FROM nginx
 
 EXPOSE 3000

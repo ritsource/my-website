@@ -15,7 +15,7 @@ const blogData = {
 export const createBlog = (extraData: any) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.post('/admin/blog/new', { ...blogData, ...extraData });
+			const response = await api.post('/private/blog/new', { ...blogData, ...extraData });
 			dispatch({ type: CREATE_BLOG, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -28,7 +28,7 @@ export const createBlog = (extraData: any) => (dispatch: any, getState: any, api
 export const readBlogs = () => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.get('/admin/blog/all');
+			const response = await api.get('/private/blog/all');
 			dispatch({ type: READ_BLOGS, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -43,7 +43,7 @@ export const editBlog = (blogId: string, editData: any) => (dispatch: any, getSt
 
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.put(`/admin/blog/edit/${blogId}`, editData);
+			const response = await api.put(`/private/blog/edit/${blogId}`, editData);
 			dispatch({ type: EDIT_BLOG_BY_ID, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -56,7 +56,7 @@ export const editBlog = (blogId: string, editData: any) => (dispatch: any, getSt
 export const deleteBlog = (blogId: string) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.delete(`/admin/blog/delete/${blogId}`);
+			const response = await api.delete(`/private/blog/delete/${blogId}`);
 			dispatch({ type: DELETE_BLOG_BY_ID, data: response.data });
 			resolve(response.data);
 		} catch (error) {

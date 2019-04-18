@@ -6,7 +6,7 @@ const myAppThemes: any = {
 		'--background-color': '#ffffff',
 		'--background-color-darker': '#f1f3f3',
 		'--border-color': '#dddddd',
-		'--theme-color': '#fc6d26'
+		'--theme-color': '#00a0dc'
 	},
 	dark: {
 		'--text-color': '#ffffff',
@@ -15,7 +15,7 @@ const myAppThemes: any = {
 		'--background-color': '#464646',
 		'--background-color-darker': '#323232',
 		'--border-color': '#808080',
-		'--theme-color': '#fc6d26'
+		'--theme-color': '#00a0dc'
 	}
 };
 

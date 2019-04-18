@@ -51,7 +51,7 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 	HandleErr(w, 422, err)
 
 	// Redirecting to All-Blogs route handler
-	http.Redirect(w, r, "/admin/blog/all", 302) // 302 - POST to GET
+	http.Redirect(w, r, "/api/private/blog/all", 302) // 302 - POST to GET
 }
 
 // ReadBlog -
@@ -59,7 +59,7 @@ func ReadBlog(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog          // Blog
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bl, err := bl.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr)}) // Read Document
+	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr)}) // Read Document
 	HandleErr(w, 442, err)
 
 	WriteData(w, bl) // Write the Data

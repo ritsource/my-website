@@ -5,11 +5,8 @@ const LoginPage = () => {
 	return (
 		<div className="Page-c-00 Flex-Column-Center">
 			<div className="Page-Container-00 Flex-Column-Center">
-				<a href={process.env.REACT_APP_API_URL + '/auth/google'}>
+				<a href={process.env.REACT_APP_API_URL + '/api/auth/google'}>
 					<button
-						onClick={() => {
-							console.log(process.env.REACT_APP_API_URL + '/auth/google');
-						}}
 						style={{
 							fontSize: '14px',
 							letterSpacing: '0.1px',

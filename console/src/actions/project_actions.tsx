@@ -21,7 +21,7 @@ const projectData = {
 export const createProject = (extraData: any) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.post('/admin/project/new', { ...projectData, ...extraData });
+			const response = await api.post('/private/project/new', { ...projectData, ...extraData });
 			dispatch({ type: CREATE_PROJECT, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -34,7 +34,7 @@ export const createProject = (extraData: any) => (dispatch: any, getState: any, 
 export const readProjects = () => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.get('/admin/project/all');
+			const response = await api.get('/private/project/all');
 			dispatch({ type: READ_PROJECTS, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -49,7 +49,7 @@ export const editProject = (projectId: string, editData: any) => (dispatch: any,
 
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.put(`/admin/project/edit/${projectId}`, editData);
+			const response = await api.put(`/private/project/edit/${projectId}`, editData);
 			dispatch({ type: EDIT_PROJECT_BY_ID, data: response.data });
 			resolve(response.data);
 		} catch (error) {
@@ -62,7 +62,7 @@ export const editProject = (projectId: string, editData: any) => (dispatch: any,
 export const deleteProject = (projectId: string) => (dispatch: any, getState: any, api: any) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await api.delete(`/admin/project/delete/${projectId}`);
+			const response = await api.delete(`/private/project/delete/${projectId}`);
 			dispatch({ type: DELETE_PROJECT_BY_ID, data: response.data });
 			resolve(response.data);
 		} catch (error) {

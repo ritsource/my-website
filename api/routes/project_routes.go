@@ -24,7 +24,7 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 	HandleErr(w, 422, err)
 
 	// Redirecting to All-Projects route handler
-	http.Redirect(w, r, "/admin/project/all", 302) // 302 - POST to GET
+	http.Redirect(w, r, "/api/private/project/all", 302) // 302 - POST to GET
 }
 
 // ReadProject -
@@ -32,7 +32,7 @@ func ReadProject(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project       // Project
 	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pr, err := pr.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr)}) // Read Document
+	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr)}) // Read Document
 	HandleErr(w, 442, err)
 
 	WriteData(w, pr) // Write the Data

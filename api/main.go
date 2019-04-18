@@ -4,11 +4,11 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/ritwik310/my-website/api/backup"
 	"github.com/ritwik310/my-website/api/config"
 	"github.com/ritwik310/my-website/api/db"
 	"github.com/ritwik310/my-website/api/middleware"
@@ -16,12 +16,6 @@ import (
 )
 
 func main() {
-	// Inserts Data to a Backup Database, once every day..
-	go backup.BackItup()
-
-	// Closes Database, on main.go File Exit
-	defer db.Close()
-
 	// Router (Gorilla Mux)
 	r := mux.NewRouter()
 
@@ -31,56 +25,65 @@ func main() {
 	flag.Parse()
 
 	// Static file server
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
+	r.PathPrefix("/api/static/").Handler(http.StripPrefix("/api/static/", http.FileServer(http.Dir(dir))))
 
 	// Dummy handler
-	r.HandleFunc("/", indexHandler).Methods("GET")
+	r.HandleFunc("/api", indexHandler).Methods("GET")
 
 	// Authentication (Admin) handlers
-	r.HandleFunc("/auth/google", routes.GoogleLoginHandeler).Methods("GET")
-	r.HandleFunc("/auth/google/callback", routes.GoogleCallbackHandler).Methods("GET")
-	r.HandleFunc("/auth/current_user", middleware.CheckAuth(routes.CurrentUserHandler)).Methods("GET")
+	r.HandleFunc("/api/auth/google", routes.GoogleLoginHandeler).Methods("GET")
+	r.HandleFunc("/api/auth/google/callback", routes.GoogleCallbackHandler).Methods("GET")
+	r.HandleFunc("/api/auth/current_user", middleware.CheckAuth(routes.CurrentUserHandler)).Methods("GET")
 
 	// Admin, Blog Handlers
-	r.HandleFunc("/admin/blog/all", middleware.CheckAuth(routes.ReadBlogs)).Methods("GET")
-	r.HandleFunc("/admin/blog/{id}", middleware.CheckAuth(routes.ReadBlog)).Methods("GET")
-	r.HandleFunc("/admin/blog/new", middleware.CheckAuth(routes.CreateBlog)).Methods("POST")
-	r.HandleFunc("/admin/blog/edit/{id}", middleware.CheckAuth(routes.EditBlog)).Methods("PUT")
-	r.HandleFunc("/admin/blog/delete/{id}", middleware.CheckAuth(routes.DeleteBlog)).Methods("DELETE")
-	r.HandleFunc("/admin/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteProjectF)).Methods("DELETE")
+	r.HandleFunc("/api/private/blog/all", middleware.CheckAuth(routes.ReadBlogs)).Methods("GET")
+	r.HandleFunc("/api/private/blog/{id}", middleware.CheckAuth(routes.ReadBlog)).Methods("GET")
+	r.HandleFunc("/api/private/blog/new", middleware.CheckAuth(routes.CreateBlog)).Methods("POST")
+	r.HandleFunc("/api/private/blog/edit/{id}", middleware.CheckAuth(routes.EditBlog)).Methods("PUT")
+	r.HandleFunc("/api/private/blog/delete/{id}", middleware.CheckAuth(routes.DeleteBlog)).Methods("DELETE")
+	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteProjectF)).Methods("DELETE")
 
 	// Admin, Project Handlers
-	r.HandleFunc("/admin/project/all", middleware.CheckAuth(routes.ReadProjects)).Methods("GET")
-	r.HandleFunc("/admin/project/{id}", middleware.CheckAuth(routes.ReadProject)).Methods("GET")
-	r.HandleFunc("/admin/project/new", middleware.CheckAuth(routes.CreateProject)).Methods("POST")
-	r.HandleFunc("/admin/project/edit/{id}", middleware.CheckAuth(routes.EditProject)).Methods("PUT")
-	r.HandleFunc("/admin/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
-	r.HandleFunc("/admin/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogF)).Methods("DELETE")
+	r.HandleFunc("/api/private/project/all", middleware.CheckAuth(routes.ReadProjects)).Methods("GET")
+	r.HandleFunc("/api/private/project/{id}", middleware.CheckAuth(routes.ReadProject)).Methods("GET")
+	r.HandleFunc("/api/private/project/new", middleware.CheckAuth(routes.CreateProject)).Methods("POST")
+	r.HandleFunc("/api/private/project/edit/{id}", middleware.CheckAuth(routes.EditProject)).Methods("PUT")
+	r.HandleFunc("/api/private/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
+	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogF)).Methods("DELETE")
 
 	// Public, Document Handlers
 	// This request get's redirected to the corresponding static file
 	// If exists in static directory, then there, else source on web (Probably Gitlab/Github)
-	r.HandleFunc("/public/blog/doc/{id}", routes.PubGetBlogDoc).Methods("GET")
-	r.HandleFunc("/public/project/doc/{id}", routes.PubGetProjectDoc).Methods("GET")
+	r.HandleFunc("/api/public/blog/doc/{id}", routes.PubGetBlogDoc).Methods("GET")
+	r.HandleFunc("/api/public/project/doc/{id}", routes.PubGetProjectDoc).Methods("GET")
 
-	r.HandleFunc("/public/blog/all", routes.PubReadBlogs).Methods("GET")
-	r.HandleFunc("/public/blog/{id}", routes.PubReadBlog).Methods("GET")
-	r.HandleFunc("/public/project/all", routes.PubReadProjects).Methods("GET")
-	r.HandleFunc("/public/project/{id}", routes.PubReadProject).Methods("GET")
+	// Public API Routes
+	r.HandleFunc("/api/public/blog/all", routes.PubReadBlogs).Methods("GET")
+	r.HandleFunc("/api/public/blog/{id}", routes.PubReadBlog).Methods("GET")
+	r.HandleFunc("/api/public/project/all", routes.PubReadProjects).Methods("GET")
+	r.HandleFunc("/api/public/project/{id}", routes.PubReadProject).Methods("GET")
 
-	// For handling CORS requests
-	ch := cors.New(cors.Options{
-		AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleCLientURL},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowCredentials: true,
-	}).Handler(r)
+	isDev := os.Getenv("DEV_MODE") == "true" // Is Development
 
-	// Server
-	log.Fatal(http.ListenAndServe(":8080", ch))
+	if isDev {
+		// Allow CORS stuff only in Development (In Prod, it's all under same domain (AWS))
+		ch := cors.New(cors.Options{
+			AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleCLientURL},
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowCredentials: true,
+		}).Handler(r) // For handling CORS
+
+		log.Fatal(http.ListenAndServe(":8080", ch)) // Listening in PORT 8080
+	} else {
+		log.Fatal(http.ListenAndServe(":8080", r)) // Listening...
+	}
+
+	// Closes Database, on main.go File Exit
+	defer db.Close()
 }
 
 // Dummy Index Handler
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"message\": \"hello world\", \"from\": \"Ritwik :)\"}"))
+	w.Write([]byte("{\"message\": \"Hello World, this is API\", \"from\": \"Ritwik :)\"}"))
 }

@@ -1,9 +1,6 @@
 package config
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -20,22 +17,17 @@ type Config struct {
 	AppRendererURL     string   `json:"APP_RENDERER_URL"`
 }
 
+// Secrets - Struct (Config) that holds environment variables values
+var Secrets Config
 var isDev bool
 
-// Secrets - ...
-var Secrets Config
-
 func init() {
-	// Checking if in Development mode or not
-	isDev = os.Getenv("DEV_MODE") == "true"
-
-	// Getting env configs
-	GetEnvSecrets(&Secrets)
-	// GetFileSecrets(isDev, &Secrets)
+	isDev = os.Getenv("DEV_MODE") == "true" // Checking if in Development mode or not
+	ReadSecrets(&Secrets)                   // Reading env configs
 }
 
-// GetEnvSecrets - Gets secrets from environment variables
-func GetEnvSecrets(s *Config) {
+// ReadSecrets - Gets secrets from environment variables
+func ReadSecrets(s *Config) {
 	s.GoogleClientID = os.Getenv("GOOGLE_CLIENT_ID")
 	s.GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	s.SessionKey = os.Getenv("SESSION_KEY")
@@ -49,49 +41,4 @@ func GetEnvSecrets(s *Config) {
 
 	s.ConsoleCLientURL = os.Getenv("CONSOLE_CLIENT_URL")
 	s.AppRendererURL = os.Getenv("APP_RENDERER_URL")
-}
-
-// GetFileSecrets - gets the secrets from Config.Dev file
-func GetFileSecrets(isDev bool, s *Config) error {
-	var err error
-
-	// JSON file location
-	var filename string
-	if isDev {
-		filename = "config/config.development.json"
-	} else {
-		filename = "config/config.production.json"
-	}
-
-	// JSON file
-	var jsonFile *os.File
-	err = nil
-
-	jsonFile, err = os.Open(filename)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return err
-	}
-
-	defer jsonFile.Close()
-
-	// Reading JSON file
-	var byteValue []byte
-	err = nil
-
-	byteValue, err = ioutil.ReadAll(jsonFile)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return err
-	}
-
-	// Saving data in struct
-	err = nil
-	err = json.Unmarshal([]byte(byteValue), &s)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return err
-	}
-
-	return nil
 }

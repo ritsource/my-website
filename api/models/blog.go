@@ -23,8 +23,7 @@ type Blog struct {
 	IsDeleted     bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
-// MongoDB blogCollection for Blogs
-var blogCol *mgo.Collection
+var blogCol *mgo.Collection // MongoDB blogCollection for Blogs
 
 func init() {
 	blogCol = db.Client.DB(config.Secrets.DBName).C("blogs")
@@ -33,7 +32,7 @@ func init() {
 // Blogs - Slice of Blogs
 type Blogs []Blog
 
-// ReadAll - ..
+// Read - Reads all Documents from blogs
 func (bs Blogs) Read(s bson.M) (Blogs, error) {
 	err := blogCol.Find(s).Sort("created_at").All(&bs)
 	if err != nil {
@@ -43,7 +42,7 @@ func (bs Blogs) Read(s bson.M) (Blogs, error) {
 	return bs, nil
 }
 
-// Create - ..
+// Create - Creates new Document
 func (b Blog) Create() (Blog, error) {
 	err := blogCol.Insert(&b)
 	if err != nil {
@@ -53,8 +52,8 @@ func (b Blog) Create() (Blog, error) {
 	return b, nil
 }
 
-// ReadSingle - ..
-func (b Blog) ReadSingle(s bson.M) (Blog, error) {
+// Read - Reads single Document
+func (b Blog) Read(s bson.M) (Blog, error) {
 	err := blogCol.Find(s).One(&b)
 	if err != nil {
 		return b, err
@@ -63,7 +62,7 @@ func (b Blog) ReadSingle(s bson.M) (Blog, error) {
 	return b, nil
 }
 
-// Update - ..
+// Update - Updates a Document by ID
 func (b Blog) Update(s bson.M, u bson.M) (Blog, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": u},
@@ -74,7 +73,7 @@ func (b Blog) Update(s bson.M, u bson.M) (Blog, error) {
 	return b, err
 }
 
-// Delete - ..
+// Delete - Deletes a Document
 func (b Blog) Delete(id bson.ObjectId) (Blog, error) {
 	// err := blogCol.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
 	change := mgo.Change{

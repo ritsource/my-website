@@ -27,7 +27,7 @@ func PubReadBlog(w http.ResponseWriter, r *http.Request) {
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
 	// Read blog
-	bl, err := bl.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true})
+	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true})
 	HandleErr(w, 422, err)
 
 	WriteData(w, bl) // Write Data
@@ -49,7 +49,7 @@ func PubReadProject(w http.ResponseWriter, r *http.Request) {
 	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
 	// Read project
-	pr, err := pr.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
+	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
 	HandleErr(w, 422, err)
 
 	WriteData(w, pr) // Write Data

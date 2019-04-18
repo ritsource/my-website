@@ -47,7 +47,7 @@ func PubGetBlogDoc(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog
 	bIDStr := mux.Vars(r)["id"]
 
-	bl, err := bl.ReadSingle(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true}) // Reading Data
+	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true}) // Reading Data
 	HandleErr(w, 422, err)
 
 	// Defining filename for in cache folder
@@ -61,7 +61,7 @@ func PubGetBlogDoc(w http.ResponseWriter, r *http.Request) {
 	// Checking if requested file Exists or Not
 	if _, err := os.Stat("./cache/" + fileName); err == nil {
 		// Redirect to static route if file exist
-		http.Redirect(w, r, "/static/"+fileName, http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/api/static/"+fileName, http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -86,7 +86,7 @@ func PubGetProjectDoc(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project
 	pIDStr := mux.Vars(r)["id"]
 
-	pr, err := pr.ReadSingle(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
+	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
 	HandleErr(w, 422, err)
 
 	// Defining cahce filename
@@ -100,7 +100,7 @@ func PubGetProjectDoc(w http.ResponseWriter, r *http.Request) {
 	// Checking if requested file Exists or Not
 	if _, err := os.Stat("./cache/" + fileName); err == nil {
 		// if exist then redirect to the static route
-		http.Redirect(w, r, "/static/"+fileName, http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/api/static/"+fileName, http.StatusTemporaryRedirect)
 		return
 	}
 

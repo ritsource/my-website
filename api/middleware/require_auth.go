@@ -9,7 +9,7 @@ import (
 	"github.com/ritwik310/my-website/api/config"
 )
 
-// Session - ...
+// Session - Auth Session
 var Session = sessions.NewCookieStore([]byte(config.Secrets.SessionKey))
 
 // Writes Admin Un-Authenticated on Response
@@ -31,7 +31,7 @@ func CheckAuth(handler http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		if r.URL.Path == "/auth/current_user" {
+		if r.URL.Path == "/api/auth/current_user" {
 			context.Set(r, "aEmail", aEmail)
 		}
 

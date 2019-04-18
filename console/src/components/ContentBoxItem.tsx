@@ -28,7 +28,19 @@ const ContentBoxItem: React.SFC<MyProps> = (props) => {
 						<MdBlock style={{ cursor: 'pointer', marginRight: '10px', marginTop: '4px' }} />
 					</div>
 				)}
-				<button className="Theme-Btn-Little-One">File</button>
+				<a
+					className="a-exception"
+					href={
+						process.env.REACT_APP_WEBSITE_URL +
+						'/preview?' +
+						`src=${object.doc_type === 'markdown' ? object.markdown : object.html}` +
+						'&' +
+						`type=${object.doc_type}`
+					}
+					target="_blank"
+				>
+					<button className="Theme-Btn-Little-One">Preview</button>
+				</a>
 			</div>
 		</div>
 	);
