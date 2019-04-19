@@ -13,7 +13,7 @@ deploy:
   provider: elasticbeanstalk
   region: "ap-south-1"
   app: My-Website
-  env: My-Website-env-0
+  env: My-Website-env-1
   bucket_name: elasticbeanstalk-ap-south-1-729767835831
   bucket_path: My-Website
   on:

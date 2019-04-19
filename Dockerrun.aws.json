@@ -25,7 +25,7 @@
 		},
 		{
 			"name": "nginx",
-			"image": "my-website-nginx",
+			"image": "ritwik310/my-website-nginx",
 			"hostname": "nginx",
 			"essential": true,
 			"portMappings": [
