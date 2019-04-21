@@ -6,14 +6,15 @@ import (
 
 // Config ...
 type Config struct {
-	GoogleClientID     string   `json:"GOOGLE_CLIENT_ID"`
-	GoogleClientSecret string   `json:"GOOGLE_CLIENT_SECRET"`
-	SessionKey         string   `json:"SESSION_KEY"`
-	MongoURI           string   `json:"MONGO_URI"`
-	DBName             string   `json:"DATABASE_NAME"`
-	AdminEmails        []string `json:"ADMIN_EMAILS"`
-	ConsoleCLientURL   string   `json:"CONSOLE_CLIENT_URL"`
-	AppRendererURL     string   `json:"APP_RENDERER_URL"`
+	GoogleClientID        string   `json:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret    string   `json:"GOOGLE_CLIENT_SECRET"`
+	SessionKey            string   `json:"SESSION_KEY"`
+	MongoURI              string   `json:"MONGO_URI"`
+	DBName                string   `json:"DB_NAME"`
+	AdminEmails           []string `json:"ADMIN_EMAILS"`
+	ConsoleCLientURL      string   `json:"CONSOLE_CLIENT_URL"`
+	AppRendererURL        string   `json:"APP_RENDERER_URL"`
+	GoogleAuthRedirectURL string   `json:"AUTH_REDIRETC_URL"`
 }
 
 // Secrets - Struct (Config) that holds environment variables values
@@ -30,8 +31,9 @@ func ReadSecrets(s *Config) {
 	s.GoogleClientID = os.Getenv("GOOGLE_CLIENT_ID")
 	s.GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	s.SessionKey = os.Getenv("SESSION_KEY")
+
 	s.MongoURI = os.Getenv("MONGO_URI")
-	s.DBName = os.Getenv("DATABASE_NAME")
+	s.DBName = os.Getenv("DB_NAME")
 
 	AdminEmailA := os.Getenv("ADMIN_EMAIL_A")
 	AdminEmailB := os.Getenv("ADMIN_EMAIL_B")
@@ -39,4 +41,6 @@ func ReadSecrets(s *Config) {
 
 	s.ConsoleCLientURL = os.Getenv("CONSOLE_CLIENT_URL")
 	s.AppRendererURL = os.Getenv("APP_RENDERER_URL")
+
+	s.GoogleAuthRedirectURL = os.Getenv("AUTH_REDIRETC_URL")
 }

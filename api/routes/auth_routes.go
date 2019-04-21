@@ -24,7 +24,7 @@ var GoogleOauthConfig *oauth2.Config
 
 func init() {
 	GoogleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/api/auth/google/callback",
+		RedirectURL:  config.Secrets.GoogleAuthRedirectURL,
 		ClientID:     config.Secrets.GoogleClientID,
 		ClientSecret: config.Secrets.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -75,7 +75,6 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Sending sesponse
 	// isDev := os.Getenv("DEV_MODE") == "true"
-	// fmt.Println("isDev", isDev)
 	// if isDev {
 	http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
 	// } else {

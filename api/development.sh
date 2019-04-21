@@ -8,11 +8,12 @@ export DEV_MODE="true"
 export MONGO_URI="mongodb://localhost:27017"
 
 # MongoDB Database name
-export DATABASE_NAME="dev_db"
+export DB_NAME="my-website-prod"
 
 # Console App base URL and Renderer too
 export CONSOLE_CLIENT_URL="http://localhost:3000"
 export APP_RENDERER_URL="http://localhost:8081"
+export AUTH_REDIRETC_URL="http://localhost:8080/api/auth/google/callback"
 
 # Other more secret env variables
 
