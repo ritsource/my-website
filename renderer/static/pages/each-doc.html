@@ -34,8 +34,9 @@
         <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>, <strong>{{.Data.FormattedDate}}</strong></p>
       {{end}}
       <div class="Share-Button-Container-00 Flex-Row-Start">
-        <div class="fb-share-button" data-href="https://ritwiksaha.com/blog/{{.Data.ID}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-        <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{.Data.Title}} https://ritwiksaha.com/blog/{{.Data.ID}}">
+        
+        <div class="fb-share-button" data-href="https://ritwiksaha.com/{{if .Project}}project{{else}}blog{{end}}/{{.Data.ID}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+        <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{.Data.Title}} https://ritwiksaha.com/{{if .Project}}project{{else}}blog{{end}}/{{.Data.ID}}">
           <i class="fab fa-twitter"></i>
           Tweet
         </a>

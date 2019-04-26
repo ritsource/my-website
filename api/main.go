@@ -67,7 +67,7 @@ func main() {
 
 	// For handling CORS
 	ch := cors.New(cors.Options{
-		AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleCLientURL},
+		AllowedOrigins:   []string{config.Secrets.AppRendererURL, config.Secrets.ConsoleClientURL},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowCredentials: true,
 	}).Handler(r)
