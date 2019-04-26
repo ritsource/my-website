@@ -3,6 +3,7 @@ import { CREATE_BLOG, DELETE_BLOG_BY_ID, EDIT_BLOG_BY_ID, READ_BLOGS, READ_BLOG_
 const blogData = {
 	title: 'Title',
 	description: 'Description',
+	thumbnail: '',
 	author: 'Ritwik Saha',
 	formatted_date: 'January 1, 2025',
 	html: '',

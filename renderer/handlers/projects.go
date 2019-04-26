@@ -20,6 +20,7 @@ type Project struct {
 	Markdown    string `json:"markdown"`
 	DocType     string `json:"doc_type"`
 	Link        string `json:"link"`
+	Thumbnail   string `json:"thumbnail"`
 	IsPublic    bool   `json:"is_public"`
 	IsDeleted   bool   `json:"is_deleted"`
 }

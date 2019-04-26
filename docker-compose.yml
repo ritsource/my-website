@@ -1,11 +1,11 @@
 version: '3'
 services:
-  # mongo:
-  #   image: 'mongo:4.1.8-xenial'
-  #   volumes:
-  #     - /home/ritwik310/Desktop/data/mongo1:/data/db
-    # ports:
-    #   - '27017:27017'
+  mongo:
+    image: 'mongo:4.1.8-xenial'
+    volumes:
+      - /home/ritwik310/Desktop/data/mongo1:/data/db
+    ports:
+      - '27017:27017'
   nginx:
     restart: always
     build:
@@ -21,11 +21,11 @@ services:
     volumes:
       - ./api/cache:/usr/src/cache
     environment:
-      - DEV_MODE=false
-      # - MONGO_URI=mongodb://mongo:27017
-      - MONGO_URI=${MONGO_URI}
-      # - DB_NAME=dev_db
-      - DB_NAME=${DB_NAME}
+      - DEV_MODE=true
+      - MONGO_URI=mongodb://mongo:27017
+      # - MONGO_URI=${MONGO_URI}
+      - DB_NAME=dev_db
+      # - DB_NAME=${DB_NAME}
       - CONSOLE_CLIENT_URL=http://localhost:4001/admin
       - APP_RENDERER_URL=http://localhost:4001
       - AUTH_REDIRETC_URL=http://localhost:4001/api/auth/google/callback

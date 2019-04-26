@@ -37,6 +37,7 @@ type Blog struct {
 	HTML          string `json:"html"`
 	Markdown      string `json:"markdown"`
 	DocType       string `json:"doc_type"`
+	Thumbnail     string `json:"thumbnail"`
 	IsPublic      bool   `json:"is_public"`
 	IsDeleted     bool   `json:"is_deleted"`
 }

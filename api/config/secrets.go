@@ -12,7 +12,7 @@ type Config struct {
 	MongoURI              string   `json:"MONGO_URI"`
 	DBName                string   `json:"DB_NAME"`
 	AdminEmails           []string `json:"ADMIN_EMAILS"`
-	ConsoleCLientURL      string   `json:"CONSOLE_CLIENT_URL"`
+	ConsoleClientURL      string   `json:"CONSOLE_CLIENT_URL"`
 	AppRendererURL        string   `json:"APP_RENDERER_URL"`
 	GoogleAuthRedirectURL string   `json:"AUTH_REDIRETC_URL"`
 }
@@ -39,7 +39,7 @@ func ReadSecrets(s *Config) {
 	AdminEmailB := os.Getenv("ADMIN_EMAIL_B")
 	s.AdminEmails = append(s.AdminEmails, AdminEmailA, AdminEmailB)
 
-	s.ConsoleCLientURL = os.Getenv("CONSOLE_CLIENT_URL")
+	s.ConsoleClientURL = os.Getenv("CONSOLE_CLIENT_URL")
 	s.AppRendererURL = os.Getenv("APP_RENDERER_URL")
 
 	s.GoogleAuthRedirectURL = os.Getenv("AUTH_REDIRETC_URL")

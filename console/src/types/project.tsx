@@ -6,8 +6,8 @@ type Project = {
 	html: string;
 	markdown: string;
 	doc_type: string;
+	thumbnail: string;
 	link: string;
-	image_url: string;
 	is_public: boolean;
 	is_deleted: boolean;
 };

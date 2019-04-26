@@ -76,7 +76,7 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	// Sending sesponse
 	// isDev := os.Getenv("DEV_MODE") == "true"
 	// if isDev {
-	http.Redirect(w, r, config.Secrets.ConsoleCLientURL, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, config.Secrets.ConsoleClientURL+"/admin", http.StatusTemporaryRedirect)
 	// } else {
 	// 	http.Redirect(w, r, "/api/auth/current_user", http.StatusTemporaryRedirect)
 	// }

@@ -6,7 +6,7 @@ type Blog = {
 	html: string;
 	markdown: string;
 	doc_type: string;
-	image_url: string;
+	thumbnail: string;
 	is_public: boolean;
 	is_deleted: boolean;
 };
