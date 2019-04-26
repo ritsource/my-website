@@ -11,6 +11,7 @@ const projectData = {
 	title: 'Title',
 	description: 'Description',
 	link: '',
+	thumbnail: '',
 	html: '',
 	markdown: '',
 	doc_type: 'markdown',

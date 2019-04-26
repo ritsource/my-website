@@ -12,7 +12,11 @@
   <meta name="og:title" property="og:title" content="{{.Data.Title}}">
   <meta name="og:type" property="og:type" content="article">
   <meta name="og:description" property="og:description" content="{{.Data.Description}}">
-  <meta name="og:image" property="og:image" content="/static/mypic.jpeg">
+  {{if .Data.Thumbnail}}
+    <meta name="og:image" property="og:image" content={{.Data.Thumbnail}}>
+  {{else}}
+    <meta name="og:image" property="og:image" content="/static/mypic.jpeg">
+  {{end}}
   <meta name="description" content="{{.Data.Description}}">
   <title>{{.Data.Title}} - Ritwik Saha</title>
 </head>

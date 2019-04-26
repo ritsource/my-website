@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import Project from '../types/project';
-import Blog from '../types/blog';
+// import Project from '../types/project';
+// import Blog from '../types/blog';
 
 type MyProps = {
 	object: any; // Project | Blog;
@@ -15,6 +15,7 @@ const SubBoxName = (props: MyProps) => {
 	const [ title, setTitle ] = useState(object ? object.title : '');
 	const [ description, setDescription ] = useState(object ? object.description : '');
 	const [ link, setLink ] = useState(object ? object.link : '');
+	const [ thumbnail, setThumbnail ] = useState(object ? object.thumbnail : '');
 	const [ author, setAuthor ] = useState(object ? object.author : '');
 	const [ formatted_date, setFormattedDate ] = useState(object ? object.formatted_date : '');
 
@@ -60,6 +61,16 @@ const SubBoxName = (props: MyProps) => {
 				onChange={(e) => {
 					if (boxEditable) {
 						setDescription(e.target.value);
+					}
+				}}
+			/>
+
+			<input
+				placeholder="Thumbnail Link (For SEO)"
+				value={thumbnail}
+				onChange={(e) => {
+					if (boxEditable) {
+						setThumbnail(e.target.value);
 					}
 				}}
 			/>
@@ -126,6 +137,7 @@ const SubBoxName = (props: MyProps) => {
 									await props.saveFunction(object, {
 										title,
 										description,
+										thumbnail,
 										link,
 										author,
 										formatted_date

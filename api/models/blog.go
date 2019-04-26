@@ -18,6 +18,7 @@ type Blog struct {
 	HTML          string        `bson:"html" json:"html"`
 	Markdown      string        `bson:"markdown" json:"markdown"`
 	DocType       string        `bson:"doc_type" json:"doc_type"`
+	Thumbnail     string        `bson:"thumbnail" json:"thumbnail"`
 	CreatedAt     int32         `bson:"created_at" json:"created_at"`
 	IsPublic      bool          `bson:"is_public" json:"is_public"`
 	IsDeleted     bool          `bson:"is_deleted" json:"is_deleted"`
