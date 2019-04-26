@@ -54,8 +54,8 @@
 
     <footer class="Flex-Row-Space-Between">
       <div class="Footer-Nav-Btn-Container-00">
-        <a id="Footer-Navigation-Btn-Prev"><button disabled>&lt; Prev</button></a>
-        <a id="Footer-Navigation-Btn-Next"><button disabled>Next &gt;</button></a>
+        <a id="Footer-Navigation-Btn-Prev"><button disabled>Prev</button></a>
+        <a id="Footer-Navigation-Btn-Next"><button disabled>Next</button></a>
       </div>
       <div class="Flex-Row-Space-Between">
         <a class="Cute-Btn Cute-Btn-Twitter" target="_blank" href="https://twitter.com/ritwik310">
@@ -79,7 +79,7 @@
 
   {{if .Project}}
     <script>
-      fetch('http://localhost:8080/public/project/all').then((response) => {
+      fetch('/api/public/project/all').then((response) => {
         return response.json();
       }).then((data) => {
         setNavigation(data, 'project');
@@ -87,7 +87,7 @@
     </script>
   {{else}}
     <script>
-      fetch('http://localhost:8080/public/blog/all').then((response) => {
+      fetch('/api/public/blog/all').then((response) => {
         return response.json();
       }).then((data) => {
         setNavigation(data, 'blog');

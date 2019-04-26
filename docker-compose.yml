@@ -39,7 +39,8 @@ services:
       dockerfile: Dockerfile
       context: ./renderer
     environment:
-      - DEV_MODE=false
+      - DEV_MODE=true
+      - API_URL=http://api:8080
   console:
     build:
       dockerfile: dev.Dockerfile

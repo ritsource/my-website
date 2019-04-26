@@ -13,16 +13,17 @@ import (
 
 // Project type - In data fetched from API
 type Project struct {
-	ID          string `json:"_id,omitempty"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	HTML        string `json:"html"`
-	Markdown    string `json:"markdown"`
-	DocType     string `json:"doc_type"`
-	Link        string `json:"link"`
-	Thumbnail   string `json:"thumbnail"`
-	IsPublic    bool   `json:"is_public"`
-	IsDeleted   bool   `json:"is_deleted"`
+	ID              string `json:"_id,omitempty"`
+	Title           string `json:"title"`
+	Description     string `json:"description"`
+	DescriptionLink string `json:"description_link"`
+	HTML            string `json:"html"`
+	Markdown        string `json:"markdown"`
+	DocType         string `json:"doc_type"`
+	Link            string `json:"link"`
+	Thumbnail       string `json:"thumbnail"`
+	IsPublic        bool   `json:"is_public"`
+	IsDeleted       bool   `json:"is_deleted"`
 }
 
 // EachProjectHandler - Fetches single Project data and Document for that Project,

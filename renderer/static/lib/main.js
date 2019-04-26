@@ -29,12 +29,16 @@ function setNavigation(data, urlBase) {
 
 	if (cIndex > 0) {
 		prevBtn.href = '/' + urlBase + '/' + data[cIndex - 1]._id;
+		prevBtn.firstChild.textContent = '< Prev';
 		prevBtn.firstChild.disabled = false;
+		prevBtn.firstChild.style.padding = '6px 10px';
 	}
 
 	if (cIndex < data.length - 1) {
 		nextBtn.href = '/' + urlBase + '/' + data[cIndex + 1]._id;
+		nextBtn.firstChild.textContent = 'Next >';
 		nextBtn.firstChild.disabled = false;
+		nextBtn.firstChild.style.padding = '6px 10px';
 	}
 }
 

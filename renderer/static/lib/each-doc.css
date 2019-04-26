@@ -119,7 +119,8 @@ footer {
 	color: #606060;
 	margin-right: 10px;
 	font-size: 13px;
-	padding: 6px 10px;
+	padding: 3px 6px;
+	/* padding: 6px 10px; */
 	border: 1px solid #909090;
 	background: white;
 	cursor: pointer;

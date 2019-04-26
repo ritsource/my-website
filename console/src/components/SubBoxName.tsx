@@ -14,6 +14,7 @@ const SubBoxName = (props: MyProps) => {
 
 	const [ title, setTitle ] = useState(object ? object.title : '');
 	const [ description, setDescription ] = useState(object ? object.description : '');
+	const [ description_link, setDescriptionLink ] = useState(object ? object.description_link : '');
 	const [ link, setLink ] = useState(object ? object.link : '');
 	const [ thumbnail, setThumbnail ] = useState(object ? object.thumbnail : '');
 	const [ author, setAuthor ] = useState(object ? object.author : '');
@@ -61,6 +62,16 @@ const SubBoxName = (props: MyProps) => {
 				onChange={(e) => {
 					if (boxEditable) {
 						setDescription(e.target.value);
+					}
+				}}
+			/>
+
+			<input
+				placeholder="A Link in Description (Optional)"
+				value={description_link}
+				onChange={(e) => {
+					if (boxEditable) {
+						setDescriptionLink(e.target.value);
 					}
 				}}
 			/>
@@ -137,6 +148,7 @@ const SubBoxName = (props: MyProps) => {
 									await props.saveFunction(object, {
 										title,
 										description,
+										description_link,
 										thumbnail,
 										link,
 										author,

@@ -29,17 +29,18 @@ func init() {
 
 // Blog type - In data fetched from API
 type Blog struct {
-	ID            string `json:"_id,omitempty"`
-	Title         string `json:"title"`
-	Description   string `json:"description"`
-	Author        string `json:"author"`
-	FormattedDate string `json:"formatted_date"`
-	HTML          string `json:"html"`
-	Markdown      string `json:"markdown"`
-	DocType       string `json:"doc_type"`
-	Thumbnail     string `json:"thumbnail"`
-	IsPublic      bool   `json:"is_public"`
-	IsDeleted     bool   `json:"is_deleted"`
+	ID              string `json:"_id,omitempty"`
+	Title           string `json:"title"`
+	Description     string `json:"description"`
+	DescriptionLink string `json:"description_link"`
+	Author          string `json:"author"`
+	FormattedDate   string `json:"formatted_date"`
+	HTML            string `json:"html"`
+	Markdown        string `json:"markdown"`
+	DocType         string `json:"doc_type"`
+	Thumbnail       string `json:"thumbnail"`
+	IsPublic        bool   `json:"is_public"`
+	IsDeleted       bool   `json:"is_deleted"`
 }
 
 // FetchData - Fetches Data from the API

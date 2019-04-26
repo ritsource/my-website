@@ -10,6 +10,7 @@ import {
 const projectData = {
 	title: 'Title',
 	description: 'Description',
+	description_link: '',
 	link: '',
 	thumbnail: '',
 	html: '',
