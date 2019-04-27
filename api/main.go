@@ -40,7 +40,7 @@ func main() {
 	r.HandleFunc("/api/private/blog/new", middleware.CheckAuth(routes.CreateBlog)).Methods("POST")
 	r.HandleFunc("/api/private/blog/edit/{id}", middleware.CheckAuth(routes.EditBlog)).Methods("PUT")
 	r.HandleFunc("/api/private/blog/delete/{id}", middleware.CheckAuth(routes.DeleteBlog)).Methods("DELETE")
-	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteProjectF)).Methods("DELETE")
+	r.HandleFunc("/api/private/blog/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogF)).Methods("DELETE")
 
 	// Admin, Project Handlers
 	r.HandleFunc("/api/private/project/all", middleware.CheckAuth(routes.ReadProjects)).Methods("GET")
@@ -48,7 +48,7 @@ func main() {
 	r.HandleFunc("/api/private/project/new", middleware.CheckAuth(routes.CreateProject)).Methods("POST")
 	r.HandleFunc("/api/private/project/edit/{id}", middleware.CheckAuth(routes.EditProject)).Methods("PUT")
 	r.HandleFunc("/api/private/project/delete/{id}", middleware.CheckAuth(routes.DeleteProject)).Methods("DELETE")
-	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteBlogF)).Methods("DELETE")
+	r.HandleFunc("/api/private/project/delete/permanent/{id}", middleware.CheckAuth(routes.DeleteProjectF)).Methods("DELETE")
 
 	// Routes for Clearing Document Cache Files
 	r.HandleFunc("/api/private/cache/delete/{id}", middleware.CheckAuth(routes.ClearDocCache)).Methods("DELETE")

@@ -70,7 +70,7 @@ const SubBoxDelete = (props: MyProps) => {
 									);
 									setErrorMsg(false);
 									setBoxEditable(false);
-									window.location.href = '/';
+									window.location.href = '/admin';
 								} catch (e) {
 									setErrorMsg(e);
 								}
