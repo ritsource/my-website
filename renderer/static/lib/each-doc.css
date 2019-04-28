@@ -4,12 +4,12 @@
 }
 
 header h1 {
-	color: #00a82d;
+	color: var(--theme-color);
 }
 header p {
-	font-size: 14px;
+	font-size: 0.875rem;
 	word-spacing: 0.6px;
-	color: #606060;
+	color: var(--text-color-light);
 	margin: 5px 0px;
 	line-height: 24px;
 }
@@ -17,8 +17,8 @@ header p {
 .markdown-body {
 	padding: 0px;
 	margin: 0px;
-	font-size: 16px;
-	color: #606060;
+	font-size: 1rem;
+	color: var(--text-color-light);
 	font-weight: normal;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
 		'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -39,11 +39,11 @@ header p {
 }
 
 .markdown-body h1 {
-	font-size: 24px;
+	font-size: 1.5rem;
 }
 
 .markdown-body h2 {
-	font-size: 20px;
+	font-size: 1.25rem;
 }
 
 .markdown-body h1,
@@ -61,27 +61,27 @@ header p {
 .markdown-body h5,
 .markdown-body h6 {
 	font-weight: bold;
-	font-size: 16px;
+	font-size: 1rem;
 }
 
 .markdown-body h5,
 .markdown-body h6 {
 	font-weight: bold;
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 
 .markdown-body p,
 p {
-	font-size: 16px;
+	font-size: 1rem;
 	/* letter-spacing: 0.5px; */
 	word-spacing: 1px;
-	color: #606060;
+	color: var(--text-color-light);
 	margin: 10px 0px;
 	line-height: 24px;
 }
 
 .markdown-body a {
-	color: #00a82d;
+	color: var(--theme-color);
 	text-decoration: none;
 }
 .markdown-body a:hover {
@@ -116,22 +116,26 @@ footer {
 }
 #Footer-Navigation-Btn-Prev button,
 #Footer-Navigation-Btn-Next button {
-	color: #606060;
+	color: var(--text-color-light);
 	margin-right: 10px;
-	font-size: 13px;
+	font-size: 0.8125rem;
 	padding: 3px 6px;
 	/* padding: 6px 10px; */
-	border: 1px solid #909090;
+	border: 1px solid var(--border-color-2);
 	background: white;
 	cursor: pointer;
 	border-radius: 2px;
 }
 .Footer-Nav-Btn-Container-00 button:disabled {
-	color: #909090 !important;
-	border: 1px solid #bbb !important;
+	color: var(--border-color-2) !important;
+	border: 1px solid var(--border-color) !important;
 }
 .Footer-Nav-Btn-Container-00 button:hover {
 	text-decoration: none;
+}
+
+.Footer-Social-Btn-Container-00 {
+	display: flex;
 }
 
 @media (max-width: 500px) {
@@ -146,6 +150,10 @@ footer {
 	}
 
 	.Footer-Nav-Btn-Container-00 {
-		margin: 0px 0px 20px 0px;
+		/* margin: 0px 0px 20px 0px; */
+	}
+
+	.Footer-Social-Btn-Container-00 {
+		display: none;
 	}
 }

@@ -19,13 +19,13 @@
 }
 
 .Blogs-Item-C-00 p {
-	font-size: 14px;
-	color: #707070;
+	font-size: 0.875rem;
+	color: var(--text-color-lightest);
 	margin: 5px 0px;
 	line-height: 20px;
-	max-height: 40px;
+	/* max-height: 40px;
 	overflow: hidden;
-	text-overflow: ellipsis;
+	text-overflow: ellipsis; */
 }
 
 .Blogs-Item-C-00 h2 {
