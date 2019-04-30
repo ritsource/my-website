@@ -1,10 +1,12 @@
 .Each-Blog-Content-00 {
-	width: calc(100% - 200px);
+	width: var(--container-width);
+	/* width: calc(100% - 600px); */
 	margin: auto;
 }
 
 header h1 {
 	color: var(--theme-color);
+	font-size: 2rem;
 }
 header p {
 	font-size: 0.875rem;
@@ -43,16 +45,21 @@ header p {
 }
 
 .markdown-body h2 {
-	font-size: 1.25rem;
+	/* font-weight: bold; */
+	font-size: 1.3rem;
 }
 
-.markdown-body h1,
+.markdown-body h1 {
+	margin: 20px 0px 20px 0px;
+}
+
 .markdown-body h2,
 .markdown-body h3,
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-	margin: 20px 0px 20px 0px;
+	color: var(--text-color-dark);
+	margin: 10px 0px 0px 0px;
 	/* margin: 10px 0px 5px 0px; */
 }
 
