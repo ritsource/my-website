@@ -29,6 +29,8 @@ func main() {
 	r.HandleFunc("/project/{id}", handlers.EachProjectHandler).Methods("GET")
 	r.HandleFunc("/preview", handlers.PreviewHandler).Methods("GET")
 
+	r.NotFoundHandler = http.HandlerFunc(handlers.NotFoundHandler)
+
 	// Server
-	log.Fatal(http.ListenAndServe(":8081", r))
+	log.Fatal(http.ListenAndServe("localhost:8081", r))
 }

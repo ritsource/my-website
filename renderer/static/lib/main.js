@@ -1,3 +1,11 @@
+// Adds Attribute to ('target', '_blank')
+const mdLinks = document.querySelectorAll('.markdown-body a');
+console.log('mdLinks', mdLinks);
+
+Object.values(mdLinks).map((element) => {
+	element.setAttribute('target', '_blank');
+});
+
 // Some jaavscript for Header Animation (on Scroll)
 var prevScrollpos = window.pageYOffset;
 
