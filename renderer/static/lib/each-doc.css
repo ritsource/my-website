@@ -16,6 +16,10 @@ header p {
 	line-height: 24px;
 }
 
+.markdown-body img {
+	margin: 20px auto;
+}
+
 .markdown-body {
 	padding: 0px;
 	margin: 0px;
