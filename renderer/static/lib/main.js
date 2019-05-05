@@ -12,7 +12,11 @@ const imgEls = document.querySelectorAll('.markdown-body p img');
 
 Object.values(imgEls).map((el) => {
 	width = el.offsetWidth;
-	el.style.marginLeft = 'calc(50% - ' + width / 2 + 'px)';
+
+	if (width === 400) {
+		// Only for youtube links make width 400
+		el.style.marginLeft = 'calc(50% - ' + width / 2 + 'px)';
+	}
 });
 
 // Some jaavscript for Header Animation (on Scroll)
