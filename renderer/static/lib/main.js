@@ -1,9 +1,18 @@
 // Adds Attribute to ('target', '_blank')
 const mdLinks = document.querySelectorAll('.markdown-body a');
-console.log('mdLinks', mdLinks);
 
-Object.values(mdLinks).map((element) => {
-	element.setAttribute('target', '_blank');
+Object.values(mdLinks).map((el) => {
+	if (el.hostname !== 'ritwiksaha.com' && el.hostname !== 'localhost') {
+		el.setAttribute('target', '_blank');
+	}
+});
+
+// Adjusting images to the center
+const imgEls = document.querySelectorAll('.markdown-body p img');
+
+Object.values(imgEls).map((el) => {
+	width = el.offsetWidth;
+	el.style.marginLeft = 'calc(50% - ' + width / 2 + 'px)';
 });
 
 // Some jaavscript for Header Animation (on Scroll)
