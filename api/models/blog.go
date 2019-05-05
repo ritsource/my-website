@@ -36,7 +36,7 @@ type Blogs []Blog
 
 // Read - Reads all Documents from blogs
 func (bs Blogs) Read(s bson.M) (Blogs, error) {
-	err := blogCol.Find(s).Sort("created_at").All(&bs)
+	err := blogCol.Find(s).Sort("-created_at").All(&bs)
 	if err != nil {
 		return nil, err
 	}
