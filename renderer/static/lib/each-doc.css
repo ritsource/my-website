@@ -149,6 +149,10 @@ footer {
 	display: flex;
 }
 
+.Article-End-Div-00 {
+	display: none;
+}
+
 @media (max-width: 500px) {
 	.Each-Blog-Content-00 {
 		align-items: center;
@@ -166,5 +170,12 @@ footer {
 
 	.Footer-Social-Btn-Container-00 {
 		display: none;
+	}
+
+	.Article-End-Div-00 {
+		display: block;
+		margin: 20px auto 0px 0px;
+		width: 40%;
+		border-bottom: 1px solid var(--border-color);
 	}
 }
