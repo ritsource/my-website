@@ -157,6 +157,9 @@ textarea:focus {
 		width: calc(100% - 50px);
 		padding: 25px 25px 25px 25px;
 		justify-content: center;
+
+		/* New */
+		display: none;
 	}
 }
 

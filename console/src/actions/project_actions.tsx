@@ -16,7 +16,7 @@ const projectData = {
 	html: '',
 	markdown: '',
 	doc_type: 'markdown',
-	is_major: false,
+	is_major: true,
 	is_public: false,
 	is_deleted: false
 };
