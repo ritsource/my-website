@@ -22,7 +22,7 @@ const BlogBoxes = (props: MyProps) => {
 			<SubBoxName object={blog} saveFunction={saveFunction} isProject={false} />
 			<SubBoxDoc object={blog} saveFunction={saveFunction} />
 			<SubBoxUpdate correctId={blog._id} />
-			<SubBoxBool object={blog} saveFunction={saveFunction} />
+			<SubBoxBool object={blog} saveFunction={saveFunction} isProject={false} />
 			<SubBoxDelete isProject={false} correctId={blog._id} />
 		</div>
 	);

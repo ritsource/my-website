@@ -16,6 +16,7 @@ const projectData = {
 	html: '',
 	markdown: '',
 	doc_type: 'markdown',
+	is_major: false,
 	is_public: false,
 	is_deleted: false
 };
@@ -48,6 +49,8 @@ export const readProjects = () => (dispatch: any, getState: any, api: any) => {
 
 export const editProject = (projectId: string, editData: any) => (dispatch: any, getState: any, api: any) => {
 	delete editData._id; // Deleting _id from editdata (can't update ID)
+
+	console.log(editData);
 
 	return new Promise(async (resolve, reject) => {
 		try {

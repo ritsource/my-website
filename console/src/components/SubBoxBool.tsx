@@ -7,11 +7,13 @@ import Blog from '../types/blog';
 type MyProps = {
 	object: any; // Project | Blog;
 	saveFunction: (c: any, u: any) => void;
+	isProject: boolean;
 };
 
 const SubBoxName = (props: MyProps) => {
-	const { object } = props;
+	const { object, isProject } = props;
 
+	const [ isMajor, setIsMajor ] = useState(object ? object.is_major : '');
 	const [ isPublic, setIsPublic ] = useState(object ? object.is_public : '');
 	const [ isDeleted, setIsDeleted ] = useState(object ? object.is_deleted : '');
 
@@ -38,6 +40,24 @@ const SubBoxName = (props: MyProps) => {
 				{false && <div className="Theme-Loading-Spin-Div" />}
 			</h4>
 			<p className="SearchBox-Description-P-01">Edit Boolean Values</p>
+
+			{isProject && (
+				<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
+					<div
+						className={`SubBoxDoc-Check-Box ${isMajor && 'SubBoxDoc-Check-Box-Active'}`}
+						onClick={() => {
+							if (boxEditable) {
+								setIsMajor(!isMajor);
+							}
+						}}
+					>
+						<MdDone style={{ marginBottom: '-1px' }} />
+					</div>
+					<p style={{ marginLeft: '10px', padding: '0px' }} className="SearchBox-Description-P-01">
+						Is Major
+					</p>
+				</div>
+			)}
 
 			<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
 				<div
@@ -99,8 +119,9 @@ const SubBoxName = (props: MyProps) => {
 								try {
 									// console.log('object', object);
 									await props.saveFunction(object, {
-										is_deleted: isDeleted,
-										is_public: isPublic
+										is_major: isMajor,
+										is_public: isPublic,
+										is_deleted: isDeleted
 									});
 									setErrorMsg(false);
 									setBoxEditable(false);

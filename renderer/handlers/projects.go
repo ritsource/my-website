@@ -22,6 +22,7 @@ type Project struct {
 	DocType         string `json:"doc_type"`
 	Link            string `json:"link"`
 	Thumbnail       string `json:"thumbnail"`
+	IsMajor         bool   `json:"is_major"`
 	IsPublic        bool   `json:"is_public"`
 	IsDeleted       bool   `json:"is_deleted"`
 }

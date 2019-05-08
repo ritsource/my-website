@@ -36,6 +36,13 @@
 	text-overflow: ellipsis;
 }
 
+.Project-Item-Minor-99 h2,
+.Project-Item-Minor-99 a {
+	color: var(--theme-color-light);
+	text-decoration-color: var(--theme-color-light);
+	/* text-decoration-color: red; */
+}
+
 @media (max-width: 500px) {
 	.blogs-content-00 {
 		align-items: center;

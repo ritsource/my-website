@@ -19,6 +19,7 @@ type Project struct {
 	Thumbnail       string        `bson:"thumbnail" json:"thumbnail"`
 	Link            string        `bson:"link" json:"link"`
 	CreatedAt       int32         `bson:"created_at" json:"created_at"`
+	IsMajor         bool          `bson:"is_major" json:"is_major"`
 	IsPublic        bool          `bson:"is_public" json:"is_public"`
 	IsDeleted       bool          `bson:"is_deleted" json:"is_deleted"`
 }

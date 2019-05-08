@@ -9,6 +9,7 @@ type Project = {
 	doc_type: string;
 	thumbnail: string;
 	link: string;
+	is_major: boolean;
 	is_public: boolean;
 	is_deleted: boolean;
 };

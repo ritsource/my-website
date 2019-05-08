@@ -22,7 +22,7 @@ const ProjectBoxes = (props: MyProps) => {
 			<SubBoxName object={project} saveFunction={saveFunction} isProject={true} />
 			<SubBoxDoc object={project} saveFunction={saveFunction} />
 			<SubBoxUpdate correctId={project._id} />
-			<SubBoxBool object={project} saveFunction={saveFunction} />
+			<SubBoxBool object={project} saveFunction={saveFunction} isProject={true} />
 			<SubBoxDelete isProject={true} correctId={project._id} />
 		</div>
 	);
