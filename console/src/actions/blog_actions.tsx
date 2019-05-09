@@ -10,6 +10,7 @@ const blogData = {
 	html: '',
 	markdown: '',
 	doc_type: 'markdown',
+	is_technical: false,
 	is_public: false,
 	is_deleted: false
 };

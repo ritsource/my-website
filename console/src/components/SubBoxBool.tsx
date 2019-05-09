@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MdDone } from 'react-icons/md';
 
-import Project from '../types/project';
-import Blog from '../types/blog';
+// import Project from '../types/project';
+// import Blog from '../types/blog';
 
 type MyProps = {
 	object: any; // Project | Blog;
@@ -10,10 +10,31 @@ type MyProps = {
 	isProject: boolean;
 };
 
+const renderInput = (editable: boolean, bool: boolean, setFunc: (b: any) => void, label: string) => {
+	return (
+		<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
+			<div
+				className={`SubBoxDoc-Check-Box ${bool && 'SubBoxDoc-Check-Box-Active'}`}
+				onClick={() => {
+					if (editable) {
+						setFunc(!bool);
+					}
+				}}
+			>
+				<MdDone style={{ marginBottom: '-1px' }} />
+			</div>
+			<p style={{ marginLeft: '10px', padding: '0px' }} className="SearchBox-Description-P-01">
+				{label}
+			</p>
+		</div>
+	);
+};
+
 const SubBoxName = (props: MyProps) => {
 	const { object, isProject } = props;
 
 	const [ isMajor, setIsMajor ] = useState(object ? object.is_major : '');
+	const [ isTechnical, setIsTechnical ] = useState(object ? object.is_technical : '');
 	const [ isPublic, setIsPublic ] = useState(object ? object.is_public : '');
 	const [ isDeleted, setIsDeleted ] = useState(object ? object.is_deleted : '');
 
@@ -41,55 +62,14 @@ const SubBoxName = (props: MyProps) => {
 			</h4>
 			<p className="SearchBox-Description-P-01">Edit Boolean Values</p>
 
-			{isProject && (
-				<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
-					<div
-						className={`SubBoxDoc-Check-Box ${isMajor && 'SubBoxDoc-Check-Box-Active'}`}
-						onClick={() => {
-							if (boxEditable) {
-								setIsMajor(!isMajor);
-							}
-						}}
-					>
-						<MdDone style={{ marginBottom: '-1px' }} />
-					</div>
-					<p style={{ marginLeft: '10px', padding: '0px' }} className="SearchBox-Description-P-01">
-						Is Major
-					</p>
-				</div>
+			{isProject ? (
+				renderInput(boxEditable, isMajor, setIsMajor, 'Is Major')
+			) : (
+				renderInput(boxEditable, isTechnical, setIsTechnical, 'Is Technical')
 			)}
 
-			<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
-				<div
-					className={`SubBoxDoc-Check-Box ${isPublic && 'SubBoxDoc-Check-Box-Active'}`}
-					onClick={() => {
-						if (boxEditable) {
-							setIsPublic(!isPublic);
-						}
-					}}
-				>
-					<MdDone style={{ marginBottom: '-1px' }} />
-				</div>
-				<p style={{ marginLeft: '10px', padding: '0px' }} className="SearchBox-Description-P-01">
-					Is Public
-				</p>
-			</div>
-
-			<div className="SubBoxDoc-Check-Box-Container-001 Flex-Row-Start">
-				<div
-					className={`SubBoxDoc-Check-Box ${isDeleted && 'SubBoxDoc-Check-Box-Active'}`}
-					onClick={() => {
-						if (boxEditable) {
-							setIsDeleted(!isDeleted);
-						}
-					}}
-				>
-					<MdDone style={{ marginBottom: '-1px' }} />
-				</div>
-				<p style={{ marginLeft: '10px', padding: '0px' }} className="SearchBox-Description-P-01">
-					Is Deleted
-				</p>
-			</div>
+			{renderInput(boxEditable, isPublic, setIsPublic, 'Is Public')}
+			{renderInput(boxEditable, isDeleted, setIsDeleted, 'Is Deleted')}
 
 			{errorMsg && (
 				<p
@@ -120,6 +100,7 @@ const SubBoxName = (props: MyProps) => {
 									// console.log('object', object);
 									await props.saveFunction(object, {
 										is_major: isMajor,
+										is_technical: isTechnical,
 										is_public: isPublic,
 										is_deleted: isDeleted
 									});

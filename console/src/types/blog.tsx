@@ -8,6 +8,7 @@ type Blog = {
 	markdown: string;
 	doc_type: string;
 	thumbnail: string;
+	is_technical: boolean;
 	is_public: boolean;
 	is_deleted: boolean;
 };

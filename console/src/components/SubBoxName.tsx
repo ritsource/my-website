@@ -3,6 +3,20 @@ import React, { useState, useEffect } from 'react';
 // import Project from '../types/project';
 // import Blog from '../types/blog';
 
+const renderInput = (editable: boolean, value: string, setFunc: (b: any) => void, placeholder: string) => {
+	return (
+		<input
+			placeholder={placeholder}
+			value={value}
+			onChange={(e) => {
+				if (editable) {
+					setFunc(e.target.value);
+				}
+			}}
+		/>
+	);
+};
+
 type MyProps = {
 	object: any; // Project | Blog;
 	saveFunction: (c: any, u: any) => void;
@@ -46,76 +60,17 @@ const SubBoxName = (props: MyProps) => {
 			</h4>
 			<p className="SearchBox-Description-P-01">Set Title, Emoji and Description for your Project</p>
 
-			<input
-				placeholder="Title"
-				value={title}
-				onChange={(e) => {
-					if (boxEditable) {
-						setTitle(e.target.value);
-					}
-				}}
-			/>
-
-			<input
-				placeholder="Description"
-				value={description}
-				onChange={(e) => {
-					if (boxEditable) {
-						setDescription(e.target.value);
-					}
-				}}
-			/>
-
-			<input
-				placeholder="A Link in Description (Optional)"
-				value={description_link}
-				onChange={(e) => {
-					if (boxEditable) {
-						setDescriptionLink(e.target.value);
-					}
-				}}
-			/>
-
-			<input
-				placeholder="Thumbnail Link (For SEO)"
-				value={thumbnail}
-				onChange={(e) => {
-					if (boxEditable) {
-						setThumbnail(e.target.value);
-					}
-				}}
-			/>
+			{renderInput(boxEditable, title, setTitle, 'Title')}
+			{renderInput(boxEditable, description, setDescription, 'Description')}
+			{renderInput(boxEditable, description_link, setDescriptionLink, 'A Link in Description (Optional)')}
+			{renderInput(boxEditable, thumbnail, setThumbnail, 'Thumbnail Link (For SEO)')}
 
 			{isProject ? (
-				<input
-					placeholder="Project Link (Github or App Url)"
-					value={link}
-					onChange={(e) => {
-						if (boxEditable) {
-							setLink(e.target.value.trim());
-						}
-					}}
-				/>
+				renderInput(boxEditable, link, setLink, 'Project Link (Github or App Url)')
 			) : (
 				<React.Fragment>
-					<input
-						placeholder="Author (author name)"
-						value={author}
-						onChange={(e) => {
-							if (boxEditable) {
-								setAuthor(e.target.value.trim());
-							}
-						}}
-					/>
-					<input
-						placeholder="Formatted Release Date"
-						value={formatted_date}
-						onChange={(e) => {
-							if (boxEditable) {
-								setFormattedDate(e.target.value.trim());
-							}
-						}}
-					/>
+					{renderInput(boxEditable, author, setAuthor, 'Author (author name)')}
+					{renderInput(boxEditable, formatted_date, setFormattedDate, 'Formatted Release Date')}
 				</React.Fragment>
 			)}
 
