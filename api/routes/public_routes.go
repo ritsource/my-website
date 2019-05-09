@@ -14,8 +14,21 @@ import (
 // PubReadBlogs - Reads All Public Blog Data
 func PubReadBlogs(w http.ResponseWriter, r *http.Request) {
 	var bls models.Blogs
+	var err error
 
-	bls, err := bls.Read(bson.M{"is_deleted": false, "is_public": true}) // Read Public Blogs
+	qTech := r.URL.Query()["tech"]
+
+	if len(qTech) > 0 && qTech[0] == "true" {
+		bls, err = bls.Read(bson.M{"is_technical": true, "is_deleted": false, "is_public": true}) // Read Public Blogs
+
+	} else if len(qTech) > 0 && qTech[0] == "false" {
+		bls, err = bls.Read(bson.M{"is_technical": false, "is_deleted": false, "is_public": true}) // Read Public Blogs
+
+	} else {
+		bls, err = bls.Read(bson.M{"is_deleted": false, "is_public": true}) // Read Public Blogs
+
+	}
+
 	HandleErr(w, 422, err)
 
 	WriteData(w, bls) // Write Data

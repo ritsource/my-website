@@ -21,6 +21,7 @@ type Blog struct {
 	DocType         string        `bson:"doc_type" json:"doc_type"`
 	Thumbnail       string        `bson:"thumbnail" json:"thumbnail"`
 	CreatedAt       int32         `bson:"created_at" json:"created_at"`
+	IsTechnical     bool          `bson:"is_technical" json:"is_technical"`
 	IsPublic        bool          `bson:"is_public" json:"is_public"`
 	IsDeleted       bool          `bson:"is_deleted" json:"is_deleted"`
 }

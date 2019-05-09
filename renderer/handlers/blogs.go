@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
@@ -39,6 +40,7 @@ type Blog struct {
 	Markdown        string `json:"markdown"`
 	DocType         string `json:"doc_type"`
 	Thumbnail       string `json:"thumbnail"`
+	IsTechnical     bool   `json:"is_technical"`
 	IsPublic        bool   `json:"is_public"`
 	IsDeleted       bool   `json:"is_deleted"`
 }
@@ -139,9 +141,36 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 	// channel
 	c := make(chan []byte)
+	// var blogsroute string
+	var tech bool
+	var cookie http.Cookie
+
+	// Checking if technical only
+	qTech := r.URL.Query()["tech"]
+
+	// Checking if query string exist or not
+	if len(qTech) > 0 {
+		if qTech[0] == "true" {
+			tech = true
+			cookie = http.Cookie{Name: "tech", Value: "true", Path: "/", Expires: time.Now().AddDate(0, 1, 0), MaxAge: 86400} // Cookie
+		} else if qTech[0] == "false" {
+			cookie = http.Cookie{Name: "tech", Value: "false", Path: "/", Expires: time.Now().AddDate(0, 1, 0), MaxAge: 86400} // Cookie
+		}
+	} else {
+		// If nothing in query string read read from cookie
+		var tCuki, err = r.Cookie("tech")
+		// If value exists and its "true", then make tech true
+		if err == nil && tCuki.Value == "true" {
+			tech = true
+		}
+	}
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/blog/all", c)
+	if tech {
+		go FetchData(API+"/api/public/blog/all?tech=true", c)
+	} else {
+		go FetchData(API+"/api/public/blog/all?tech=false", c)
+	}
 
 	// Unmarshaling Body Data
 	var data []Blog
@@ -163,8 +192,17 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 		RenderError(w, 500, "Internal Server Error")
 	}
 
+	http.SetCookie(w, &cookie)
+
 	// Executing Template
-	err = t.Execute(w, data)
+	err = t.Execute(w, struct {
+		Tech bool
+		Data []Blog
+	}{
+		Tech: tech,
+		Data: data,
+	})
+
 	if err != nil {
 		WriteError(w, 500, err, err.Error())
 	}
