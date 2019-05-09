@@ -21,9 +21,16 @@
   {{template "header"}}
 
   <div class="Page-Content-99 blogs-content-00">
-  {{range .}}
-    {{template "blogs-item" .}}
-  {{end}}
+    <div class="Blogs-Type-Btn-Container-01 Flex-Row-Start">
+      <a href="/blogs?tech=false">
+      <button class="Blogs-Type-Btn Blogs-Type-Btn-Left">Non-Technical</button></a>
+      <a href="/blogs?tech=true">
+      <button class="Blogs-Type-Btn Blogs-Type-Btn-Right Blogs-Type-Btn-Disabled">Technical</button></a>
+    </div>
+
+    {{range .}}
+      {{template "blogs-item" .}}
+    {{end}}
   </div>
 
   {{template "social-btns"}}
