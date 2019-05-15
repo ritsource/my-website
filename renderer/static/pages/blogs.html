@@ -22,10 +22,9 @@
 
   <div class="Page-Content-99 blogs-content-00">
     <div class="Blogs-Type-Btn-Container-01 Flex-Row-Start">
-      <a href="/blogs?tech=false">
-      <button class="Blogs-Type-Btn Blogs-Type-Btn-Left {{if .Tech}}Blogs-Type-Btn-Disabled{{end}}">Non-Technical</button></a>
-      <a href="/blogs?tech=true">
-      <button class="Blogs-Type-Btn Blogs-Type-Btn-Right {{if not .Tech}}Blogs-Type-Btn-Disabled{{end}}">Technical</button></a>
+      
+        <a href="/blogs?tech=false" class="Blogs-Type-A Blogs-Type-A-Left {{if not .Tech}}Blogs-Type-A-Disabled{{end}}">Non-Technical</a>
+      <a href="/blogs?tech=true" class="Blogs-Type-A Blogs-Type-A-Right {{if .Tech}}Blogs-Type-A-Disabled{{end}}">Technical</a>
     </div>
 
     {{range .Data}}
