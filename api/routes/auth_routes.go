@@ -61,10 +61,11 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	var admin models.Admin
 
 	// Query Admin
-	admin, err = admin.Read(bson.M{"email": data.Email, "google_id": data.GoogleID})
+	err = admin.Read(bson.M{"email": data.Email, "google_id": data.GoogleID})
 	if err != nil {
 		// Inserting Document
-		admin, err = data.Create()
+		admin = data
+		err = admin.Create()
 		HandleErr(w, 500, err)
 	}
 
@@ -91,7 +92,7 @@ func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 	var admin models.Admin
 
 	// Query Admin
-	admin, err := admin.Read(bson.M{"email": aEmail})
+	err := admin.Read(bson.M{"email": aEmail})
 	HandleErr(w, 422, err)
 
 	bData, err := json.Marshal(admin)

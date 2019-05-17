@@ -9,6 +9,7 @@ export MONGO_URI="mongodb://localhost:27017"
 
 # MongoDB Database name
 export DB_NAME="my-website-prod"
+export TEST_DB_NAME="my-website-test"
 
 # Console App base URL and Renderer too
 export CONSOLE_CLIENT_URL="http://localhost:3000"

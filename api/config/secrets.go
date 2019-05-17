@@ -11,6 +11,7 @@ type Config struct {
 	SessionKey            string   `json:"SESSION_KEY"`
 	MongoURI              string   `json:"MONGO_URI"`
 	DBName                string   `json:"DB_NAME"`
+	TestDBName            string   `json:"TEST_DB_NAME"`
 	AdminEmails           []string `json:"ADMIN_EMAILS"`
 	ConsoleClientURL      string   `json:"CONSOLE_CLIENT_URL"`
 	AppRendererURL        string   `json:"APP_RENDERER_URL"`
@@ -34,6 +35,7 @@ func ReadSecrets(s *Config) {
 
 	s.MongoURI = os.Getenv("MONGO_URI")
 	s.DBName = os.Getenv("DB_NAME")
+	s.TestDBName = os.Getenv("TEST_DB_NAME")
 
 	AdminEmailA := os.Getenv("ADMIN_EMAIL_A")
 	AdminEmailB := os.Getenv("ADMIN_EMAIL_B")

@@ -47,7 +47,7 @@ func CreateBlog(w http.ResponseWriter, r *http.Request) {
 
 	bl.CreatedAt = int32(time.Now().Unix()) // Set Creation Time
 
-	_, err = bl.Create() // Create Document in the Database
+	err = bl.Create() // Create Document in the Database
 	HandleErr(w, 422, err)
 
 	// Redirecting to All-Blogs route handler
@@ -59,7 +59,7 @@ func ReadBlog(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog          // Blog
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr)}) // Read Document
+	err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr)}, bson.M{}) // Read Document
 	HandleErr(w, 442, err)
 
 	WriteData(w, bl) // Write the Data
@@ -69,7 +69,7 @@ func ReadBlog(w http.ResponseWriter, r *http.Request) {
 func ReadBlogs(w http.ResponseWriter, r *http.Request) {
 	var bls models.Blogs // Blogs or []Blog
 
-	bls, err := bls.Read(bson.M{}) // Read all Blogs bson.M{}
+	err := bls.Read(bson.M{}, bson.M{}) // Read all Blogs bson.M{}
 	HandleErr(w, 442, err)
 
 	WriteData(w, bls) // Write Data
@@ -85,7 +85,7 @@ func EditBlog(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&body)
 	HandleErr(w, 422, err)
 
-	bl, err = bl.Update(bson.M{"_id": bson.ObjectIdHex(bIDStr)}, body) // Update Document in Database
+	err = bl.Update(bson.M{"_id": bson.ObjectIdHex(bIDStr)}, body) // Update Document in Database
 	HandleErr(w, 500, err)
 
 	WriteData(w, bl) // Write Data
@@ -96,7 +96,7 @@ func DeleteBlog(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog          // Blog
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	bl, err := bl.Delete(bson.ObjectIdHex(bIDStr)) // Editing Document
+	err := bl.Delete(bson.ObjectIdHex(bIDStr)) // Editing Document
 	HandleErr(w, 422, err)
 
 	WriteData(w, bl) // Writing Data

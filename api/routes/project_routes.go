@@ -20,7 +20,7 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	pr.CreatedAt = int32(time.Now().Unix()) // Set Creation Time
 
-	_, err = pr.Create() // Create Document in the Database
+	err = pr.Create() // Create Document in the Database
 	HandleErr(w, 422, err)
 
 	// Redirecting to All-Projects route handler
@@ -32,7 +32,7 @@ func ReadProject(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project       // Project
 	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr)}) // Read Document
+	err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr)}, bson.M{}) // Read Document
 	HandleErr(w, 442, err)
 
 	WriteData(w, pr) // Write the Data
@@ -42,7 +42,7 @@ func ReadProject(w http.ResponseWriter, r *http.Request) {
 func ReadProjects(w http.ResponseWriter, r *http.Request) {
 	var prs models.Projects // Projects or []Project
 
-	prs, err := prs.Read(bson.M{}) // Read all Projects bson.M{}
+	err := prs.Read(bson.M{}, bson.M{}) // Read all Projects bson.M{}
 	HandleErr(w, 442, err)
 
 	WriteData(w, prs) // Write Data
@@ -58,7 +58,7 @@ func EditProject(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&body)
 	HandleErr(w, 422, err)
 
-	pr, err = pr.Update(bson.M{"_id": bson.ObjectIdHex(pIDStr)}, body) // Update Document in Database
+	err = pr.Update(bson.M{"_id": bson.ObjectIdHex(pIDStr)}, body) // Update Document in Database
 	HandleErr(w, 500, err)
 
 	WriteData(w, pr) // Write Data
@@ -69,7 +69,7 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project       // Project
 	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	pr, err := pr.Delete(bson.ObjectIdHex(pIDStr)) // Editing Document
+	err := pr.Delete(bson.ObjectIdHex(pIDStr)) // Editing Document
 	HandleErr(w, 422, err)
 
 	WriteData(w, pr) // Writing Data

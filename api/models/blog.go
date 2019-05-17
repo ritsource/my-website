@@ -3,9 +3,6 @@ package models
 import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-
-	"github.com/ritwik310/my-website/api/config"
-	"github.com/ritwik310/my-website/api/db"
 )
 
 // Blog - Blog model type
@@ -26,70 +23,64 @@ type Blog struct {
 	IsDeleted       bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
-var blogCol *mgo.Collection // MongoDB blogCollection for Blogs
-
-func init() {
-	blogCol = db.Client.DB(config.Secrets.DBName).C("blogs")
-}
-
 // Blogs - Slice of Blogs
 type Blogs []Blog
 
 // Read - Reads all Documents from blogs
-func (bs Blogs) Read(s bson.M) (Blogs, error) {
-	err := blogCol.Find(s).Sort("-created_at").All(&bs)
+func (bs *Blogs) Read(f, s bson.M) error {
+	err := BCol.Find(f).Sort("-created_at").Select(s).All(bs)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return bs, nil
+	return nil
 }
 
 // Create - Creates new Document
-func (b Blog) Create() (Blog, error) {
-	err := blogCol.Insert(&b)
+func (b *Blog) Create() error {
+	err := BCol.Insert(&b)
 	if err != nil {
-		return b, err
+		return err
 	}
 
-	return b, nil
+	return nil
 }
 
 // Read - Reads single Document
-func (b Blog) Read(s bson.M) (Blog, error) {
-	err := blogCol.Find(s).One(&b)
+func (b *Blog) Read(f, s bson.M) error {
+	err := BCol.Find(f).Select(s).One(b)
 	if err != nil {
-		return b, err
+		return err
 	}
 
-	return b, nil
+	return nil
 }
 
 // Update - Updates a Document by ID
-func (b Blog) Update(s bson.M, u bson.M) (Blog, error) {
+func (b *Blog) Update(s bson.M, u bson.M) error {
 	change := mgo.Change{
 		Update:    bson.M{"$set": u},
 		ReturnNew: true,
 	}
-	_, err := blogCol.Find(s).Apply(change, &b)
+	_, err := BCol.Find(s).Apply(change, b)
 
-	return b, err
+	return err
 }
 
 // Delete - Deletes a Document
-func (b Blog) Delete(id bson.ObjectId) (Blog, error) {
+func (b *Blog) Delete(id bson.ObjectId) error {
 	// err := blogCol.Update(bson.M{"_id": id}, bson.M{"is_deleted": true})
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"is_deleted": true}},
 		ReturnNew: true,
 	}
-	_, err := blogCol.Find(bson.M{"_id": id}).Apply(change, &b)
+	_, err := BCol.Find(bson.M{"_id": b.ID}).Apply(change, b)
 
-	return b, err
+	return err
 }
 
 // DeletePermanent - Deletes a document permanently
-func (b Blog) DeletePermanent(id bson.ObjectId) error {
-	err := blogCol.Remove(bson.M{"_id": id})
+func (b *Blog) DeletePermanent(id bson.ObjectId) error {
+	err := BCol.Remove(bson.M{"_id": b.ID})
 	return err
 }
