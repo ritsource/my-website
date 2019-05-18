@@ -19,13 +19,13 @@ func PubReadBlogs(w http.ResponseWriter, r *http.Request) {
 	qTech := r.URL.Query()["tech"]
 
 	if len(qTech) > 0 && qTech[0] == "true" {
-		bls, err = bls.Read(bson.M{"is_technical": true, "is_deleted": false, "is_public": true}) // Read Public Blogs
+		err = bls.Read(bson.M{"is_technical": true, "is_deleted": false, "is_public": true}, bson.M{}) // Read Public Blogs
 
 	} else if len(qTech) > 0 && qTech[0] == "false" {
-		bls, err = bls.Read(bson.M{"is_technical": false, "is_deleted": false, "is_public": true}) // Read Public Blogs
+		err = bls.Read(bson.M{"is_technical": false, "is_deleted": false, "is_public": true}, bson.M{}) // Read Public Blogs
 
 	} else {
-		bls, err = bls.Read(bson.M{"is_deleted": false, "is_public": true}) // Read Public Blogs
+		err = bls.Read(bson.M{"is_deleted": false, "is_public": true}, bson.M{}) // Read Public Blogs
 
 	}
 
@@ -40,7 +40,7 @@ func PubReadBlog(w http.ResponseWriter, r *http.Request) {
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
 
 	// Read blog
-	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true})
+	err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true}, bson.M{})
 	HandleErr(w, 422, err)
 
 	WriteData(w, bl) // Write Data
@@ -50,7 +50,7 @@ func PubReadBlog(w http.ResponseWriter, r *http.Request) {
 func PubReadProjects(w http.ResponseWriter, r *http.Request) {
 	var pr models.Projects
 
-	pr, err := pr.Read(bson.M{"is_deleted": false, "is_public": true}) // Read from DB
+	err := pr.Read(bson.M{"is_deleted": false, "is_public": true}, bson.M{}) // Read from DB
 	HandleErr(w, 422, err)
 
 	WriteData(w, pr) // Write Data
@@ -62,7 +62,7 @@ func PubReadProject(w http.ResponseWriter, r *http.Request) {
 	pIDStr := mux.Vars(r)["id"] // Project ObjectId String
 
 	// Read project
-	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
+	err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true}, bson.M{})
 	HandleErr(w, 422, err)
 
 	WriteData(w, pr) // Write Data

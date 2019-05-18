@@ -48,7 +48,7 @@ func PubGetBlogDoc(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog
 	bIDStr := mux.Vars(r)["id"]
 
-	bl, err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true}) // Reading Data
+	err := bl.Read(bson.M{"_id": bson.ObjectIdHex(bIDStr), "is_deleted": false, "is_public": true}, bson.M{}) // Reading Data
 	HandleErr(w, 422, err)
 
 	// Defining filename for in cache folder
@@ -87,7 +87,7 @@ func PubGetProjectDoc(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project
 	pIDStr := mux.Vars(r)["id"]
 
-	pr, err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true})
+	err := pr.Read(bson.M{"_id": bson.ObjectIdHex(pIDStr), "is_deleted": false, "is_public": true}, bson.M{})
 	HandleErr(w, 422, err)
 
 	// Defining cahce filename

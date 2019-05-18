@@ -1,8 +1,6 @@
 package models
 
 import (
-	"github.com/ritwik310/my-website/api/config"
-	"github.com/ritwik310/my-website/api/db"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -24,70 +22,63 @@ type Project struct {
 	IsDeleted       bool          `bson:"is_deleted" json:"is_deleted"`
 }
 
-// MongoDB projectCollection for Files
-var projectCol *mgo.Collection
-
-func init() {
-	projectCol = db.Client.DB(config.Secrets.DBName).C("projects")
-}
-
 // Projects - Slice of Projects
 type Projects []Project
 
 // Read - Reads all Documents
-func (ps Projects) Read(s bson.M) (Projects, error) {
-	err := projectCol.Find(s).Sort("-created_at").All(&ps)
+func (ps *Projects) Read(f, s bson.M) error {
+	err := PCol.Find(s).Sort("-created_at").Select(s).All(ps)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return ps, nil
+	return nil
 }
 
 // Create - Creates a new Document
-func (p Project) Create() (Project, error) {
-	err := projectCol.Insert(&p)
+func (p *Project) Create() error {
+	err := PCol.Insert(p)
 	if err != nil {
-		return p, err
+		return err
 	}
 
-	return p, nil
+	return nil
 }
 
 // Read - Reads single Document
-func (p Project) Read(s bson.M) (Project, error) {
-	err := projectCol.Find(s).One(&p)
+func (p *Project) Read(f, s bson.M) error {
+	err := PCol.Find(s).Select(s).One(p)
 	if err != nil {
-		return p, err
+		return err
 	}
 
-	return p, nil
+	return nil
 }
 
 // Update - Updates a Document
-func (p Project) Update(s bson.M, u bson.M) (Project, error) {
+func (p *Project) Update(s bson.M, u bson.M) error {
 	change := mgo.Change{
 		Update:    bson.M{"$set": u},
 		ReturnNew: true,
 	}
-	_, err := projectCol.Find(s).Apply(change, &p)
+	_, err := PCol.Find(s).Apply(change, p)
 
-	return p, err
+	return err
 }
 
 // Delete - Deletes a document
-func (p Project) Delete(id bson.ObjectId) (Project, error) {
+func (p *Project) Delete(id bson.ObjectId) error {
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"is_deleted": true}},
 		ReturnNew: true,
 	}
-	_, err := projectCol.Find(bson.M{"_id": id}).Apply(change, &p)
+	_, err := PCol.Find(bson.M{"_id": p.ID}).Apply(change, p)
 
-	return p, err
+	return err
 }
 
 // DeletePermanent - Deletes a document permanently
-func (p Project) DeletePermanent(id bson.ObjectId) error {
-	err := projectCol.Remove(bson.M{"_id": id})
+func (p *Project) DeletePermanent(id bson.ObjectId) error {
+	err := PCol.Remove(bson.M{"_id": p.ID})
 	return err
 }
