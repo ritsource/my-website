@@ -36,10 +36,10 @@ func EachProjectHandler(w http.ResponseWriter, r *http.Request) {
 	c2 := make(chan []byte) // Channel for Document Fetching
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/project/"+pIDStr, c1)
+	go FetchDataAsync(API+"/api/public/project/"+pIDStr, c1)
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/project/doc/"+pIDStr, c2)
+	go FetchDataAsync(API+"/api/public/project/doc/"+pIDStr, c2)
 
 	b1 := <-c1 // Blog data 1 ([]byte)
 	b2 := <-c2 // Document data 2 ([]byte)
@@ -105,7 +105,7 @@ func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
 	c := make(chan []byte)
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/project/all", c)
+	go FetchDataAsync(API+"/api/public/project/all", c)
 
 	// Unmarshaling Body Data
 	var data []Project

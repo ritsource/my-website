@@ -32,7 +32,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	c := make(chan []byte) // Channel for Data Fetching
 
 	// Get Public Data from API
-	go FetchData(src, c)
+	go FetchDataAsync(src, c)
 
 	// Fetched byte Data
 	b := <-c

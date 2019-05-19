@@ -21,6 +21,19 @@ type Blog struct {
 	IsTechnical     bool          `bson:"is_technical" json:"is_technical"`
 	IsPublic        bool          `bson:"is_public" json:"is_public"`
 	IsDeleted       bool          `bson:"is_deleted" json:"is_deleted"`
+	IsSeries        bool          `bson:"is_series" json:"is_series"`
+	SubBlogs        []SubBlog     `bson:"sub_blogs" json:"sub_blogs"`
+}
+
+// SubBlog - Blog model type
+type SubBlog struct {
+	ID            bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Title         string        `bson:"title" json:"title"`
+	Description   string        `bson:"description" json:"description"`
+	FormattedDate string        `bson:"formatted_date" json:"formatted_date"`
+	HTML          string        `bson:"html" json:"html"`
+	Markdown      string        `bson:"markdown" json:"markdown"`
+	DocType       string        `bson:"doc_type" json:"doc_type"`
 }
 
 // Blogs - Slice of Blogs

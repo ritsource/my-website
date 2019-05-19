@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"text/template"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
+	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
@@ -30,23 +32,36 @@ func init() {
 
 // Blog type - In data fetched from API
 type Blog struct {
-	ID              string `json:"_id,omitempty"`
-	Title           string `json:"title"`
-	Description     string `json:"description"`
-	DescriptionLink string `json:"description_link"`
-	Author          string `json:"author"`
-	FormattedDate   string `json:"formatted_date"`
-	HTML            string `json:"html"`
-	Markdown        string `json:"markdown"`
-	DocType         string `json:"doc_type"`
-	Thumbnail       string `json:"thumbnail"`
-	IsTechnical     bool   `json:"is_technical"`
-	IsPublic        bool   `json:"is_public"`
-	IsDeleted       bool   `json:"is_deleted"`
+	ID              string    `json:"_id,omitempty"`
+	Title           string    `json:"title"`
+	Description     string    `json:"description"`
+	DescriptionLink string    `json:"description_link"`
+	Author          string    `json:"author"`
+	FormattedDate   string    `json:"formatted_date"`
+	HTML            string    `json:"html"`
+	Markdown        string    `json:"markdown"`
+	DocType         string    `json:"doc_type"`
+	Thumbnail       string    `json:"thumbnail"`
+	IsTechnical     bool      `json:"is_technical"`
+	IsPublic        bool      `json:"is_public"`
+	IsDeleted       bool      `json:"is_deleted"`
+	IsSeries        bool      `bson:"is_series" json:"is_series"`
+	SubBlogs        []SubBlog `bson:"sub_blogs" json:"sub_blogs"`
 }
 
-// FetchData - Fetches Data from the API
-func FetchData(url string, c chan []byte) {
+// SubBlog - Blog model type
+type SubBlog struct {
+	ID            bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Title         string        `bson:"title" json:"title"`
+	Description   string        `bson:"description" json:"description"`
+	FormattedDate string        `bson:"formatted_date" json:"formatted_date"`
+	HTML          string        `bson:"html" json:"html"`
+	Markdown      string        `bson:"markdown" json:"markdown"`
+	DocType       string        `bson:"doc_type" json:"doc_type"`
+}
+
+// FetchDataAsync - Fetches Data from the API
+func FetchDataAsync(url string, c chan []byte) {
 	// Get Public Data from API
 	resp, err := http.Get(url)
 	if err != nil {
@@ -66,6 +81,110 @@ func FetchData(url string, c chan []byte) {
 	c <- b
 }
 
+// FetchDataSync ...
+func FetchDataSync(url string) ([]byte, error) {
+	// Get Public Data from API
+	resp, err := http.Get(url)
+	if err != nil {
+		return []byte{}, err
+	}
+	defer resp.Body.Close()
+
+	// Reading Response Body
+	return ioutil.ReadAll(resp.Body)
+}
+
+// EachThreadHandler ..
+func EachThreadHandler(w http.ResponseWriter, r *http.Request) {
+	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
+	index, err := strconv.Atoi(r.URL.Query().Get("index"))
+	if err != nil || index < 0 {
+		RenderError(w, 400, "Invalid Index")
+		return
+	}
+
+	// Get Public Data from API
+	b1, err := FetchDataSync(API + "/api/public/blog/" + bIDStr)
+	if err != nil {
+		RenderError(w, 404, "Blog Not Found")
+		return
+	}
+
+	// Unmarshaling Body Data
+	var data Blog
+	err = json.Unmarshal(b1, &data)
+	if err != nil {
+		RenderError(w, 500, "Internal Server Error")
+		return
+	}
+
+	if !data.IsSeries {
+		RenderError(w, 400, "Not A Thread")
+		return
+	}
+
+	if len(data.SubBlogs) == 0 {
+		RenderError(w, 400, "Empty Thread")
+		return
+	}
+
+	if index+1 < len(data.SubBlogs) {
+		index = 0
+	}
+
+	var docSrc string
+	isMd := data.SubBlogs[index].DocType == "markdown"
+
+	if isMd {
+		docSrc = data.SubBlogs[index].Markdown
+	} else {
+		docSrc = data.SubBlogs[index].HTML
+	}
+
+	b2, err := FetchDataSync(docSrc)
+	if err != nil {
+		RenderError(w, 404, "Document Not Found")
+		return
+	}
+
+	// Unsafe HTML (From Doc)
+	var unsafe []byte
+	if isMd {
+		// Generating HTML from Markdown
+		unsafe = blackfriday.Run(b2)
+	} else {
+		unsafe = b2
+	}
+
+	// Document HTML
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	// Parsing templates
+	t, err := template.ParseFiles(
+		"static/pages/each-doc.html",
+		"static/partials/header.html",
+	)
+	if err != nil {
+		RenderError(w, 500, "Internal Server Error")
+		return
+	}
+
+	// Executing Template
+	err = t.Execute(w, struct {
+		Data    Blog
+		HTML    string
+		Project bool
+	}{
+		Data:    data,
+		HTML:    fmt.Sprintf("%s\n", html),
+		Project: false,
+	})
+
+	if err != nil {
+		WriteError(w, 500, err, err.Error())
+	}
+}
+
 // EachBlogHandler - Fetches single Blog data and Document for that Blog,
 // Renders document (Html or Markdown) inside HTML template
 func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,10 +194,10 @@ func EachBlogHandler(w http.ResponseWriter, r *http.Request) {
 	c2 := make(chan []byte) // Channel for Document Fetching
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/blog/"+bIDStr, c1)
+	go FetchDataAsync(API+"/api/public/blog/"+bIDStr, c1)
 
 	// Get Public Data from API
-	go FetchData(API+"/api/public/blog/doc/"+bIDStr, c2)
+	go FetchDataAsync(API+"/api/public/blog/doc/"+bIDStr, c2)
 
 	b1 := <-c1 // Blog data 1 ([]byte)
 	b2 := <-c2 // Document data 2 ([]byte)
@@ -167,9 +286,9 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get Public Data from API
 	if tech {
-		go FetchData(API+"/api/public/blog/all?tech=true", c)
+		go FetchDataAsync(API+"/api/public/blog/all?tech=true", c)
 	} else {
-		go FetchData(API+"/api/public/blog/all?tech=false", c)
+		go FetchDataAsync(API+"/api/public/blog/all?tech=false", c)
 	}
 
 	// Unmarshaling Body Data

@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/", handlers.IndexHandler).Methods("GET")
 	r.HandleFunc("/blogs", handlers.BlogsHandler).Methods("GET")
 	r.HandleFunc("/blog/{id}", handlers.EachBlogHandler).Methods("GET")
+	r.HandleFunc("/thread/{id}", handlers.EachThreadHandler).Methods("GET")
 	r.HandleFunc("/projects", handlers.ProjectsHandler).Methods("GET")
 	r.HandleFunc("/project/{id}", handlers.EachProjectHandler).Methods("GET")
 	r.HandleFunc("/preview", handlers.PreviewHandler).Methods("GET")
