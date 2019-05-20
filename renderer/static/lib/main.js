@@ -35,34 +35,6 @@ window.onscroll = function() {
 	prevScrollpos = currentScrollPos;
 };
 
-// For Document Navigation in Footer
-function setNavigation(data, urlBase) {
-	let linkSeg = window.location.href.split('/');
-	let currentId = linkSeg.pop();
-	if (currentId === '') {
-		currentId = linkSeg.pop();
-	}
-
-	cIndex = data.findIndex(({ _id }) => _id === currentId);
-
-	const prevBtn = document.getElementById('Footer-Navigation-Btn-Prev');
-	const nextBtn = document.getElementById('Footer-Navigation-Btn-Next');
-
-	if (cIndex > 0) {
-		prevBtn.href = '/' + urlBase + '/' + data[cIndex - 1]._id;
-		prevBtn.firstChild.textContent = '< Prev';
-		prevBtn.firstChild.disabled = false;
-		prevBtn.firstChild.style.padding = '6px 10px';
-	}
-
-	if (cIndex < data.length - 1) {
-		nextBtn.href = '/' + urlBase + '/' + data[cIndex + 1]._id;
-		nextBtn.firstChild.textContent = 'Next >';
-		nextBtn.firstChild.disabled = false;
-		nextBtn.firstChild.style.padding = '6px 10px';
-	}
-}
-
 // Register Service Worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
@@ -95,4 +67,28 @@ setTimeout(() => {
 		}
 	})();
 }, 600);
-z;
+
+console.log('Started');
+
+console.log(document.getElementsByClassName("Blogs-Item-Series-Toggle-Btn-99"));
+
+// Adds Attribute to ('target', '_blank')
+const seriesToggBtns = document.querySelectorAll('.Blogs-Item-Series-Toggle-Btn-99');
+
+Object.values(seriesToggBtns).map((el) => {
+	el.addEventListener('click', function (e) {
+		Object.values(e.target.parentNode.children).map((child, i) => {
+			
+			if (i > 1*2+1 && child.tagName != "BUTTON") {
+				if (child.style.display === "block") {
+					child.style.display = "none"
+				} else {
+					child.style.display = "block"
+				}
+			}
+		});
+
+	}, false);
+});
+
+// .Blogs-Item-Series-Toggle-H4-99

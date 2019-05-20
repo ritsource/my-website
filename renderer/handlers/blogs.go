@@ -12,7 +12,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
-	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
@@ -51,13 +50,12 @@ type Blog struct {
 
 // SubBlog - Blog model type
 type SubBlog struct {
-	ID            bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Title         string        `bson:"title" json:"title"`
-	Description   string        `bson:"description" json:"description"`
-	FormattedDate string        `bson:"formatted_date" json:"formatted_date"`
-	HTML          string        `bson:"html" json:"html"`
-	Markdown      string        `bson:"markdown" json:"markdown"`
-	DocType       string        `bson:"doc_type" json:"doc_type"`
+	Title         string `bson:"title" json:"title"`
+	Description   string `bson:"description" json:"description"`
+	FormattedDate string `bson:"formatted_date" json:"formatted_date"`
+	HTML          string `bson:"html" json:"html"`
+	Markdown      string `bson:"markdown" json:"markdown"`
+	DocType       string `bson:"doc_type" json:"doc_type"`
 }
 
 // FetchDataAsync asynchronously fetches data from the provided url writes

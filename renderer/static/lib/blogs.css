@@ -61,8 +61,18 @@
 }
 
 .Blogs-Type-A {
-	margin-right: 10px;
+	margin-right: 15px;
 }
+
+.Blogs-Item-Series-Toggle-Btn-99 {
+	padding: 0px;
+	margin: 0px;
+	border: 0px solid white;
+	color: var(--theme-color) !important;
+	background: var(--background-color);
+	cursor: pointer;
+}
+
 
 @media (max-width: 500px) {
 	.blogs-content-00 {
