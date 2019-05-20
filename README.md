@@ -38,7 +38,9 @@ Or by downloading zip from [here](https://github.com/ritwik310/my-website)
 ### Running using Docker
 
 I you already have **Docker** and **Docker-compose** installed in your system just run this from root project directory
+
 ```shell
+export DB_VOLUME_PATH=$HOME/Desktop/data/mongo-data-27017 # Some location to save database data
 bash ./start.sh
 ```
 

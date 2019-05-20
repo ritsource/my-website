@@ -3,7 +3,7 @@ services:
   mongo:
     image: 'mongo:4.1.8-xenial'
     volumes:
-      - /home/ritwik310/Desktop/data/mongo1:/data/db
+      - ${DB_VOLUME_PATH}:/data/db
     ports:
       - '27017:27017'
   nginx:
@@ -24,7 +24,7 @@ services:
       - DEV_MODE=true
       - MONGO_URI=mongodb://mongo:27017
       # - MONGO_URI=${MONGO_URI}
-      - DB_NAME=dev_db
+      - DB_NAME=my-website-prod
       # - DB_NAME=${DB_NAME}
       - CONSOLE_CLIENT_URL=http://localhost:4001/admin
       - APP_RENDERER_URL=http://localhost:4001
