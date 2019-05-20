@@ -55,11 +55,7 @@
 
     <div class="Article-End-Div-00"></div>
 
-    <footer class="Flex-Row-Space-Between">
-      <div class="Footer-Nav-Btn-Container-00">
-        <a id="Footer-Navigation-Btn-Prev"><button disabled>Prev</button></a>
-        <a id="Footer-Navigation-Btn-Next"><button disabled>Next</button></a>
-      </div>
+    <footer class="Flex-Row-End">
       <div class="Footer-Social-Btn-Container-00 Flex-Row-Space-Between">
         <a class="Cute-Btn Cute-Btn-Twitter" target="_blank" href="https://twitter.com/ritwik310">
           <i class="fab fa-twitter"></i>
@@ -79,23 +75,5 @@
 
   <script src="/static/serviceWorker.js"></script>
   <script src="/static/lib/main.js"></script>
-
-  {{if .Project}}
-    <script>
-      fetch('/api/public/project/all').then((response) => {
-        return response.json();
-      }).then((data) => {
-        setNavigation(data, 'project');
-      });
-    </script>
-  {{else}}
-    <script>
-      fetch('/api/public/blog/all').then((response) => {
-        return response.json();
-      }).then((data) => {
-        setNavigation(data, 'blog');
-      });
-    </script>
-  {{end}}
 </body>
 </html>

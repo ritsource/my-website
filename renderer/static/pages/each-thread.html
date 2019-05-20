@@ -18,8 +18,8 @@
   {{else}}
     <meta name="og:image" property="og:image" content="/static/mypic.jpeg">
   {{end}}
-  <meta name="description" content="{{.Data.Description}}">
-  <title>{{.Data.Title}} - Ritwik Saha</title>
+  <meta name="description" content="{{.SubBlog.Description}}">
+  <title>{{.SubBlog.Title}} - Ritwik Saha</title>
 </head>
 <body>
 
@@ -27,21 +27,16 @@
 
   <div class="Page-Content-99 Each-Blog-Content-00">
     <header>
-      {{if .Project}}
-        <a href="{{.Data.Link}}" target="_blank"><h1>{{.Data.Title}}</h1></a>
-      {{else}}
-        <h1>{{.Data.Title}}</h1>
-      {{end}}
+      <h1>{{.SubBlog.Title}} - {{.Data.Title}} {{.Index}}</h1>
 
-      {{if .Project}}
-        <p class="Blogs-Item-Info-01">by <strong>Ritwik Saha</strong></p>
-      {{else}}
-        <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>, <strong>{{.Data.FormattedDate}}</strong></p>
-      {{end}}
+      <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>, <strong>{{.SubBlog.FormattedDate}}</strong></p>
+
+      {{template "thread-nav" .}}
+
       <div class="Share-Button-Container-00 Flex-Row-Start">
-        
-        <div class="fb-share-button" data-href="https://ritwiksaha.com/{{if .Project}}project{{else}}blog{{end}}/{{.Data.ID}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-        <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{.Data.Title}} https://ritwiksaha.com/{{if .Project}}project{{else}}blog{{end}}/{{.Data.ID}}">
+
+        <div class="fb-share-button" data-href="https://ritwiksaha.com/thread/{{.Data.ID}}?index={{.Index}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+        <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{.SubBlog.Title}} https://ritwiksaha.com/thread/{{.Data.ID}}?index={{.Index}}">
           <i class="fab fa-twitter"></i>
           Tweet
         </a>
@@ -56,10 +51,7 @@
     <div class="Article-End-Div-00"></div>
 
     <footer class="Flex-Row-Space-Between">
-      <div class="Footer-Nav-Btn-Container-00">
-        <a id="Footer-Navigation-Btn-Prev"><button disabled>Prev</button></a>
-        <a id="Footer-Navigation-Btn-Next"><button disabled>Next</button></a>
-      </div>
+      {{template "thread-nav" .}}
       <div class="Footer-Social-Btn-Container-00 Flex-Row-Space-Between">
         <a class="Cute-Btn Cute-Btn-Twitter" target="_blank" href="https://twitter.com/ritwik310">
           <i class="fab fa-twitter"></i>
@@ -79,23 +71,7 @@
 
   <script src="/static/serviceWorker.js"></script>
   <script src="/static/lib/main.js"></script>
-
-  {{if .Project}}
-    <script>
-      fetch('/api/public/project/all').then((response) => {
-        return response.json();
-      }).then((data) => {
-        setNavigation(data, 'project');
-      });
-    </script>
-  {{else}}
-    <script>
-      fetch('/api/public/blog/all').then((response) => {
-        return response.json();
-      }).then((data) => {
-        setNavigation(data, 'blog');
-      });
-    </script>
-  {{end}}
+  <!-- .SubBlogs[.Index] -->
+  
 </body>
 </html>

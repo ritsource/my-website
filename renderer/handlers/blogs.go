@@ -60,57 +60,61 @@ type SubBlog struct {
 	DocType       string        `bson:"doc_type" json:"doc_type"`
 }
 
-// FetchDataAsync - Fetches Data from the API
+// FetchDataAsync asynchronously fetches data from the provided url writes
+// the response data into the provided channel, if there's
+// any network error, it passes <nil> into the channel
 func FetchDataAsync(url string, c chan []byte) {
-	// Get Public Data from API
+	// Fetching data from the siven URL
 	resp, err := http.Get(url)
 	if err != nil {
 		c <- nil
 		return
 	}
-
 	defer resp.Body.Close()
 
-	// Reading Response Body
+	// Reading the response body
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		c <- nil
 		return
 	}
 
-	c <- b
+	c <- b // Passing data into the echannels
 }
 
-// FetchDataSync ...
+// FetchDataSync synchronously fetches data
 func FetchDataSync(url string) ([]byte, error) {
-	// Get Public Data from API
+	// Fetching data from the siven URL
 	resp, err := http.Get(url)
 	if err != nil {
 		return []byte{}, err
 	}
 	defer resp.Body.Close()
 
-	// Reading Response Body
+	// return the body, and parser error
 	return ioutil.ReadAll(resp.Body)
 }
 
-// EachThreadHandler ..
+// EachThreadHandler reads thread (blog) data from teh api
+// and fetches the corrosponding document at the given index from
+// web, this handler doesn't include cahcing in the api side, mainly
+// because cashing can cause some issues while index change in sub_blog
 func EachThreadHandler(w http.ResponseWriter, r *http.Request) {
-	bIDStr := mux.Vars(r)["id"] // Blog ObjectId String
-	index, err := strconv.Atoi(r.URL.Query().Get("index"))
+	bIDStr := mux.Vars(r)["id"]                            // Blog (thread) ObjectID
+	index, err := strconv.Atoi(r.URL.Query().Get("index")) // Reading provided index
 	if err != nil || index < 0 {
 		RenderError(w, 400, "Invalid Index")
 		return
 	}
 
-	// Get Public Data from API
+	// Read blog data from the API
 	b1, err := FetchDataSync(API + "/api/public/blog/" + bIDStr)
 	if err != nil {
 		RenderError(w, 404, "Blog Not Found")
 		return
 	}
 
-	// Unmarshaling Body Data
+	// Parsing api data into blog struct
 	var data Blog
 	err = json.Unmarshal(b1, &data)
 	if err != nil {
@@ -118,29 +122,33 @@ func EachThreadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// If not a Thread
 	if !data.IsSeries {
 		RenderError(w, 400, "Not A Thread")
 		return
 	}
 
+	// If thread doesn't include any subblog
 	if len(data.SubBlogs) == 0 {
 		RenderError(w, 400, "Empty Thread")
 		return
 	}
 
-	if index+1 < len(data.SubBlogs) {
-		index = 0
+	// If index overflow
+	if index+1 > len(data.SubBlogs) {
+		http.Redirect(w, r, "/thread/"+bIDStr+"?index=0", http.StatusSeeOther)
+		return
 	}
 
-	var docSrc string
-	isMd := data.SubBlogs[index].DocType == "markdown"
-
+	var docSrc string                                  // Source document URL
+	isMd := data.SubBlogs[index].DocType == "markdown" // If doctype is Markdown or not
 	if isMd {
 		docSrc = data.SubBlogs[index].Markdown
 	} else {
 		docSrc = data.SubBlogs[index].HTML
 	}
 
+	// Fetching source document
 	b2, err := FetchDataSync(docSrc)
 	if err != nil {
 		RenderError(w, 404, "Document Not Found")
@@ -161,26 +169,51 @@ func EachThreadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parsing templates
 	t, err := template.ParseFiles(
-		"static/pages/each-doc.html",
+		"static/pages/each-thread.html",
+		"static/partials/thread-nav.html",
 		"static/partials/header.html",
 	)
 	if err != nil {
+		fmt.Println("Bazinga:", err)
 		RenderError(w, 500, "Internal Server Error")
 		return
 	}
 
+	var prevURL string
+	var nextURL string
+
+	if index == 0 {
+		prevURL = ""
+	} else {
+		prevURL = "/thread/" + data.ID + "?index=" + strconv.Itoa(index-1)
+	}
+
+	if index+1 < len(data.SubBlogs) {
+		nextURL = "/thread/" + data.ID + "?index=" + strconv.Itoa(index+1)
+	} else {
+		nextURL = ""
+	}
 	// Executing Template
 	err = t.Execute(w, struct {
-		Data    Blog
-		HTML    string
-		Project bool
+		Data       Blog
+		SubBlog    SubBlog
+		Index      int
+		PrevSubURL string
+		NextSubURL string
+		HTML       string
+		Project    bool
 	}{
-		Data:    data,
-		HTML:    fmt.Sprintf("%s\n", html),
-		Project: false,
+		Data:       data,
+		SubBlog:    data.SubBlogs[index],
+		Index:      index,
+		PrevSubURL: prevURL,
+		NextSubURL: nextURL,
+		HTML:       fmt.Sprintf("%s\n", html),
+		Project:    false,
 	})
 
 	if err != nil {
+		fmt.Println("Error:", err)
 		WriteError(w, 500, err, err.Error())
 	}
 }
