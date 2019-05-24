@@ -78,7 +78,7 @@ func (p *Project) Delete(id bson.ObjectId) error {
 }
 
 // DeletePermanent - Deletes a document permanently
-func (p *Project) DeletePermanent(id bson.ObjectId) error {
+func (p *Project) DeletePermanent() error {
 	err := PCol.Remove(bson.M{"_id": p.ID})
 	return err
 }

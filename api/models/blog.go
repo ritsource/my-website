@@ -93,7 +93,7 @@ func (b *Blog) Delete(id bson.ObjectId) error {
 }
 
 // DeletePermanent - Deletes a document permanently
-func (b *Blog) DeletePermanent(id bson.ObjectId) error {
+func (b *Blog) DeletePermanent() error {
 	err := BCol.Remove(bson.M{"_id": b.ID})
 	return err
 }

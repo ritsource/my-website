@@ -107,7 +107,8 @@ func DeleteBlogF(w http.ResponseWriter, r *http.Request) {
 	var bl models.Blog          // Blog
 	bIDStr := mux.Vars(r)["id"] // Blog ObjectID (String)
 
-	err := bl.DeletePermanent(bson.ObjectIdHex(bIDStr)) // Deleting Document
+	bl.ID = bson.ObjectIdHex(bIDStr)
+	err := bl.DeletePermanent() // Deleting Document
 	HandleErr(w, 422, err)
 
 	w.Header().Set("Content-Type", "application/json")

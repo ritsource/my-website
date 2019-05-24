@@ -80,7 +80,8 @@ func DeleteProjectF(w http.ResponseWriter, r *http.Request) {
 	var pr models.Project       // Project
 	pIDStr := mux.Vars(r)["id"] // Project ObjectID (String)
 
-	err := pr.DeletePermanent(bson.ObjectIdHex(pIDStr)) // Deleting Document
+	pr.ID = bson.ObjectIdHex(pIDStr)
+	err := pr.DeletePermanent() // Deleting Document
 	HandleErr(w, 422, err)
 
 	w.Header().Set("Content-Type", "application/json")

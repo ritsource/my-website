@@ -12,7 +12,9 @@ const blogData = {
 	doc_type: 'markdown',
 	is_technical: false,
 	is_public: false,
-	is_deleted: false
+	is_deleted: false,
+	is_series: false,
+	sub_blogs: []
 };
 
 export const createBlog = (extraData: any) => (dispatch: any, getState: any, api: any) => {
