@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -47,7 +49,9 @@ func (p *Project) Create() error {
 
 // Read - Reads single Document
 func (p *Project) Read(f, s bson.M) error {
-	err := PCol.Find(s).Select(s).One(p)
+	fmt.Println("Read", f["_id"])
+
+	err := PCol.Find(f).Select(s).One(p)
 	if err != nil {
 		return err
 	}
