@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -57,6 +58,18 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	var data models.Admin
 	err = json.Unmarshal([]byte(content), &data)
 	HandleErr(w, 500, err)
+
+	isAllowed := false
+	for _, eml := range config.Secrets.AdminEmails {
+		if eml == data.Email {
+			isAllowed = true
+		}
+	}
+
+	if !isAllowed {
+		WriteError(w, 401, errors.New("login unauthorized"), "Email not allowed to log in")
+		return
+	}
 
 	var admin models.Admin
 
