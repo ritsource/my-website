@@ -1,0 +1,15 @@
+{{define "thread-nav"}}
+<div class="SubBlog-Nav-Btn-Container-00">
+  {{if eq .PrevSubURL ""}}
+    <a class="SubBlog-Navigation-Btn"><button disabled>Prev</button></a>
+  {{else}}
+    <a class="SubBlog-Navigation-Btn" href="{{.PrevSubURL}}"><button>Prev</button></a>
+  {{end}}
+
+  {{if eq .NextSubURL ""}}
+    <a class="SubBlog-Navigation-Btn"><button disabled>Next</button></a>
+  {{else}}
+    <a class="SubBlog-Navigation-Btn" href="{{.NextSubURL}}"><button>Next</button></a>
+  {{end}}
+</div>
+{{end}}

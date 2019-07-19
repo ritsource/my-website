@@ -1,0 +1,16 @@
+:root {
+	--border-color-2: #909090;
+	--border-color: #bbb;
+
+	--text-color-lightest: #707070;
+	--text-color-light: #606060;
+	--text-color-dark: #333333;
+	--text-color-medium: #424242;
+
+	--theme-color: #00a0dc;
+	--theme-color-light: #9cc1ce;
+
+	--background-color: white;
+
+	--container-width: calc(100% - 200px);
+}
