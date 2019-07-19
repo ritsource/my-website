@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ritwik310/my-website/server/handlers"
-	"github.com/ritwik310/my-website/server/middleware"
+	mid "github.com/ritwik310/my-website/server/middleware"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
 	http.HandleFunc("/api/auth/google", handlers.GoogleLogin)
 	http.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback)
-	http.HandleFunc("/api/auth/current_user", middleware.CheckAuth(handlers.CurrentUser))
+	http.HandleFunc("/api/auth/current_user", mid.CheckAuth(handlers.CurrentUser))
 
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

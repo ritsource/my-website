@@ -51,5 +51,5 @@ done
 
 
 # starting the go server
-echo -e "${colors[info]}INFO${colors[normal]} starting the server..."
+echo -e "${colors[info]}INFO${colors[normal]} starting the server...\n"
 go run main.go

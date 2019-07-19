@@ -100,8 +100,11 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	// writing the admin json to the client
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(admin)
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(admin)
+
+	// redirecting to current_user route
+	http.Redirect(w, r, "/api/auth/current_user", http.StatusSeeOther)
 }
 
 // userInfo sends a request to google apis and gets the user's data for us
