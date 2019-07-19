@@ -11,6 +11,7 @@ declare -A colors=(
 export MONGO_URI="mongodb://localhost:27017"
 export DB_NAME="my-website-dev"
 export TEST_DB_NAME="my-website-test"
+export GOOGLE_AUTH_REDIRECT_URL="http://localhost:8080/api/auth/google/callback"
 
 # reading ./secrets.config file, that includes secrets formatted as the following
 # SECRET_ENV_1=something;
@@ -35,7 +36,7 @@ for i in "${EACH[@]}"; do
 done
 
 # secret environment variables that are expected to be declared
-declare -a secrets=("SESSION_KEY" "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "ADMIN_EMAIL_A" "ADMIN_EMAIL_B" "DB_VOLUME_PATH")
+declare -a secrets=("SESSION_KEY" "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTHORIZED_EMAIL_I" "AUTHORIZED_EMAIL_II" "DB_VOLUME_PATH")
 
 # checking if secret config variables exists or not
 for i in "${secrets[@]}"
