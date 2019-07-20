@@ -2,11 +2,11 @@
 <div class="Blogs-Item-C-00">
     <!-- <h2>{{.Title}}</h2> -->
     {{if .IsSeries}}
-        <a href="/thread/{{.ID}}?index=0" ><h2>{{.Title}}</h2></a>
+        <a href="/thread/{{.IDStr}}?index=0" ><h2>{{.Title}}</h2></a>
         <p>{{.Description}}{{if .DescriptionLink}}<a href="{{.DescriptionLink}}" target="_blank"> {{.DescriptionLink}}</a>{{end}}</p>
         
         <div>
-            {{$parentid := .ID}}
+            {{$parentid := .IDStr}}
             {{range $i, $a := .SubBlogs}}
                 {{if gt $i 1}}
                     <a href="/thread/{{$parentid}}?index={{$i}}" style="display: none"><h4>{{$i}} - {{$a.Title}}</h4></a>

@@ -3,6 +3,7 @@ package renderers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -17,28 +18,32 @@ import (
 
 // BlogHandler renders a single blog
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	// id := r.URL.Query()["id"]
-
 	paths := strings.Split(r.URL.Path, "/")
 
+	// if just `ritwiksaha.com/blog/`, then redirecting to `/blogs` route
 	if paths[2] == "" {
-		http.Redirect(w, r, "/blogs", http.StatusPermanentRedirect)
+		http.Redirect(w, r, "/blogs", http.StatusSeeOther)
 		return
 	}
 
-	id := paths[2]
+	idstr := paths[2]
 
 	// reading from blog document database
 	var b db.Blog
-	err := b.Read(bson.M{"id_str": id, "is_deleted": false, "is_public": true}, bson.M{})
+	err := b.Read(bson.M{"id_str": idstr, "is_deleted": false, "is_public": true}, bson.M{})
 	switch err {
 	case mgo.ErrNotFound:
-		renderErr(w, 404, fmt.Sprintf("Blog \"%v\" Not Found", id))
+		renderErr(w, 404, fmt.Sprintf("Blog \"%v\" Not Found", idstr))
 	case nil:
 		// everything's fine
 	default:
 		// some internal error
 		writeErr(w, 500, err)
+		return
+	}
+
+	if b.IsSeries {
+		http.Redirect(w, r, fmt.Sprintf("/thread/%v", idstr), http.StatusSeeOther)
 		return
 	}
 
@@ -52,7 +57,9 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// reading the document, (`GetDocument` handles caching)
-	doc, err := raw.GetDocument(b.ID.String(), src, b.DocType)
+	// also, in raw.GetDocument arguements index will always
+	// be "0" as there's just 1 document
+	doc, err := raw.GetDocument(b.ID.Hex(), src, b.DocType, 0)
 	if err != nil {
 		renderErr(w, 500, "Couldn't Read Document")
 		return
@@ -94,6 +101,128 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, 500, err)
 	}
 
+}
+
+// BlogsHandler renders all the blogs
+func ThreadHandler(w http.ResponseWriter, r *http.Request) {
+	paths := strings.Split(r.URL.Path, "/")
+
+	// if just `ritwiksaha.com/blog/`, then redirecting to `/blogs` route
+	if paths[2] == "" {
+		renderErr(w, 400, "No Thread-ID Provided")
+		return
+	}
+
+	idstr := paths[2]
+
+	// reading requested index from URL
+	index, err := strconv.Atoi(r.URL.Query().Get("index"))
+	if err != nil || index < 0 {
+		renderErr(w, 400, "Invalid Index")
+		return
+	}
+
+	// reading from blog/thread document database
+	var b db.Blog
+	err = b.Read(bson.M{"id_str": idstr, "is_deleted": false, "is_public": true, "is_series": true}, bson.M{})
+	switch err {
+	case mgo.ErrNotFound:
+		renderErr(w, 404, fmt.Sprintf("Thread \"%v\" Not Found", idstr))
+	case nil:
+		// everything's fine
+	default:
+		// some internal error
+		writeErr(w, 500, err)
+		return
+	}
+
+	// If thread doesn't include any subblog
+	if len(b.SubBlogs) == 0 {
+		renderErr(w, http.StatusNoContent, "Sorry, Empty Thread")
+		return
+	}
+
+	// If index overflow, then redirect to index 0
+	if index+1 > len(b.SubBlogs) {
+		http.Redirect(w, r, fmt.Sprintf("/thread/%v?index=0", idstr), http.StatusSeeOther)
+		return
+	}
+
+	// remote src string
+	var src string
+	switch b.SubBlogs[index].DocType {
+	case db.DocTypeMD:
+		src = b.SubBlogs[index].Markdown
+	case db.DocTypeHTML:
+		src = b.SubBlogs[index].HTML
+	}
+
+	// reading the document, for index there's some additional characters in the end
+	doc, err := raw.GetDocument(b.ID.Hex(), src, b.DocType, index)
+	if err != nil {
+		renderErr(w, 500, "Couldn't Read Document")
+		return
+	}
+
+	// parsing document data (html or markdown) into HTML (unsafe)
+	var unsafe []byte
+	if b.SubBlogs[index].DocType == db.DocTypeMD {
+		unsafe = blackfriday.Run(doc) // generating HTML from Markdown
+	} else {
+		unsafe = doc
+	}
+
+	// Document HTML
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	// Parsing templates
+	t, err := template.ParseFiles(
+		"static/pages/each-thread.html",
+		"static/partials/thread-nav.html",
+		"static/partials/header.html",
+	)
+	if err != nil {
+		renderErr(w, 500, "Internal Server Error")
+		return
+	}
+
+	var prevURL string
+	var nextURL string
+
+	if index == 0 {
+		prevURL = ""
+	} else {
+		prevURL = fmt.Sprintf("/thread/%v?index=%v", b.IDStr, strconv.Itoa(index-1))
+	}
+
+	if index+1 < len(b.SubBlogs) {
+		nextURL = fmt.Sprintf("/thread/%v?index=%v", b.IDStr, strconv.Itoa(index+1))
+	} else {
+		nextURL = ""
+	}
+
+	// Executing Template
+	err = t.Execute(w, struct {
+		Data       db.Blog
+		SubBlog    db.SubBlog
+		Index      int
+		PrevSubURL string
+		NextSubURL string
+		HTML       string
+		Project    bool
+	}{
+		Data:       b,
+		SubBlog:    b.SubBlogs[index],
+		Index:      index,
+		PrevSubURL: prevURL,
+		NextSubURL: nextURL,
+		HTML:       fmt.Sprintf("%s\n", html),
+		Project:    false,
+	})
+
+	if err != nil {
+		writeErr(w, 500, err)
+	}
 }
 
 // BlogsHandler renders all the blogs
