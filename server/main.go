@@ -13,8 +13,11 @@ func main() {
 	fmt.Println("Hello world!")
 
 	http.HandleFunc("/", renderers.IndexHandler)
-	http.HandleFunc("/blog/", renderers.BlogHandler)
 	http.HandleFunc("/blogs", renderers.BlogsHandler)
+	http.HandleFunc("/blog/", renderers.BlogHandler)
+	http.HandleFunc("/thread/", renderers.ThreadHandler)
+	http.HandleFunc("/projects", renderers.ProjectsHandler)
+	http.HandleFunc("/project/", renderers.ProjectHandler)
 
 	http.HandleFunc("/api/auth/google", handlers.GoogleLogin)
 	http.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback)

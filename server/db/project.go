@@ -1,8 +1,6 @@
 package db
 
 import (
-	"fmt"
-
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -10,6 +8,7 @@ import (
 // Project - Project model type
 type Project struct {
 	ID              bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	IDStr           string        `bson:"id_str" json:"id_str"`
 	Title           string        `bson:"title" json:"title"`
 	Description     string        `bson:"description" json:"description"`
 	DescriptionLink string        `bson:"description_link" json:"description_link"`
@@ -29,7 +28,7 @@ type Projects []Project
 
 // Read - Reads all Documents
 func (ps *Projects) Read(f, s bson.M) error {
-	err := MgoDB.C("projects").Find(s).Sort("-created_at").Select(s).All(ps)
+	err := MgoDB.C("projects").Find(f).Sort("-created_at").Select(s).All(ps)
 	if err != nil {
 		return err
 	}
@@ -49,8 +48,6 @@ func (p *Project) Create() error {
 
 // Read - Reads single Document
 func (p *Project) Read(f, s bson.M) error {
-	fmt.Println("Read", f["_id"])
-
 	err := MgoDB.C("projects").Find(f).Select(s).One(p)
 	if err != nil {
 		return err
