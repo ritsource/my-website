@@ -15,7 +15,7 @@ type Project struct {
 	DescriptionLink string        `bson:"description_link" json:"description_link"`
 	HTML            string        `bson:"html" json:"html"`
 	Markdown        string        `bson:"markdown" json:"markdown"`
-	DocType         string        `bson:"doc_type" json:"doc_type"`
+	DocType         int8          `bson:"doc_type" json:"doc_type"`
 	Thumbnail       string        `bson:"thumbnail" json:"thumbnail"`
 	Link            string        `bson:"link" json:"link"`
 	CreatedAt       int32         `bson:"created_at" json:"created_at"`

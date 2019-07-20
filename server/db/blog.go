@@ -5,9 +5,16 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// enums for doctype
+var (
+	DocTypeMD   int8 = 0
+	DocTypeHTML int8 = 1
+)
+
 // Blog - Blog model type
 type Blog struct {
 	ID              bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	IDStr           string        `bson:"id_str" json:"id_str"`
 	Title           string        `bson:"title" json:"title"`
 	Description     string        `bson:"description" json:"description"`
 	DescriptionLink string        `bson:"description_link" json:"description_link"`
@@ -15,8 +22,8 @@ type Blog struct {
 	FormattedDate   string        `bson:"formatted_date" json:"formatted_date"`
 	HTML            string        `bson:"html" json:"html"`
 	Markdown        string        `bson:"markdown" json:"markdown"`
-	DocType         string        `bson:"doc_type" json:"doc_type"`
-	Thumbnail       string        `bson:"thumbnail" json:"thumbnail"`
+	DocType         int8          `bson:"doc_type" json:"doc_type"`
+	Thumbnail       int8          `bson:"thumbnail" json:"thumbnail"`
 	CreatedAt       int32         `bson:"created_at" json:"created_at"`
 	IsTechnical     bool          `bson:"is_technical" json:"is_technical"`
 	IsPublic        bool          `bson:"is_public" json:"is_public"`
@@ -33,7 +40,7 @@ type SubBlog struct {
 	FormattedDate string        `bson:"formatted_date" json:"formatted_date"`
 	HTML          string        `bson:"html" json:"html"`
 	Markdown      string        `bson:"markdown" json:"markdown"`
-	DocType       string        `bson:"doc_type" json:"doc_type"`
+	DocType       int8          `bson:"doc_type" json:"doc_type"`
 }
 
 // Blogs - Slice of Blogs
