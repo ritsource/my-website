@@ -19,9 +19,9 @@ func GetDocument(id string, src string, doctype int8, index int) ([]byte, error)
 	var fp string
 	switch doctype {
 	case db.DocTypeMD:
-		fp = path.Join(".", "cache", id, strconv.Itoa(index)+".md")
+		fp = path.Join(".", "cache", "documents", id, strconv.Itoa(index)+".md")
 	case db.DocTypeHTML:
-		fp = path.Join(".", "cache", id, strconv.Itoa(index)+".html")
+		fp = path.Join(".", "cache", "documents", id, strconv.Itoa(index)+".html")
 	default:
 		return nil, fmt.Errorf("document type not defined")
 	}
@@ -44,7 +44,7 @@ func GetDocument(id string, src string, doctype int8, index int) ([]byte, error)
 	// handling download in a different goroutine
 	go func(fp string, b []byte) {
 		// creating directories for cache document
-		err := os.MkdirAll(path.Join(".", "cache", id), os.ModePerm)
+		err := os.MkdirAll(path.Join(".", "cache", "documents", id), os.ModePerm)
 		if err != nil {
 			logrus.Errorf("couldn't create directory, %v\n", err)
 		}

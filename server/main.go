@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"os"
+	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/ritwik310/my-website/server/handlers"
 	mid "github.com/ritwik310/my-website/server/middleware"
@@ -10,7 +13,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello world!")
+	// go ClearCache()
 
 	http.HandleFunc("/", renderers.IndexHandler)
 	http.HandleFunc("/blogs", renderers.BlogsHandler)
@@ -30,4 +33,20 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", rfs))
 
 	http.ListenAndServe(":8080", nil)
+}
+
+// ClearCache clears the cache directory once at an interval
+func ClearCache() {
+	for {
+		err := os.RemoveAll("./cache/documents")
+		if err != nil {
+			logrus.Errorf("%v\n", err)
+		}
+
+		// haha
+		logrus.Infof("cleared cached files: %v", time.Now())
+
+		// wait for two days after clearing
+		time.Sleep(2 * 24 * 60 * 60 * time.Second)
+	}
 }
