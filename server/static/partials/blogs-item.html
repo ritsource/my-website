@@ -1,0 +1,32 @@
+{{define "blogs-item"}}
+<div class="Blogs-Item-C-00">
+    <!-- <h2>{{.Title}}</h2> -->
+    {{if .IsSeries}}
+        <a href="/thread/{{.IDStr}}?index=0" ><h2>{{.Title}}</h2></a>
+        <p>{{.Description}}{{if .DescriptionLink}}<a href="{{.DescriptionLink}}" target="_blank"> {{.DescriptionLink}}</a>{{end}}</p>
+        
+        <div>
+            {{$parentid := .IDStr}}
+            {{range $i, $a := .SubBlogs}}
+                {{if gt $i 1}}
+                    <a href="/thread/{{$parentid}}?index={{$i}}" style="display: none"><h4>{{$i}} - {{$a.Title}}</h4></a>
+                    <p style="display: none">{{.Description}}</p>
+                {{else}}
+                    <a href="/thread/{{$parentid}}?index={{$i}}" style="display: block"><h4>{{$i}} - {{$a.Title}}</h4></a>
+                    <p style="display: block">{{.Description}}</p>
+                {{end}}
+            {{end}}
+            {{$length := len .SubBlogs}}
+            {{if gt $length 2}}
+                <button class="Blogs-Item-Series-Toggle-Btn-99">...more</button>
+            {{end}}
+        </div>
+
+        <p class="Blogs-Item-Info-01">by <strong>{{.Author}}</strong>, <strong>{{.FormattedDate}}</strong></p>
+    {{else}}
+        <a href="/blog/{{.IDStr}}" ><h2>{{.Title}}</h2></a>
+        <p>{{.Description}}{{if .DescriptionLink}}<a href="{{.DescriptionLink}}" target="_blank"> {{.DescriptionLink}}</a>{{end}}</p>
+        <p class="Blogs-Item-Info-01">by <strong>{{.Author}}</strong>, <strong>{{.FormattedDate}}</strong></p>
+    {{end}}
+</div>
+{{end}}
