@@ -26,6 +26,20 @@ func main() {
 	http.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback)
 	http.HandleFunc("/api/auth/current_user", mid.CheckAuth(handlers.CurrentUser))
 
+	http.HandleFunc("/api/private/blog", mid.CheckAuth(handlers.ReadBlog))
+	http.HandleFunc("/api/private/blogs", mid.CheckAuth(handlers.ReadBlogs))
+	http.HandleFunc("/api/private/blog/new", mid.CheckAuth(handlers.CreateBlog))
+	http.HandleFunc("/api/private/blog/edit", mid.CheckAuth(handlers.EditBlog))
+	http.HandleFunc("/api/private/blog/delete", mid.CheckAuth(handlers.DeleteBlog))
+	http.HandleFunc("/api/private/blog/delete/permanent", mid.CheckAuth(handlers.DeleteBlogPrem))
+
+	http.HandleFunc("/api/private/project", mid.CheckAuth(handlers.ReadProject))
+	http.HandleFunc("/api/private/projects", mid.CheckAuth(handlers.ReadProjects))
+	http.HandleFunc("/api/private/project/new", mid.CheckAuth(handlers.CreateProject))
+	http.HandleFunc("/api/private/project/edit", mid.CheckAuth(handlers.EditProject))
+	http.HandleFunc("/api/private/project/delete", mid.CheckAuth(handlers.DeleteProject))
+	http.HandleFunc("/api/private/project/delete/permanent", mid.CheckAuth(handlers.DeleteProjectPrem))
+
 	sfs := http.FileServer(http.Dir("raw/"))
 	http.Handle("/raw/", http.StripPrefix("/raw/", sfs))
 
