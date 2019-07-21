@@ -66,7 +66,7 @@ const SubBoxDelete = (props: MyProps) => {
 								setIsAsync(true);
 								try {
 									await api.delete(
-										`/private/${isProject ? 'project' : 'blog'}/delete/permanent/${id}`
+										`/private/${isProject ? 'project' : 'blog'}/delete/permanent?id=${id}`
 									);
 									setErrorMsg(false);
 									setBoxEditable(false);

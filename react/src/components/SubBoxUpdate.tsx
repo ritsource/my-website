@@ -63,7 +63,7 @@ const SubBoxUpdate = (props: MyProps) => {
 
 								setIsAsync(true);
 								try {
-									await api.delete(`/private/cache/delete/${id}`);
+									await api.delete(`/private/clear_cache?id=${id}`);
 									setBoxEditable(false);
 									setId('');
 								} catch (e) {
