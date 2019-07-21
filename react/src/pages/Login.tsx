@@ -1,13 +1,13 @@
 import React from 'react';
 import { FaGoogle } from 'react-icons/fa';
 
-import { apiBase } from '../api';
+import { serverAddress } from '../api';
 
 const LoginPage = () => {
 	return (
 		<div className="Page-c-00 Flex-Column-Center">
 			<div className="Page-Container-00 Flex-Column-Center">
-				<a href={apiBase + '/auth/google'}>
+				<a href={serverAddress + '/api/auth/google'}>
 					<button
 						style={{
 							fontSize: '14px',

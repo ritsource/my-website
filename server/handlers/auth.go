@@ -104,7 +104,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// json.NewEncoder(w).Encode(admin)
 
 	// redirecting to current_user route
-	http.Redirect(w, r, "/api/auth/current_user", http.StatusSeeOther)
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	// http.Redirect(w, r, "/api/auth/current_user", http.StatusSeeOther)
 }
 
 // userInfo sends a request to google apis and gets the user's data for us
@@ -145,6 +146,11 @@ func CurrentUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(admin)
+	writeJSON(w, admin)
+
+	// enabling C.O.R.S.
+	// w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(admin)
 }

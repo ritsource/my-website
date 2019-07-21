@@ -26,6 +26,7 @@ func main() {
 		}()
 	}
 
+	// let's say
 	http.HandleFunc("/", renderers.IndexHandler)
 	http.HandleFunc("/blogs", renderers.BlogsHandler)
 	http.HandleFunc("/blog/", renderers.BlogHandler)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.scss';
 import api from './api';
@@ -39,7 +39,7 @@ const App = (props: any) => {
 				<Header />
 				{auth ? (
 					<Switch>
-						<Route path="/" exact component={NotFoundPage} />
+						<Route path="/" exact component={() => <Redirect to="/admin" />} />
 						<Route path="/admin/" exact component={HomePage} />
 						<Route path="/admin/blogs/:blogId" exact component={EachBlogPage} />
 						<Route path="/admin/projects/:projectId" exact component={EachProjectPage} />

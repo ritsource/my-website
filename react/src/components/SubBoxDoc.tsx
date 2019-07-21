@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdDone } from 'react-icons/md';
 
-import { siteBase } from '../api';
+import { serverAddress } from '../api';
 
 type MyProps = {
 	object: any; // Project | Blog;
@@ -44,7 +44,7 @@ const SubBoxName = (props: MyProps) => {
 				<a
 					className="a-exception"
 					href={
-						siteBase +
+						serverAddress +
 						'/preview?' +
 						`src=${object.doc_type === 'markdown' ? object.markdown : object.html}` +
 						'&' +
