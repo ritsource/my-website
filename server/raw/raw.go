@@ -39,10 +39,10 @@ func GetDocument(id string, src string, doctype int8, index int) ([]byte, error)
 	defer resp.Body.Close()
 
 	// reading teh response body
-	b, err := ioutil.ReadAll(resp.Body)
+	doc, err := ioutil.ReadAll(resp.Body)
 
 	// handling download in a different goroutine
-	go func(fp string, b []byte) {
+	go func(fp string, d []byte) {
 		// creating directories for cache document
 		err := os.MkdirAll(path.Join(".", "cache", "documents", id), os.ModePerm)
 		if err != nil {
@@ -50,12 +50,12 @@ func GetDocument(id string, src string, doctype int8, index int) ([]byte, error)
 		}
 
 		// writing file that contains cache document
-		err = ioutil.WriteFile(fp, b, os.ModePerm)
+		err = ioutil.WriteFile(fp, d, os.ModePerm)
 		if err != nil {
 			logrus.Errorf("couldn't write file, %v\n", err)
 		}
-	}(fp, b)
+	}(fp, doc)
 
 	// returning the data and error
-	return b, err
+	return doc, err
 }

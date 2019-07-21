@@ -8,8 +8,8 @@ declare -A colors=(
 )
 
 # environment variables for developemnt
+export DEV_MODE="true"
 export MONGO_URI="mongodb://localhost:27017"
-# export DB_NAME="my-website-dev"
 export DB_NAME="my-website-prod"
 export TEST_DB_NAME="my-website-test"
 export GOOGLE_AUTH_REDIRECT_URL="http://localhost:8080/api/auth/google/callback"

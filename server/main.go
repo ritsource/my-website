@@ -5,15 +5,26 @@ import (
 	"os"
 	"time"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/ritwik310/my-website/server/handlers"
 	mid "github.com/ritwik310/my-website/server/middleware"
 	"github.com/ritwik310/my-website/server/renderers"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	// go ClearCache()
+	// to clear the cache directory once at an interval
+	if os.Getenv("DEV_MODE") != "true" {
+		go func() {
+			for {
+				time.Sleep(2 * 24 * 60 * 60 * time.Second) // wait for two days after clearing
+				err := os.RemoveAll("./cache/documents")   // haha
+				if err != nil {
+					logrus.Errorf("%v\n", err)
+				}
+				logrus.Infof("cleared cached files: %v", time.Now())
+			}
+		}()
+	}
 
 	http.HandleFunc("/", renderers.IndexHandler)
 	http.HandleFunc("/blogs", renderers.BlogsHandler)
@@ -21,6 +32,7 @@ func main() {
 	http.HandleFunc("/thread/", renderers.ThreadHandler)
 	http.HandleFunc("/projects", renderers.ProjectsHandler)
 	http.HandleFunc("/project/", renderers.ProjectHandler)
+	http.HandleFunc("/preview", renderers.PreviewHandler)
 
 	http.HandleFunc("/api/auth/google", handlers.GoogleLogin)
 	http.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback)
@@ -40,27 +52,10 @@ func main() {
 	http.HandleFunc("/api/private/project/delete", mid.CheckAuth(handlers.DeleteProject))
 	http.HandleFunc("/api/private/project/delete/permanent", mid.CheckAuth(handlers.DeleteProjectPrem))
 
-	sfs := http.FileServer(http.Dir("raw/"))
-	http.Handle("/raw/", http.StripPrefix("/raw/", sfs))
+	http.HandleFunc("/api/private/clear_cache", mid.CheckAuth(handlers.ClearCacheHandler))
 
 	rfs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", rfs))
 
 	http.ListenAndServe(":8080", nil)
-}
-
-// ClearCache clears the cache directory once at an interval
-func ClearCache() {
-	for {
-		err := os.RemoveAll("./cache/documents")
-		if err != nil {
-			logrus.Errorf("%v\n", err)
-		}
-
-		// haha
-		logrus.Infof("cleared cached files: %v", time.Now())
-
-		// wait for two days after clearing
-		time.Sleep(2 * 24 * 60 * 60 * time.Second)
-	}
 }
