@@ -104,8 +104,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// json.NewEncoder(w).Encode(admin)
 
 	// redirecting to current_user route
-	http.Redirect(w, r, "/admin", http.StatusSeeOther)
-	// http.Redirect(w, r, "/api/auth/current_user", http.StatusSeeOther)
+	http.Redirect(w, r, os.Getenv("ADMIN_ORIGIN"), http.StatusSeeOther)
 }
 
 // userInfo sends a request to google apis and gets the user's data for us

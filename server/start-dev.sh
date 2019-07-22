@@ -37,7 +37,7 @@ for i in "${EACH[@]}"; do
 done
 
 # secret environment variables that are expected to be declared
-declare -a secrets=("SESSION_KEY" "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTHORIZED_EMAIL_I" "AUTHORIZED_EMAIL_II")
+declare -a secrets=("SESSION_KEY" "GOOGLE_CLIENT_ID" "GOOGLE_CLIENT_SECRET" "AUTHORIZED_EMAIL_I" "AUTHORIZED_EMAIL_II" "PROD_ADMIN_ORIGIN")
 
 # checking if secret config variables exists or not
 for i in "${secrets[@]}"

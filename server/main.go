@@ -62,7 +62,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", rfs))
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{os.Getenv("ADMIN_ORIGIN")},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowCredentials: true,
 	}).Handler(mux)

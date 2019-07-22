@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const serverAddress = process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:8080';
+export const serverAddress = process.env.NODE_ENV === 'production' ? 'https://ritwiksaha.com' : 'http://localhost:8080';
 
 // Axios Instance
 const api = axios.create({
