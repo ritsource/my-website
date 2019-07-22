@@ -3,7 +3,7 @@ package db_test
 import (
 	"testing"
 
-	"github.com/ritwik310/my-website/api/models"
+	"github.com/ritwik310/my-website/server/db"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -11,7 +11,7 @@ func TestAdminCRUD(t *testing.T) {
 	email := "ritwiktesting@example.com"
 	googleId := "123456789010"
 
-	a := models.Admin{
+	a := db.Admin{
 		Email:    email,
 		GoogleID: googleId,
 	}
@@ -25,7 +25,7 @@ func TestAdminCRUD(t *testing.T) {
 		t.Error("a.Email != email || a.GoogleID != googleId")
 	}
 
-	var a2 models.Admin
+	var a2 db.Admin
 	err = a2.Read(bson.M{"email": email, "google_id": googleId})
 	if err != nil {
 		t.Error(err)
