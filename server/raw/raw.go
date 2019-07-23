@@ -44,13 +44,13 @@ func GetDocument(id string, src string, doctype int8, index int) ([]byte, error)
 	// handling download in a different goroutine
 	go func(fp string, d []byte) {
 		// creating directories for cache document
-		err := os.MkdirAll(path.Join(".", "cache", "documents", id), os.ModePerm)
+		err := os.MkdirAll(path.Join(".", "cache", "documents", id), 0777)
 		if err != nil {
 			logrus.Errorf("couldn't create directory, %v\n", err)
 		}
 
 		// writing file that contains cache document
-		err = ioutil.WriteFile(fp, d, os.ModePerm)
+		err = ioutil.WriteFile(fp, d, 0777)
 		if err != nil {
 			logrus.Errorf("couldn't write file, %v\n", err)
 		}

@@ -8,7 +8,7 @@ import (
 
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/ritwik310/my-website/server/db"
-	"gopkg.in/russross/blackfriday.v2"
+	"github.com/russross/blackfriday"
 )
 
 // PreviewHandler renders document for any given document source
@@ -46,7 +46,7 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 	// parsing document data (html or markdown) into HTML (unsafe)
 	var unsafe []byte
 	if doctype == db.DocTypeMD {
-		unsafe = blackfriday.Run(doc) // generating HTML from Markdown
+		unsafe = blackfriday.MarkdownCommon(doc) // generating HTML from Markdown
 	} else {
 		unsafe = doc
 	}

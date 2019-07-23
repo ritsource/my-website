@@ -9,9 +9,9 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/raw"
+	"github.com/russross/blackfriday"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/russross/blackfriday.v2"
 )
 
 // ProjectHandler renders a single project description
@@ -61,7 +61,7 @@ func ProjectHandler(w http.ResponseWriter, r *http.Request) {
 	// parsing document data (html or markdown) into HTML (unsafe)
 	var unsafe []byte
 	if p.DocType == db.DocTypeMD {
-		unsafe = blackfriday.Run(doc) // generating HTML from Markdown
+		unsafe = blackfriday.MarkdownCommon(doc) // generating HTML from Markdown
 	} else {
 		unsafe = doc
 	}

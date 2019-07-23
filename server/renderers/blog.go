@@ -11,9 +11,9 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/raw"
+	"github.com/russross/blackfriday"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/russross/blackfriday.v2"
 )
 
 // BlogHandler renders a single blog
@@ -68,7 +68,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	// parsing document data (html or markdown) into HTML (unsafe)
 	var unsafe []byte
 	if b.DocType == db.DocTypeMD {
-		unsafe = blackfriday.Run(doc) // generating HTML from Markdown
+		unsafe = blackfriday.MarkdownCommon(doc) // generating HTML from Markdown
 	} else {
 		unsafe = doc
 	}
@@ -103,7 +103,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// BlogsHandler renders all the blogs
+// ThreadHandler renders all the blogs
 func ThreadHandler(w http.ResponseWriter, r *http.Request) {
 	paths := strings.Split(r.URL.Path, "/")
 
@@ -167,7 +167,7 @@ func ThreadHandler(w http.ResponseWriter, r *http.Request) {
 	// parsing document data (html or markdown) into HTML (unsafe)
 	var unsafe []byte
 	if b.SubBlogs[index].DocType == db.DocTypeMD {
-		unsafe = blackfriday.Run(doc) // generating HTML from Markdown
+		unsafe = blackfriday.MarkdownCommon(doc) // generating HTML from Markdown
 	} else {
 		unsafe = doc
 	}
@@ -261,9 +261,9 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 	// constructing the selector for query from mongodb
 	var sel bson.M
 	if tech {
-		sel = bson.M{"is_deleted": false, "is_public": true, "is_technical": false}
-	} else {
 		sel = bson.M{"is_deleted": false, "is_public": true, "is_technical": true}
+	} else {
+		sel = bson.M{"is_deleted": false, "is_public": true, "is_technical": false}
 	}
 
 	// querying data from database
