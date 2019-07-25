@@ -7,6 +7,14 @@ GIT_SHA=$(git rev-parse HEAD)
 # google cloud project id (as command line arg)
 PROJECT_ID=$1
 
+if [[ -z "$PROJECT_ID" ]]; then
+  # exit if PROJECT_ID not provided
+  echo "PROJECT_ID not provided"
+  exit 1
+else
+  :
+fi
+
 # testing go server
 go test ./...
 

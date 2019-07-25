@@ -53,8 +53,9 @@ func main() {
 	mux.HandleFunc("/api/private/project/delete", mid.CheckAuth(handlers.DeleteProject))
 	mux.HandleFunc("/api/private/project/delete/permanent", mid.CheckAuth(handlers.DeleteProjectPrem))
 
-	mux.HandleFunc("/api/private/clear_cache/all", mid.CheckAuth(handlers.ClearCacheAllHandler))
-	mux.HandleFunc("/api/private/clear_cache", mid.CheckAuth(handlers.ClearCacheSingleHandler))
+	// TODO: cache enable with GKE cluster
+	// mux.HandleFunc("/api/private/clear_cache/all", mid.CheckAuth(handlers.ClearCacheAllHandler))
+	// mux.HandleFunc("/api/private/clear_cache", mid.CheckAuth(handlers.ClearCacheSingleHandler))
 
 	rfs := http.FileServer(http.Dir("static/"))
 	mux.Handle("/static/", http.StripPrefix("/static/", rfs))

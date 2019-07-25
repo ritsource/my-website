@@ -35,16 +35,6 @@ window.onscroll = function() {
 	prevScrollpos = currentScrollPos;
 };
 
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-	window.addEventListener('load', () => {
-		navigator.serviceWorker
-			.register('/static/serviceWorker.js')
-			.then((reg) => console.log('Service Worker: Registered (Pages)'))
-			.catch((err) => console.log(`Service Worker: Error: ${err}`));
-	});
-}
-
 // Button POP-UP Animation
 
 // For Document Navigation in Footer
@@ -70,25 +60,27 @@ setTimeout(() => {
 
 console.log('Started');
 
-console.log(document.getElementsByClassName("Blogs-Item-Series-Toggle-Btn-99"));
+console.log(document.getElementsByClassName('Blogs-Item-Series-Toggle-Btn-99'));
 
 // Adds Attribute to ('target', '_blank')
 const seriesToggBtns = document.querySelectorAll('.Blogs-Item-Series-Toggle-Btn-99');
 
 Object.values(seriesToggBtns).map((el) => {
-	el.addEventListener('click', function (e) {
-		Object.values(e.target.parentNode.children).map((child, i) => {
-			
-			if (i > 1*2+1 && child.tagName != "BUTTON") {
-				if (child.style.display === "block") {
-					child.style.display = "none"
-				} else {
-					child.style.display = "block"
+	el.addEventListener(
+		'click',
+		function(e) {
+			Object.values(e.target.parentNode.children).map((child, i) => {
+				if (i > 1 * 2 + 1 && child.tagName != 'BUTTON') {
+					if (child.style.display === 'block') {
+						child.style.display = 'none';
+					} else {
+						child.style.display = 'block';
+					}
 				}
-			}
-		});
-
-	}, false);
+			});
+		},
+		false
+	);
 });
 
 // .Blogs-Item-Series-Toggle-H4-99
