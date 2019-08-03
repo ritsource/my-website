@@ -14,21 +14,6 @@ var MongoConn *mgo.Session
 // MgoDB can be used to manipulate data in the database
 var MgoDB *mgo.Database
 
-func init() {
-	err := Connect()
-	if err != nil {
-		logrus.Panicf("%v\n", err)
-	}
-
-	//
-	if flag.Lookup("test.v") == nil {
-		MgoDB = MongoConn.DB(os.Getenv("DB_NAME"))
-	} else {
-		MgoDB = MongoConn.DB(os.Getenv("TEST_DB_NAME"))
-	}
-
-}
-
 // Connect creates a connection to mongoDB server
 func Connect() error {
 	var err error
@@ -41,6 +26,13 @@ func Connect() error {
 	}
 
 	logrus.Infof("connected to MongoDB!")
+
+	if flag.Lookup("test.v") == nil {
+		MgoDB = MongoConn.DB(os.Getenv("DB_NAME"))
+	} else {
+		MgoDB = MongoConn.DB(os.Getenv("TEST_DB_NAME"))
+	}
+
 	return nil
 }
 

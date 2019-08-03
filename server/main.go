@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/handlers"
 	mid "github.com/ritwik310/my-website/server/middleware"
 	"github.com/ritwik310/my-website/server/renderers"
 	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -24,6 +26,11 @@ func main() {
 	// 		}
 	// 	}()
 	// }
+
+	err := db.Connect()
+	if err != nil {
+		logrus.Panicf("%v\n", err)
+	}
 
 	mux := http.NewServeMux()
 
