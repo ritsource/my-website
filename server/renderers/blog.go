@@ -88,13 +88,11 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Executing Template
 	err = t.Execute(w, struct {
-		Data    db.Blog
-		HTML    string
-		Project bool
+		Data db.Blog
+		HTML string
 	}{
-		Data:    b,
-		HTML:    string(html),
-		Project: false,
+		Data: b,
+		HTML: string(html),
 	})
 
 	if err != nil {
@@ -209,7 +207,6 @@ func ThreadHandler(w http.ResponseWriter, r *http.Request) {
 		PrevSubURL string
 		NextSubURL string
 		HTML       string
-		Project    bool
 	}{
 		Data:       b,
 		SubBlog:    b.SubBlogs[index],
@@ -217,7 +214,6 @@ func ThreadHandler(w http.ResponseWriter, r *http.Request) {
 		PrevSubURL: prevURL,
 		NextSubURL: nextURL,
 		HTML:       fmt.Sprintf("%s\n", html),
-		Project:    false,
 	})
 
 	if err != nil {

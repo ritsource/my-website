@@ -80,13 +80,11 @@ func PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Executing Template
 	err = t.Execute(w, struct {
-		Data    db.Blog
-		HTML    string
-		Project bool
+		Data db.Blog
+		HTML string
 	}{
-		Data:    data,
-		HTML:    fmt.Sprintf("%s", html),
-		Project: false, // False because it can be anything (blog or project)
+		Data: data,
+		HTML: fmt.Sprintf("%s", html),
 	})
 
 	if err != nil {
