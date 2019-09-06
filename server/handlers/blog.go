@@ -81,7 +81,7 @@ func ReadBlogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var bs db.Blogs
-	err := bs.Read(bson.M{}, bson.M{})
+	err := bs.ReadAll(bson.M{}, bson.M{})
 	if err != nil {
 		writeErr(w, 500, err)
 		return

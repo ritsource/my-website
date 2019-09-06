@@ -1,15 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
-	"github.com/ritwik310/my-website/server/db"
 	"github.com/ritwik310/my-website/server/handlers"
 	mid "github.com/ritwik310/my-website/server/middleware"
 	"github.com/ritwik310/my-website/server/renderers"
 	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -27,19 +26,12 @@ func main() {
 	// 	}()
 	// }
 
-	err := db.Connect()
-	if err != nil {
-		logrus.Panicf("%v\n", err)
-	}
-
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", renderers.IndexHandler)
 	mux.HandleFunc("/blogs", renderers.BlogsHandler)
 	mux.HandleFunc("/blog/", renderers.BlogHandler)
 	mux.HandleFunc("/thread/", renderers.ThreadHandler)
-	mux.HandleFunc("/projects", renderers.ProjectsHandler)
-	mux.HandleFunc("/project/", renderers.ProjectHandler)
 	mux.HandleFunc("/preview", renderers.PreviewHandler)
 
 	mux.HandleFunc("/api/auth/google", handlers.GoogleLogin)
@@ -52,13 +44,6 @@ func main() {
 	mux.HandleFunc("/api/private/blog/edit", mid.CheckAuth(handlers.EditBlog))
 	mux.HandleFunc("/api/private/blog/delete", mid.CheckAuth(handlers.DeleteBlog))
 	mux.HandleFunc("/api/private/blog/delete/permanent", mid.CheckAuth(handlers.DeleteBlogPrem))
-
-	mux.HandleFunc("/api/private/project", mid.CheckAuth(handlers.ReadProject))
-	mux.HandleFunc("/api/private/projects", mid.CheckAuth(handlers.ReadProjects))
-	mux.HandleFunc("/api/private/project/new", mid.CheckAuth(handlers.CreateProject))
-	mux.HandleFunc("/api/private/project/edit", mid.CheckAuth(handlers.EditProject))
-	mux.HandleFunc("/api/private/project/delete", mid.CheckAuth(handlers.DeleteProject))
-	mux.HandleFunc("/api/private/project/delete/permanent", mid.CheckAuth(handlers.DeleteProjectPrem))
 
 	// TODO: cache enable with GKE cluster
 	// mux.HandleFunc("/api/private/clear_cache/all", mid.CheckAuth(handlers.ClearCacheAllHandler))
@@ -73,5 +58,6 @@ func main() {
 		AllowCredentials: true,
 	}).Handler(mux)
 
+	fmt.Println("Server is up!")
 	http.ListenAndServe(":8080", handler)
 }

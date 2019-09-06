@@ -268,7 +268,7 @@ func BlogsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// querying data from database
 	var bs db.Blogs
-	err := bs.Read(sel, bson.M{})
+	err := bs.ReadAll(sel, bson.M{})
 	if err != nil {
 		renderErr(w, 500, "Internal Server Error")
 	}

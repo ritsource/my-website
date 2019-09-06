@@ -8,10 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func init() {
-	db.MgoDB.C("blogs").RemoveAll(nil)
-}
-
 func TestBlogCRUD(t *testing.T) {
 	bl := db.Blog{Title: "Test Blog", Description: "Test Blog"}
 
@@ -43,7 +39,6 @@ func TestBlogCRUD(t *testing.T) {
 	if len(bls) != 0 {
 		t.Error("len(bls) > 0")
 	}
-
 }
 
 func createBlog(t *testing.T, bl *db.Blog) {
@@ -61,7 +56,7 @@ func readBlog(t *testing.T, bl *db.Blog) {
 }
 
 func readBlogs(t *testing.T, bls *db.Blogs) {
-	err := bls.Read(bson.M{}, bson.M{})
+	err := bls.ReadAll(bson.M{}, bson.M{})
 	if err != nil {
 		t.Error(err)
 	}

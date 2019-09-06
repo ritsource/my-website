@@ -1,7 +1,14 @@
 .Each-Blog-Content-00 {
 	width: var(--container-width);
-	/* width: calc(100% - 600px); */
+	/* margin: 0px auto 0px 100px; */
+	/* max-width: calc(100% - 400px); */
+	/* width: 1000px; */
 	margin: auto;
+}
+
+header,
+.markdown-body {
+	width: 700px;
 }
 
 header h1 {
@@ -23,7 +30,7 @@ header p {
 
 .markdown-body {
 	padding: 0px;
-	margin: 0px;
+	/* margin: 0px; */
 	font-size: 1rem;
 	color: var(--text-color-light);
 	font-weight: normal;
@@ -153,6 +160,11 @@ footer {
 	.Each-Blog-Content-00 {
 		align-items: center;
 		width: calc(100vw - 50px);
+	}
+
+	header,
+	.markdown-body {
+		width: 100%;
 	}
 
 	footer {
