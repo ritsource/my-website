@@ -80,6 +80,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles(
 		"static/pages/each-doc.html",
 		"static/partials/header.html",
+		"static/partials/social-btns.html",
 	)
 	if err != nil {
 		renderErr(w, 500, "Internal Server Error")
@@ -178,6 +179,7 @@ func ThreadHandler(w http.ResponseWriter, r *http.Request) {
 		"static/pages/each-thread.html",
 		"static/partials/thread-nav.html",
 		"static/partials/header.html",
+		"static/partials/social-btns.html",
 	)
 	if err != nil {
 		renderErr(w, 500, "Internal Server Error")

@@ -50,9 +50,9 @@
 
     <div class="Article-End-Div-00"></div>
 
-    <footer class="Flex-Row-Space-Between">
+    <div class="Flex-Row-Space-Between">
       {{template "thread-nav" .}}
-      <div class="Footer-Social-Btn-Container-00 Flex-Row-Space-Between">
+      <!-- <div class="Footer-Social-Btn-Container-00 Flex-Row-Space-Between">
         <a class="Cute-Btn Cute-Btn-Twitter" target="_blank" href="https://twitter.com/ritwik310">
           <i class="fab fa-twitter"></i>
           Follow&nbsp;@ritwik310
@@ -61,11 +61,13 @@
           <i class="fab fa-github"></i>
           Github
         </a>
-      </div>
-    </footer>
+      </div> -->
+    </div>
   
     <div id="fb-root"></div>
   </div>
+
+  {{template "social-btns"}}
 
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2&appId=1804650849663849&autoLogAppEvents=1"></script>
 

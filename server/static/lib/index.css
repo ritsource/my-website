@@ -36,7 +36,7 @@
 
 	color: var(--text-color-light);
 	margin: 5px 0px;
-	/* line-height: 20px; */
+	line-height: 16px;
 }
 
 #error-center-msg-container-01 {
@@ -47,7 +47,7 @@
 	margin-bottom: 5px;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 820px) {
 	#index-center-div-00 {
 		flex-direction: column;
 		text-align: center;

@@ -5,6 +5,7 @@
 	align-items: flex-start;
 	max-width: var(--container-width);
 	margin: auto;
+	margin-bottom: 68px;
 }
 
 .Blogs-Item-C-00 {
@@ -73,11 +74,11 @@
 	cursor: pointer;
 }
 
-
-@media (max-width: 500px) {
+@media (max-width: 820px) {
 	.blogs-content-00 {
 		align-items: center;
 		width: 100vw;
+		margin-bottom: 0px;
 	}
 
 	.Blogs-Type-Btn-Container-01 {
