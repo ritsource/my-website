@@ -34,6 +34,9 @@ func main() {
 	mux.HandleFunc("/thread/", renderers.ThreadHandler)
 	mux.HandleFunc("/preview", renderers.PreviewHandler)
 
+	mux.HandleFunc("/resume", renderers.ResumeHandler)
+	mux.HandleFunc("/resume/raw", handlers.DownloadResume)
+
 	mux.HandleFunc("/api/auth/google", handlers.GoogleLogin)
 	mux.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback)
 	mux.HandleFunc("/api/auth/current_user", mid.CheckAuth(handlers.CurrentUser))

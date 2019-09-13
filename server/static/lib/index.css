@@ -47,6 +47,14 @@
 	margin-bottom: 5px;
 }
 
+/* #resume-center-container-01 {
+	text-align: left;
+} */
+#resume-center-container-01 p {
+	margin: 10px 0px;
+	/* border: 1px solid red; */
+}
+
 @media (max-width: 820px) {
 	#index-center-div-00 {
 		flex-direction: column;
