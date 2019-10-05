@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="/static/lib/var0.css">
-  <link rel="stylesheet" href="/static/lib/style.css">
-  <link rel="stylesheet" href="/static/lib/github-markdown.css">
-  <link rel="stylesheet" href="/static/lib/each-doc.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-  <link rel="shortcut icon" href="/static/favicon.ico"/>
-  <meta name="og:title" property="og:title" content="{{.Data.Title}}">
-  <meta name="og:type" property="og:type" content="article">
-  <meta name="og:description" property="og:description" content="{{.Data.Description}}">
-  {{if .Data.Thumbnail}}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/lib/var0.css">
+    <link rel="stylesheet" href="/static/lib/style.css">
+    <link rel="stylesheet" href="/static/lib/github-markdown.css">
+    <link rel="stylesheet" href="/static/lib/each-doc.css">
+    <link rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <meta name="og:title" property="og:title" content="{{.Data.Title}}">
+    <meta name="og:type" property="og:type" content="article">
+    <meta name="og:description" property="og:description"
+      content="{{.Data.Description}}">
+    {{if .Data.Thumbnail}}
     <meta name="og:image" property="og:image" content={{.Data.Thumbnail}}>
-  {{else}}
+    {{else}}
     <meta name="og:image" property="og:image" content="/static/My-Pic-240.jpg">
-  {{end}}
-  <meta name="description" content="{{.Data.Description}}">
-  <title>{{.Data.Title}} - Ritwik Saha</title>
-</head>
-<body>
+    {{end}}
+    <meta name="description" content="{{.Data.Description}}">
+    <title>{{.Data.Title}} - Ritwik Saha</title>
+  </head>
+  <body>
 
-  {{template "header"}}
+    {{template "header"}}
 
-  <div class="Page-Content-99 Each-Blog-Content-00">
-    <header>
-      <h1>{{.Data.Title}}</h1>
+    <div class="Page-Content-99 Each-Blog-Content-00">
+      <header>
+        <h1>{{.Data.Title}}</h1>
 
-      <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>, <strong>{{.Data.FormattedDate}}</strong></p>
-      <div class="Share-Button-Container-00 Flex-Row-Start">
-        
-        <div class="fb-share-button" data-href="https://ritwiksaha.com/blog/{{.Data.IDStr}}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-        <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{.Data.Title}} https://ritwiksaha.com/blog/{{.Data.IDStr}}">
-          <i class="fab fa-twitter"></i>
-          Tweet
-        </a>
-      </div>
-    </header>
+        <p class="Blogs-Item-Info-01">by <strong>{{.Data.Author}}</strong>,
+          <strong>{{.Data.FormattedDate}}</strong></p>
+        <div class="Share-Button-Container-00 Flex-Row-Start">
+
+          <div class="fb-share-button"
+            data-href="https://ritwiksaha.com/blog/{{.Data.IDStr}}"
+            data-layout="button_count" data-size="small"><a target="_blank"
+              href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A8081%2Fblog%2F5c9eaef5083bdae8c9493b4a&amp;src=sdkpreparse"
+              class="fb-xfbml-parse-ignore">Share</a></div>
+          <a class="Cute-Btn Cute-Btn-M-Left Cute-Btn-Twitter" target="_blank"
+            href="https://twitter.com/intent/tweet?text={{.Data.Title}}
+            https://ritwiksaha.com/blog/{{.Data.IDStr}}">
+            <i class="fab fa-twitter"></i>
+            Tweet
+          </a>
+        </div>
+      </header>
 
 
-    <article class="markdown-body">
-      {{.HTML}}
-    </article>
+      <article class="markdown-body">
+        {{.HTML}}
+      </article>
 
-    <div class="Article-End-Div-00"></div>
+      <div class="Article-End-Div-00"></div>
 
-    <!-- <footer class="Flex-Row-End">
+      <!-- <footer class="Flex-Row-End">
       <div class="Footer-Social-Btn-Container-00 Flex-Row-Space-Between">
         <a class="Cute-Btn Cute-Btn-Twitter" target="_blank" href="https://twitter.com/ritwik310">
           <i class="fab fa-twitter"></i>
@@ -59,14 +70,13 @@
         </a>
       </div>
     </footer> -->
-  
-    <div id="fb-root"></div>
-  </div>
+      <div id="fb-root"></div>
+    </div>
 
-  {{template "social-btns"}}
+    {{template "social-btns"}}
 
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2&appId=1804650849663849&autoLogAppEvents=1"></script>
-
-  <script src="/static/lib/main.js"></script>
-</body>
+    <script async defer crossorigin="anonymous"
+      src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2&appId=1804650849663849&autoLogAppEvents=1"></script>
+    <script src="/static/lib/main.js"></script>
+  </body>
 </html>
