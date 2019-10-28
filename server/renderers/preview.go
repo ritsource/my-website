@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/ritwik310/my-website/server/db"
+	"github.com/ritcrap/my-website/server/db"
 	"github.com/russross/blackfriday"
 )
 

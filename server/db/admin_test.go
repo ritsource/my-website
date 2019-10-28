@@ -3,7 +3,7 @@ package db_test
 import (
 	"testing"
 
-	"github.com/ritwik310/my-website/server/db"
+	"github.com/ritcrap/my-website/server/db"
 	"gopkg.in/mgo.v2/bson"
 )
 

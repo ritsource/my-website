@@ -16,7 +16,7 @@ else
 fi
 
 # testing go server
-go test ./...
+# go test ./...
 
 # compiling
 go build -o ./bin/server.out
