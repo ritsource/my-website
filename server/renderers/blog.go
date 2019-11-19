@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/ritcrap/my-website/server/db"
-	"github.com/ritcrap/my-website/server/raw"
+	"github.com/ritsource/my-website/server/db"
+	"github.com/ritsource/my-website/server/raw"
 	"github.com/russross/blackfriday"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

@@ -30,10 +30,10 @@ Other than that, as mentioned in the top, there's also a **React-app** for conte
 
 First clone the project using
 ```shell
-git clone git@github.com:ritcrap/my-website.git
+git clone git@github.com:ritsource/my-website.git
 ```
 
-Or by downloading zip from [here](https://github.com/ritcrap/my-website)
+Or by downloading zip from [here](https://github.com/ritsource/my-website)
 
 ### Running using Docker
 
@@ -80,4 +80,4 @@ export ADMIN_EMAIL_B=""# Authorized admin email address No.2 (Connected to Googl
 Eventually I don't think anyone would like to run a personal site in their local machine. 🤷   
 Anyways, **Happy Hacking**
 
-<!--View Source-code - [https://github.com/ritcrap/my-website](https://github.com/ritcrap/my-website)-->
+<!--View Source-code - [https://github.com/ritsource/my-website](https://github.com/ritsource/my-website)-->

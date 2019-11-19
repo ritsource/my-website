@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ritcrap/my-website/server/handlers"
-	mid "github.com/ritcrap/my-website/server/middleware"
-	"github.com/ritcrap/my-website/server/renderers"
+	"github.com/ritsource/my-website/server/handlers"
+	mid "github.com/ritsource/my-website/server/middleware"
+	"github.com/ritsource/my-website/server/renderers"
 	"github.com/rs/cors"
 )
 

@@ -13,8 +13,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gorilla/context"
-	"github.com/ritcrap/my-website/server/db"
-	"github.com/ritcrap/my-website/server/middleware"
+	"github.com/ritsource/my-website/server/db"
+	"github.com/ritsource/my-website/server/middleware"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
