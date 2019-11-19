@@ -18,9 +18,6 @@ fi
 # testing go server
 # go test ./...
 
-# compiling
-go build -o ./bin/server.out
-
 # building docker container
 docker build -t ritwik310/my-website-v2 .
 

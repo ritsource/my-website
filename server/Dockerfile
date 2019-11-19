@@ -1,9 +1,16 @@
-FROM golang:1.12
+FROM golang:alpine
 
-WORKDIR /usr/server
+RUN apk update && apk add --no-cache git
 
 ENV PORT 8080
 
+WORKDIR /go/src/github.com/ritcrap/my-website/server
+
 COPY . .
 
-CMD ./bin/server.out
+RUN go get -d -v
+
+RUN go build -o /go/bin/my-website-server
+
+CMD [ "/go/bin/my-website-server" ]
+
