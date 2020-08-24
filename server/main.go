@@ -4,27 +4,29 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ritsource/my-website/server/handlers"
 	mid "github.com/ritsource/my-website/server/middleware"
 	"github.com/ritsource/my-website/server/renderers"
 	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	// to clear the cache directory once at an interval
-	// if os.Getenv("DEV_MODE") != "true" {
-	// 	go func() {
-	// 		for {
-	// 			time.Sleep(10 * 24 * 60 * 60 * time.Second) // wait for two days after clearing
-	// 			err := os.RemoveAll("./cache/documents")    // haha
-	// 			if err != nil {
-	// 				logrus.Errorf("%v\n", err)
-	// 			}
-	// 			logrus.Infof("cleared cached files: %v", time.Now())
-	// 		}
-	// 	}()
-	// }
+	if os.Getenv("DEV_MODE") != "true" {
+		go func() {
+			for {
+				time.Sleep(10 * 24 * 60 * 60 * time.Second) // wait for two days after clearing
+				err := os.RemoveAll("./cache/documents")    // haha
+				if err != nil {
+					logrus.Errorf("%v\n", err)
+				}
+				logrus.Infof("cleared cached files: %v", time.Now())
+			}
+		}()
+	}
 
 	mux := http.NewServeMux()
 

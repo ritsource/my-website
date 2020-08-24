@@ -1,11 +1,9 @@
 #!/bin/bash
 
 # colors holds variables responsible for stdout colors
-declare -A colors=(
-  ["warning"]="\e[33m\e[1m" # for warning
-  ["info"]="\e[36m\e[1m" # for info
-  ["normal"]="\e[0m"        # for normal (for making text normal again)
-)
+COLOR_WARNING="\e[33m\e[1m" # for warning
+COLOR_INFO="\e[36m\e[1m" # for info
+COLOR_NORMAL="\e[0m"        # for normal (for making text normal again)
 
 # environment variables for developemnt
 export DEV_MODE="true"
@@ -22,7 +20,7 @@ export GOOGLE_AUTH_REDIRECT_URL="http://localhost:8080/api/auth/google/callback"
 # reading the contents of file
 SECRETS=$(<dev-keys.secret)
 # replacing `\n` from SECRETS string
-SECRETS=$(echo $SECRETS|tr --delete '\n')
+SECRETS=$(echo $SECRETS|tr -d '\n')
 # adding a ` ` at the end of the string, so later can be splitted at `; `
 SECRETS=$(printf "${SECRETS} ")
 
@@ -44,7 +42,7 @@ for i in "${secrets[@]}"
 do
   if [[ ! -v "$i" ]]; then
     # warning if some secret variable is not present in the environment
-    echo -e "${colors[warning]}WARN${colors[normal]} environment variable not found - \"${i}\""
+    echo -e "${COLOR_WARNING}WARN${COLOR_NORMAL} environment variable not found - \"${i}\""
   else
     :
   fi
@@ -52,5 +50,5 @@ done
 
 
 # starting the go server
-echo -e "${colors[info]}INFO${colors[normal]} starting the server...\n"
+echo -e "${COLOR_WARNING}INFO${COLOR_NORMAL} starting the server...\n"
 go run main.go
